@@ -11,6 +11,18 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+#include "DrawDebugHelpers.h"
+#include "Kismet/KismetSystemLibrary.h" // 라인 트레이스 함수 사용을 위해 필요
+#include "Kismet/KismetMathLibrary.h" //대쉬 거리 계산을 위해 필요
+#include "GameFramework/PlayerController.h"
+#include "Engine/World.h"
+
+#include "InputAction.h"
+#include "InputMappingContext.h"
+
+#include "WeaponDataTable.h"
+#include "UObject/ConstructorHelpers.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,6 +30,17 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AAGSDCharacter::AAGSDCharacter()
 {
+	MaxHealth = 100;
+	CurrentHealth = 100;
+	Defense = 10;
+
+	CharacterLevel = 1;        // 캐릭터 초기 레벨
+	CurrentXP = 0;             // 초기 경험치
+	XPToNextLevel = 100;       // 첫 번째 레벨 업까지 필요한 경험치
+
+
+	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -39,11 +62,13 @@ AAGSDCharacter::AAGSDCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	CharacterMovementComponent = GetCharacterMovement();
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bDoCollisionTest = false; // 카메라 붐 충돌 체크 비활성화 (필요 시 활성화 가능)
+	CameraBoom->bUsePawnControlRotation = true; // 캐릭터의 회전에 따라 카메라가 회전하지 않도록 설정
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -52,6 +77,18 @@ AAGSDCharacter::AAGSDCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	WeaponID = "1";
+
+	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Table/WeaponData.WeaponData'"));
+	if (WeaponDataTableFinder.Succeeded())
+	{
+		WeaponDataTableRef = WeaponDataTableFinder.Object;
+	}
+
+	FireRate = 1.0f;
+	Numberofprojectile = 1;
+	SpreadAngle = 10.0f;
 }
 
 void AAGSDCharacter::BeginPlay()
@@ -62,10 +99,71 @@ void AAGSDCharacter::BeginPlay()
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
+		// 마우스 입력 모드 설정: 게임 모드에서 마우스 입력을 활성화하고 커서 표시
+		PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()로 변경하여 순수 게임 모드로 설정 가능
+		PlayerController->bShowMouseCursor = false;  // 마우스 커서 표시
+
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}
+
+	check(GEngine != nullptr);
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
+
+	if (WeaponDataTableRef)
+	{
+		FName RowName = FName(*WeaponID);  // FString을 FName으로 변환
+		FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(RowName, TEXT("Weapon Lookup"));
+		if (WeaponData)
+		{
+			FString WeaponName = WeaponData->Sname;
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Name: %s"), *WeaponName));
+		}
+	}
+}
+
+void AAGSDCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// 마우스 위치의 월드 좌표를 구함
+	FVector MouseLocation, MouseDirection;
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
+	{
+		// 캐릭터의 위치를 가져옴
+		FVector CharacterLocation = GetActorLocation();
+
+		// 마우스 위치로부터 아래 방향으로 라인 트레이스를 쏘아 바닥과의 충돌 지점을 찾음
+		FHitResult HitResult;
+		FVector TraceStart = MouseLocation; // 마우스 위치를 시작점으로 설정
+		FVector TraceEnd = TraceStart + (MouseDirection * 10000.0f); // 마우스 방향으로 먼 거리까지 라인 트레이스
+
+		// 라인 트레이스 채널 설정 (바닥과 충돌하기 위한 채널 설정, 기본적으로 ECC_Visibility 사용)
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this); // 자기 자신과의 충돌 무시
+
+		// 라인 트레이스를 수행하여 바닥과 충돌 지점 찾기
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, Params);
+
+		if (bHit)
+		{
+			// 충돌된 지점의 Z 좌표를 사용하여 마우스 위치를 조정
+			FVector AdjustedMouseLocation = HitResult.Location;
+
+			// 캐릭터와 마우스 사이의 선을 디버그 선으로 그리기
+			DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
+
+			// 로그로 충돌된 위치 출력 (디버깅 용도)
+			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
+		}
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Failed to get the mouse position in world space."));
 	}
 }
 
@@ -78,14 +176,17 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
+		//EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Look);
+		//EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Look);
+
+		// Dashing
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Dash);
 	}
 	else
 	{
@@ -127,4 +228,131 @@ void AAGSDCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void AAGSDCharacter::Dash()
+{
+	if (CharacterMovementComponent && Controller)
+	{
+		// 현재 이동 방향으로 대시하도록 설정
+		FVector CurrentVelocity = GetVelocity();
+		FVector DashDirection = CurrentVelocity.GetSafeNormal();
+		if (DashDirection.IsNearlyZero())
+		{
+			// 이동 중이 아닐 때는 캐릭터가 바라보는 방향으로 대시
+			FRotator ControlRotation = Controller->GetControlRotation();
+			DashDirection = UKismetMathLibrary::GetForwardVector(ControlRotation);
+		}
+		FVector DashVector = DashDirection * 1500.f; //대쉬 거리
+
+		// 캐릭터를 대쉬 벡터만큼 이동
+		LaunchCharacter(DashVector, true, true);
+	}
+}
+
+void AAGSDCharacter::AddXP(int32 XPAmount)
+{
+	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
+	CurrentXP += XPAmount; // 주어진 XP를 현재 경험치에 더함
+
+	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
+	if (CurrentXP >= XPToNextLevel)
+	{
+		LevelUp();
+	}
+}
+
+void AAGSDCharacter::LevelUp()
+{
+	// 캐릭터 레벨 증가
+	CharacterLevel++;
+
+	// 현재 XP를 리셋하고, 다음 레벨로 가기 위한 XP 임계값 증가
+	CurrentXP -= XPToNextLevel;
+	XPToNextLevel = XPToNextLevel * 1.5; // 예: 다음 레벨로 가기 위한 경험치 50% 증가
+
+	// 선택 사항: 레벨 업을 알리거나 특별한 이벤트를 트리거할 수 있음
+	UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);
+
+	// 레벨 업 시 능력치 증가나 새로운 능력 해제 등의 추가 동작을 구현할 수 있음
+}
+
+void AAGSDCharacter::Fire()
+{
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+
+	// 발사
+	if (ProjectileClass)
+	{
+		// 카메라 방향, 위치 가져오기
+		FVector CameraLocation;
+		FRotator CameraRotation;
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		// 총구 위치
+		MuzzleOffset.Set(200.0f, 0.0f, 0.0f);
+
+		// 총구위치 설정
+		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+
+		// 총구 방향
+		FRotator MuzzleRotation = CameraRotation;
+		MuzzleRotation.Pitch += 0.0f;
+
+		// 탄환 생성
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			//탄환숫자만큼 발사반복
+			for (int i = 0; i < Numberofprojectile; i++) {
+				// 총구에 탄환 생성.
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
+				AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
+				FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
+				if (Projectile)
+				{
+					FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
+					if (WeaponData)
+					{
+						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
+						Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
+						Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+						// 탄환 방향설정
+						FVector LaunchDirection = AdjustedRotation.Vector();
+						Projectile->FireInDirection(LaunchDirection);
+					}
+
+				}
+			}
+		}
+	}
+}
+
+void AAGSDCharacter::WeaponSwap() {
+	if (WeaponID == "0") {
+		WeaponID = "1";
+	}
+	else
+	{
+		WeaponID = "0";
+	}
+	FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
+	FireRate = WeaponData->Frate;
+	Numberofprojectile = WeaponData->Inumberofprojectile;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
+}
+void AAGSDCharacter::StartFiring()
+{
+	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AAGSDCharacter::Fire, FireRate, true);
+}
+
+void AAGSDCharacter::StopFiring()
+{
+	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }
