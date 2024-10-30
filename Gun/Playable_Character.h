@@ -54,6 +54,8 @@ public:
 	//무기 타이머
 	FTimerHandle FireTimerHandle;
 
+	FTimerHandle FireRateTimerHandle;
+
 	//무기 탄환 숫자
 	int Numberofprojectile;
 
@@ -70,6 +72,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 
+	//들고 있는 무기 데이터
 	UPROPERTY()
 	FString WeaponID;
 
@@ -78,4 +81,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTableRef;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UStaticMesh* CurrentProjectileMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UMaterialInterface* CurrentProjectileMaterial;
+
+	float CurrentWeaponDamage;
+
+	float CurrentWeaponRange;
+
+	float CurrentWeaponProjectileSpeed;
+
+	float CurrentFireRateTime;
 };

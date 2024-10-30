@@ -29,7 +29,7 @@ void APlayable_Character::BeginPlay()
     Super::BeginPlay();
 
     check(GEngine != nullptr);
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
     
     if (WeaponDataTableRef)
     {
@@ -38,7 +38,7 @@ void APlayable_Character::BeginPlay()
         if (WeaponData)
         {
             FString WeaponName = WeaponData->Sname;
-            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Name: %s"), *WeaponName));
+            //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Name: %s"), *WeaponName));
         }
     }
 }
@@ -47,7 +47,7 @@ void APlayable_Character::BeginPlay()
 void APlayable_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("FireTimer: %s"), CurrentFireRateTime));
 }
 
 // Called to bind functionality to input
@@ -81,8 +81,16 @@ void APlayable_Character::MoveRight(float Value)
 
 void APlayable_Character::Fire()
 {
-    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
- 
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+
+    //공격속도 제한
+    
+    if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
+        return;
+    }
+    else {
+        GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate, false);
+    }
     // 발사
     if (ProjectileClass)
     {
@@ -118,16 +126,13 @@ void APlayable_Character::Fire()
                 FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
                 if (Projectile)
                 {
-                    FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                    if (WeaponData)
-                    {
                         //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-                        Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-                        Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+                        Projectile->SetProjectileMeshAndMarterial(CurrentProjectileMesh, CurrentProjectileMaterial);
+                        Projectile->SetProjectileSpeedDamageAndRange(CurrentWeaponProjectileSpeed, CurrentWeaponDamage, CurrentWeaponRange);
                         // 탄환 방향설정
                         FVector LaunchDirection = AdjustedRotation.Vector();
                         Projectile->FireInDirection(LaunchDirection);
-                    }
+                    
                     
                 }
             }
@@ -142,15 +147,26 @@ void APlayable_Character::WeaponSwap() {
     {
         WeaponID = "0";
     }
+    //무기 테이블에서 무기 불러오기
     FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
-    FireRate = WeaponData->Frate;
-    Numberofprojectile = WeaponData->Inumberofprojectile;
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
+    if (WeaponData) {
+        FireRate = WeaponData->Frate;
+        Numberofprojectile = WeaponData->Inumberofprojectile;
+        CurrentProjectileMesh = WeaponData->ProjectileMesh;
+        CurrentProjectileMaterial = WeaponData->ProjectileMaterial;
+        CurrentWeaponDamage = WeaponData->Fdamage;
+        CurrentWeaponRange = WeaponData->Frange;
+        CurrentWeaponProjectileSpeed = WeaponData->Fspeedofprojectile;
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
+    }
+    
 }
 void APlayable_Character::StartFiring()
 {
-    GetWorldTimerManager().SetTimer(FireTimerHandle, this, &APlayable_Character::Fire, FireRate, true);
+    //GetWorldTimerManager().SetTimer(FireTimerHandle, this, &APlayable_Character::Fire, FireRate, true);
+    GetWorldTimerManager().SetTimer(FireTimerHandle, this, & APlayable_Character::Fire, 0.1f, true);
+    //GetWorldTimerManager().SetTimer(FireTimerHandle, FTimerDelegate(), FireRate, false);
 }
 
 void APlayable_Character::StopFiring()

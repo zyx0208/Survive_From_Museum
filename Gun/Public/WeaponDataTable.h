@@ -56,7 +56,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMesh* ProjectileMesh;
 
-	//무기 마테리얼
+	//탄환 마테리얼
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMaterialInterface* ProjectileMaterial;
 };
