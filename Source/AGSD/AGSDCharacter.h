@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Projectile_A.h"
+#include "Projectile_Beta.h"
 #include "WeaponDataTable.h"
 
 #include "AGSDCharacter.generated.h"
@@ -55,7 +56,10 @@ public:
 	AAGSDCharacter();
 	virtual void Tick(float DeltaTime) override;
 
+	FVector CharacterLocation;//캐릭터 위치
 
+	FVector TraceHitLocation;  // 라인트레이스 충돌 위치
+	FVector TraceHitDirection; // 라인트레이스 충돌 방향
 protected:
 
 	/** Called for movement input */
@@ -69,8 +73,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	UCharacterMovementComponent* CharacterMovementComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class AProjectile_A> ProjectileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	TSubclassOf<class AProjectile_Beta> ProjectileClass;
 
 protected:
 	// APawn interface
@@ -141,5 +145,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTableRef;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	TSubclassOf<AProjectile_Beta> CurrentProjectile;
 };
 

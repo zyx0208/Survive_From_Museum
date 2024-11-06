@@ -1,0 +1,37 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Engine/DataTable.h"
+#include "Projectile_Beta.h"
+#include "WeaponDataTableBeta.generated.h"
+
+/**
+ *
+ */
+USTRUCT(BlueprintType)
+struct FWeaponDataTableBetaStruct : public FTableRowBase
+{
+public:
+	GENERATED_USTRUCT_BODY()
+	//무기 번호
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int IID;
+
+	//무기 이름
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString Sname;
+
+	//무기 발사 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Frate;
+
+	//무기 탄환 숫자
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Inumberofprojectile;
+
+	//무기 탄환
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AProjectile_Beta> WeaponProjectile;
+};

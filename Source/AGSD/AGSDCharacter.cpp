@@ -21,6 +21,7 @@
 #include "InputMappingContext.h"
 
 #include "WeaponDataTable.h"
+#include "WeaponDataTableBeta.h"
 #include "UObject/ConstructorHelpers.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -80,7 +81,7 @@ AAGSDCharacter::AAGSDCharacter()
 
 	WeaponID = "1";
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/Table/WeaponData.WeaponData'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/DataTable/WeaponDataTableBeta.WeaponDataTableBeta'"));
 	if (WeaponDataTableFinder.Succeeded())
 	{
 		WeaponDataTableRef = WeaponDataTableFinder.Object;
@@ -115,7 +116,7 @@ void AAGSDCharacter::BeginPlay()
 	if (WeaponDataTableRef)
 	{
 		FName RowName = FName(*WeaponID);  // FString을 FName으로 변환
-		FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(RowName, TEXT("Weapon Lookup"));
+		FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(RowName, TEXT("Weapon Lookup"));
 		if (WeaponData)
 		{
 			FString WeaponName = WeaponData->Sname;
@@ -135,7 +136,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
 	{
 		// 캐릭터의 위치를 가져옴
-		FVector CharacterLocation = GetActorLocation();
+		CharacterLocation = GetActorLocation();
 
 		// 마우스 위치로부터 아래 방향으로 라인 트레이스를 쏘아 바닥과의 충돌 지점을 찾음
 		FHitResult HitResult;
@@ -157,6 +158,9 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			// 캐릭터와 마우스 사이의 선을 디버그 선으로 그리기
 			DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
 
+			//라인트레이스 위치와 방향 저장
+			TraceHitLocation = HitResult.Location;
+			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
 			// 로그로 충돌된 위치 출력 (디버깅 용도)
 			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
 		}
@@ -187,6 +191,11 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 		// Dashing
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Dash);
+		
+		// Firing
+		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAGSDCharacter::StartFiring);
+		PlayerInputComponent->BindAction("Fire", IE_Released, this, &AAGSDCharacter::StopFiring);
+		PlayerInputComponent->BindAction("WeaponSwap", IE_Pressed, this, &AAGSDCharacter::WeaponSwap);
 	}
 	else
 	{
@@ -279,24 +288,21 @@ void AAGSDCharacter::LevelUp()
 
 void AAGSDCharacter::Fire()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+	
 
 	// 발사
 	if (ProjectileClass)
 	{
-		// 카메라 방향, 위치 가져오기
-		FVector CameraLocation;
-		FRotator CameraRotation;
-		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
 		// 총구 위치
-		MuzzleOffset.Set(200.0f, 0.0f, 0.0f);
-
-		// 총구위치 설정
-		FVector MuzzleLocation = CameraLocation + FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
 
 		// 총구 방향
-		FRotator MuzzleRotation = CameraRotation;
+		FRotator MuzzleRotation = TraceHitDirection.Rotation();
+
+		// 총구위치 설정
+		FVector MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+
 		MuzzleRotation.Pitch += 0.0f;
 
 		// 탄환 생성
@@ -309,19 +315,22 @@ void AAGSDCharacter::Fire()
 
 			//탄환숫자만큼 발사반복
 			for (int i = 0; i < Numberofprojectile; i++) {
+				
 				// 총구에 탄환 생성.
 				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
-				AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				//AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 				float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
 				FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
 				if (Projectile)
 				{
-					FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+					FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
 					if (WeaponData)
 					{
 						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-						Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-						Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+						//Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
+						//Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
 						// 탄환 방향설정
 						FVector LaunchDirection = AdjustedRotation.Vector();
 						Projectile->FireInDirection(LaunchDirection);
@@ -330,6 +339,9 @@ void AAGSDCharacter::Fire()
 				}
 			}
 		}
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not Found"));
 	}
 }
 
@@ -341,9 +353,10 @@ void AAGSDCharacter::WeaponSwap() {
 	{
 		WeaponID = "0";
 	}
-	FWeaponDataTable* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTable>(FName(*WeaponID), TEXT("Weapon Lookup"));
+	FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
 	FireRate = WeaponData->Frate;
 	Numberofprojectile = WeaponData->Inumberofprojectile;
+	ProjectileClass = WeaponData->WeaponProjectile;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }
