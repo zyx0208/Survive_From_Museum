@@ -288,20 +288,30 @@ void AAGSDCharacter::LevelUp()
 
 void AAGSDCharacter::Fire()
 {
-	
-
+	//공격속도 제한
+	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
+		return;
+	}
+	else {
+		GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate, false);
+	}
 	// 발사
 	if (ProjectileClass)
 	{
-
+		
+		
 		// 총구 위치
 		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
 
 		// 총구 방향
 		FRotator MuzzleRotation = TraceHitDirection.Rotation();
+		MuzzleRotation.Pitch = 0;
+		MuzzleRotation.Roll = 0;
 
 		// 총구위치 설정
-		FVector MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+		MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+		MuzzleLocation.Z = 90;
+		//MuzzleLocation.Normalize();
 
 		MuzzleRotation.Pitch += 0.0f;
 
@@ -362,7 +372,14 @@ void AAGSDCharacter::WeaponSwap() {
 }
 void AAGSDCharacter::StartFiring()
 {
-	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AAGSDCharacter::Fire, FireRate, true);
+	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
+
+	}
+	else
+	{
+		Fire();
+	}
+	GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AAGSDCharacter::Fire, 0.1f, true);
 }
 
 void AAGSDCharacter::StopFiring()

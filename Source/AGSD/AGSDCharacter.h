@@ -119,6 +119,7 @@ public:
 
 	//무기 타이머
 	FTimerHandle FireTimerHandle;
+	FTimerHandle FireRateTimerHandle;
 
 	//무기 탄환 숫자
 	int Numberofprojectile;
@@ -135,6 +136,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector MuzzleLocation;
 
 	UPROPERTY()
 	FString WeaponID;
