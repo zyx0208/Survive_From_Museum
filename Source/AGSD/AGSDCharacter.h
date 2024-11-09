@@ -8,6 +8,7 @@
 #include "Projectile_A.h"
 #include "WeaponDataTable.h"
 
+#include "Blueprint/UserWidget.h"
 #include "AGSDCharacter.generated.h"
 
 class USpringArmComponent;
@@ -79,16 +80,18 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarUIBPClass;
+
+	UPROPERTY()
+	UUserWidget* HealthBarWidget;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-private:
-	int32 CharacterLevel;   // 캐릭터 레벨
-	int32 CurrentXP;        // 현재 경험치
-	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
 
 public:
 	//캐릭터 스탯
@@ -96,9 +99,20 @@ public:
 	int32 CurrentHealth;
 	int32 Defense;
 
+	int32 CharacterLevel;   // 캐릭터 레벨
+	int32 CurrentXP;        // 현재 경험치
+	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
+
 	// XP를 추가하고 레벨 업을 처리하는 함수
+	UFUNCTION()
 	void AddXP(int32 XPAmount);
+	
 	void LevelUp();
+
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void UpdateHealthBar(); //체력바 갱신함수
+	UFUNCTION(BlueprintCallable, Category = "UI")
+	void UpdateXPBar(); //경험치바 갱신함수
 
 	//무기 발사
 	UFUNCTION()
@@ -140,6 +154,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTableRef;
-
+	
 };
 

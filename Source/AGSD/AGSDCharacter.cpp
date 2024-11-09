@@ -23,6 +23,9 @@
 #include "WeaponDataTable.h"
 #include "UObject/ConstructorHelpers.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -30,14 +33,6 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AAGSDCharacter::AAGSDCharacter()
 {
-	MaxHealth = 100;
-	CurrentHealth = 100;
-	Defense = 10;
-
-	CharacterLevel = 1;        // 캐릭터 초기 레벨
-	CurrentXP = 0;             // 초기 경험치
-	XPToNextLevel = 100;       // 첫 번째 레벨 업까지 필요한 경험치
-
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
@@ -96,6 +91,14 @@ void AAGSDCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	MaxHealth = 100;
+	CurrentHealth = 100;
+	Defense = 10;
+
+	CharacterLevel = 1;        // 캐릭터 초기 레벨
+	CurrentXP = 0;             // 초기 경험치
+	XPToNextLevel = 100;       // 첫 번째 레벨 업까지 필요한 경험치
+
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -120,6 +123,17 @@ void AAGSDCharacter::BeginPlay()
 		{
 			FString WeaponName = WeaponData->Sname;
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Name: %s"), *WeaponName));
+		}
+	}
+
+	if (HealthBarUIBPClass) //체력바 생성
+	{
+		HealthBarWidget = CreateWidget<UUserWidget>(GetWorld(), HealthBarUIBPClass);
+		if (HealthBarWidget)
+		{
+			HealthBarWidget->AddToViewport();
+			UpdateHealthBar();
+			UpdateXPBar();
 		}
 	}
 }
@@ -159,6 +173,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 
 			// 로그로 충돌된 위치 출력 (디버깅 용도)
 			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
+
 		}
 	}
 	else
@@ -250,16 +265,48 @@ void AAGSDCharacter::Dash()
 	}
 }
 
+//체력바 갱신 함수
+void AAGSDCharacter::UpdateHealthBar()
+{
+	if (HealthBarWidget)
+	{
+		float HealthPercentage = static_cast<float>(CurrentHealth) / static_cast<float>(MaxHealth);
+		UProgressBar* HealthProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("HealthBar")));
+		if (HealthProgressBar)
+		{
+			HealthProgressBar->SetPercent(HealthPercentage);
+		}
+	}
+}
+void AAGSDCharacter::UpdateXPBar()
+{
+	if (HealthBarWidget)
+	{
+		float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
+		UProgressBar* XPProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("XPBar")));
+		if (XPProgressBar)
+		{
+			XPProgressBar->SetPercent(XPPercentage);
+		}
+	}
+}
+
 void AAGSDCharacter::AddXP(int32 XPAmount)
 {
-	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
+	
 	CurrentXP += XPAmount; // 주어진 XP를 현재 경험치에 더함
+	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
+	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d : %.1f"), CurrentXP, XPToNextLevel, XPPercentage);
+	
 
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
 	if (CurrentXP >= XPToNextLevel)
 	{
 		LevelUp();
+
 	}
+
+	UpdateXPBar();
 }
 
 void AAGSDCharacter::LevelUp()
