@@ -23,4 +23,6 @@ void AProjectile_Beta_Blue::WeaponHitEffect()
 {
 	// 추가적인 기능을 구현
 	UE_LOG(LogTemp, Warning, TEXT("BlueHit"));
+	// 발사체를 파괴 (필요시)
+	Destroy();
 }

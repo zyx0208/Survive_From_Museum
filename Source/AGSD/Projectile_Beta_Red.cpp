@@ -14,5 +14,7 @@ AProjectile_Beta_Red::AProjectile_Beta_Red()
 void AProjectile_Beta_Red::WeaponHitEffect()
 {
     // 추가적인 기능을 구현
-    UE_LOG(LogTemp, Warning, TEXT("RedHit"));
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("RedHit")));
+    // 발사체를 파괴 (필요시)
+    Destroy();
 }

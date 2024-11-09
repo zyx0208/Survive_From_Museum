@@ -25,8 +25,12 @@ AProjectile_Beta::AProjectile_Beta()
         CollisionComponent->InitSphereRadius(15.0f);
         // Event called when component hits something.
         CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectile_Beta::OnHit);
+        
         //투사체 충돌설정
         RootComponent = CollisionComponent;
+        //콜리전 채널 설정
+        //CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+        //CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
     }
 
     if (!ProjectileMovementComponent)
@@ -58,6 +62,7 @@ AProjectile_Beta::AProjectile_Beta()
         ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
         ProjectileMeshComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
         ProjectileMeshComponent->SetupAttachment(RootComponent);
+        ProjectileMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
     }
 
     //시간 지나면 파괴
@@ -76,7 +81,7 @@ AProjectile_Beta::AProjectile_Beta()
 void AProjectile_Beta::BeginPlay()
 {
     Super::BeginPlay();
-
+    CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile_Beta::OnOverlapBegin);
 }
 
 // Called every frame
@@ -99,6 +104,11 @@ void AProjectile_Beta::FireInDirection(const FVector& ShootDirection)
     //탄환시작방향설정
     ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
+
+void AProjectile_Beta::WeaponHitEffect()
+{
+}
+
 
 void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -127,11 +137,36 @@ void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
         }
     }
 
-    // 발사체를 파괴 (필요시)
-    Destroy();
+    
 }
 
-void AProjectile_Beta::WeaponHitEffect()
+void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+    {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
+        // 충돌한 오브젝트가 AEnemy 클래스인지 확인
+        if (OtherActor->GetClass()->IsChildOf(AEnemy::StaticClass()))
+        {
+            // AEnemy로 캐스팅
+            AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
+            if (HitEnemy)
+            {
+                // 체력감소
+                HitEnemy->Health -= ProjectileDamage;
+
+                // 적처치
+                if (HitEnemy->Health <= 0.0f)
+                {
+                    HitEnemy->Destroy();
+                }
+
+                // 체력 감소 결과를 화면에 출력
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Hit enemy's remaining health: %f"), HitEnemy->Health));
+            }
+            WeaponHitEffect();
+        }
+    }
 }
+
 

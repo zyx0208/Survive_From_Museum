@@ -357,7 +357,7 @@ void AAGSDCharacter::Fire()
 
 void AAGSDCharacter::WeaponSwap() {
 	if (WeaponID == "0") {
-		WeaponID = "1";
+		WeaponID = "2";
 	}
 	else
 	{
