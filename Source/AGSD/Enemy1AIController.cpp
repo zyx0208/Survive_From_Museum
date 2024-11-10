@@ -40,11 +40,33 @@ void AEnemy1AIController::AttackTypeA()
 		//플레이어 구현이 완료되면 이 안에 코드를 수정
 		UE_LOG(LogTemp, Display, TEXT("Hit!"));
 	}
+	GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
+
 }
 
 void AEnemy1AIController::AttackTypeB()
 {
-	//미구현
+	if (BossCount >= 2) //3번째 공격은 공격범위의 2배 및 전범위 공격
+	{
+		BossCount = 0;
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 2) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
+		{
+			//플레이어 구현이 완료되면 이 안에 코드를 수정
+			UE_LOG(LogTemp, Display, TEXT("Hit!"));
+		}
+		GetWorld()->SpawnActor<AActor>(AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+		BossCount++;
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
+		{
+			//플레이어 구현이 완료되면 이 안에 코드를 수정
+			UE_LOG(LogTemp, Display, TEXT("Hit!"));
+		}
+		GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
+	}
 }
 
 void AEnemy1AIController::AttackTypeC()
@@ -114,7 +136,30 @@ void AEnemy1AIController::Tick(float DeltaTime)
 			GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 			AttackCooltime_temp = AttackCooltimeFirstDelay;
 			MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true);
-
+			//대쉬기능
+			if (Dash)
+			{
+				if (IsDashing)
+				{
+					DashCoolTime_Temp += DeltaTime;
+					if (DashCoolTime_Temp >= 1.0f)
+					{
+						DashCoolTime_Temp = 0.0f;
+						IsDashing = false;
+						MoveSpeed /= 10.0f;
+					}
+				}
+				else
+				{
+					DashCoolTime_Temp += DeltaTime;
+					if (DashCoolTime_Temp >= DashCoolTime)
+					{
+						DashCoolTime_Temp = 0.0f;
+						IsDashing = true;
+						MoveSpeed *= 10.0f;
+					}
+				}
+			}
 			//만약 공격 중이 아니면서 탐색을 했는데 캐릭터가 일정시간동안 움직이지 않을 경우
 			if (TickSwitch)
 			{
@@ -160,8 +205,9 @@ void AEnemy1AIController::Tick(float DeltaTime)
 				{
 				case 1:
 					AttackTypeA();
-					//타격이펙트
-					GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
+					break;
+				case 2:
+					AttackTypeB();
 					break;
 				default://공격타입이 설정되지 않았을 경우
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));
