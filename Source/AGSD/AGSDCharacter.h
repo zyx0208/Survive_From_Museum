@@ -6,9 +6,9 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Projectile_A.h"
+#include "Projectile_Beta.h"
 #include "WeaponDataTable.h"
 
-#include "Blueprint/UserWidget.h"
 #include "AGSDCharacter.generated.h"
 
 class USpringArmComponent;
@@ -56,7 +56,10 @@ public:
 	AAGSDCharacter();
 	virtual void Tick(float DeltaTime) override;
 
+	FVector CharacterLocation;//캐릭터 위치
 
+	FVector TraceHitLocation;  // 라인트레이스 충돌 위치
+	FVector TraceHitDirection; // 라인트레이스 충돌 방향
 protected:
 
 	/** Called for movement input */
@@ -70,8 +73,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	UCharacterMovementComponent* CharacterMovementComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class AProjectile_A> ProjectileClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	TSubclassOf<class AProjectile_Beta> ProjectileClass;
 
 protected:
 	// APawn interface
@@ -80,18 +83,16 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
-	UPROPERTY(EditAnywhere, Category = "UI")
-	TSubclassOf<UUserWidget> HealthBarUIBPClass;
-
-	UPROPERTY()
-	UUserWidget* HealthBarWidget;
-
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+private:
+	int32 CharacterLevel;   // 캐릭터 레벨
+	int32 CurrentXP;        // 현재 경험치
+	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
 
 public:
 	//캐릭터 스탯
@@ -99,20 +100,9 @@ public:
 	int32 CurrentHealth;
 	int32 Defense;
 
-	int32 CharacterLevel;   // 캐릭터 레벨
-	int32 CurrentXP;        // 현재 경험치
-	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
-
 	// XP를 추가하고 레벨 업을 처리하는 함수
-	UFUNCTION()
 	void AddXP(int32 XPAmount);
-	
 	void LevelUp();
-
-	UFUNCTION(BlueprintCallable, Category = "UI")
-	void UpdateHealthBar(); //체력바 갱신함수
-	UFUNCTION(BlueprintCallable, Category = "UI")
-	void UpdateXPBar(); //경험치바 갱신함수
 
 	//무기 발사
 	UFUNCTION()
@@ -129,6 +119,7 @@ public:
 
 	//무기 타이머
 	FTimerHandle FireTimerHandle;
+	FTimerHandle FireRateTimerHandle;
 
 	//무기 탄환 숫자
 	int Numberofprojectile;
@@ -146,6 +137,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector MuzzleLocation;
+
 	UPROPERTY()
 	FString WeaponID;
 
@@ -154,6 +148,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTableRef;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
+	TSubclassOf<AProjectile_Beta> CurrentProjectile;
 };
 
