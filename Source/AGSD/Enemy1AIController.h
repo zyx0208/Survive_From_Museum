@@ -22,7 +22,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltime = 0;//해당 캐릭터의 공격속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltimeFirstDelay = 0;//공격범위에 들어왔을 때, 첫 공격이 [AttackCooltime - AttackCooltime_first]초 뒤에 실행됨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackDamage = 0;//해당 캐릭터의 공격력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 HP = 0;//해당 캐릭터의 체력 (숫자 범위 : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 MaxHP = 0;//해당 캐릭터의 최대체력 (숫자 범위 : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 CurrentHP = 0;//해당 캐릭터의 현재체력 (숫자 범위 : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int AttackType = 0;//해당 캐릭터의 공격 방식
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//해당 캐릭터가 현재 공격중인가?를 나타내는 변수(공격중일때는 추적을 멈춤)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1;

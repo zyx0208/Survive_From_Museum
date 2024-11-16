@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"// 레벨에서 액터를 불러오기 위한 함수를 가진 헤더파일
 #include "GameFramework/Character.h"//레벨에 등장하는 액터의 방향이나 이동을 조절하기 위한 함수를 가진 헤더파일
 #include "GameFramework/CharacterMovementComponent.h"//캐릭터의 움직임을 제어하는 함수를 참조하기 위한 헤더파일
+#include "DrawDebugHelpers.h"//범위 시각화를 위한 헤더파일
 
 void AEnemy1AIController::BeginPlay()
 {
@@ -49,6 +50,16 @@ void AEnemy1AIController::AttackTypeB()
 	if (BossCount >= 2) //3번째 공격은 공격범위의 2배 및 전범위 공격
 	{
 		BossCount = 0;
+		DrawDebugCylinder(GetWorld(), //공격 범위 그리기
+			GetCharacter()->GetActorLocation(), //원통 시작위치
+			GetCharacter()->GetActorLocation(), //원통 끝 위치
+			AttackRange * 2, //원통 반지름
+			36, //원통의 세그먼트 개수
+			FColor::Red, //원통 색상
+			false, //지속적으로 화면에 표시하는가?
+			0.3f, //지속시간
+			100.0f, //선 두께(0이 기본)
+			1.0f); //투명도(불투명 = 1)
 		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 2) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
@@ -60,7 +71,7 @@ void AEnemy1AIController::AttackTypeB()
 	{
 		UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
 		BossCount++;
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
@@ -82,9 +93,9 @@ void AEnemy1AIController::AttackTypeD()
 void AEnemy1AIController::Attacked()
 {
 	//데미지 계산 방식에 따라 수정 필요
-	HP--;
+	CurrentHP--;
 	//체력이 0이하일 경우 죽음
-	if (HP <= 0)
+	if (CurrentHP <= 0)
 	{
 		Died(1);//데미지 계산 방식에 따라 수정 필요
 	}
@@ -115,6 +126,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	{
 		IsFisrt = false;
 		AttackCooltime_temp = AttackCooltimeFirstDelay;//공격속도 초기화
+		CurrentHP = MaxHP;
 	}
 
 	//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
