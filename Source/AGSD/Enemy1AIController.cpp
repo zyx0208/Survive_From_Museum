@@ -18,12 +18,7 @@ void AEnemy1AIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Display, TEXT("Enemy created."));//생성됐음을 알리는 로그
-	IsAttacking = false;
-	IsFisrt = true;
-	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	ChenkIsolated_1 = GetCharacter()->GetActorLocation();
-	ChenkIsolated_2 = GetCharacter()->GetActorLocation();
+	
 }
 
 void AEnemy1AIController::AttackTypeA()
@@ -120,10 +115,16 @@ void AEnemy1AIController::Died(int64 num)
 void AEnemy1AIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	//begin보다 늦게 실행하면서 Tick보다는 빨리 실행하는 한번만 발생하는 코드
+	//동적으로 생성할 때 beginplay를 블프랑 여기서 둘다 실행하면 터지는 오류가 있음
 	if (IsFisrt)
 	{
+		UE_LOG(LogTemp, Display, TEXT("Enemy created."));//생성됐음을 알리는 로그
+		IsAttacking = false;
+		IsFisrt = true;
+		PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+		ChenkIsolated_1 = GetCharacter()->GetActorLocation();
+		ChenkIsolated_2 = GetCharacter()->GetActorLocation();
 		IsFisrt = false;
 		AttackCooltime_temp = AttackCooltimeFirstDelay;//공격속도 초기화
 		CurrentHP = MaxHP;
