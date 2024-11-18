@@ -94,6 +94,12 @@ protected:
 	UPROPERTY()
 	UUserWidget* HealthBarWidget;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> LevelUpUIBPClass;
+
+	UPROPERTY()
+	UUserWidget* LevelUpWidget;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -115,10 +121,12 @@ public:
 	void UpdateHealthBar(); //체력바 갱신함수
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateXPBar(); //경험치바 갱신함수
-
+	
+	void ShowLevelUpUI();
 	// XP를 추가하고 레벨 업을 처리하는 함수
 	void AddXP(int32 XPAmount);
 	void LevelUp();
+	
 
 	//무기 발사
 	UFUNCTION()

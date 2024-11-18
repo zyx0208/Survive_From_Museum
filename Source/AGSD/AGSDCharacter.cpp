@@ -311,6 +311,7 @@ void AAGSDCharacter::AddXP(int32 XPAmount)
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
 	if (CurrentXP >= XPToNextLevel)
 	{
+		ShowLevelUpUI();
 		LevelUp();
 	}
 	UpdateXPBar();
@@ -329,6 +330,27 @@ void AAGSDCharacter::LevelUp()
 	UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);
 
 	// 레벨 업 시 능력치 증가나 새로운 능력 해제 등의 추가 동작을 구현할 수 있음
+}
+
+void AAGSDCharacter::ShowLevelUpUI()
+{
+	if (LevelUpUIBPClass)
+	{
+		LevelUpWidget = CreateWidget<UUserWidget>(GetWorld(), LevelUpUIBPClass);
+		if (LevelUpWidget)
+		{
+			LevelUpWidget->AddToViewport();
+			// 마우스 입력 활성화 (선택 가능하도록 설정)
+			APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+			if (PlayerController)
+			{
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(LevelUpWidget->TakeWidget());
+				PlayerController->SetInputMode(InputMode);
+				PlayerController->bShowMouseCursor = true;
+			}
+		}
+	}
 }
 
 void AAGSDCharacter::Fire()
