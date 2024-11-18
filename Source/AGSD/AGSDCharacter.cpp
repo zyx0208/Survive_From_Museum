@@ -20,9 +20,13 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
+
 #include "WeaponDataTable.h"
 #include "WeaponDataTableBeta.h"
 #include "UObject/ConstructorHelpers.h"
+
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -121,6 +125,17 @@ void AAGSDCharacter::BeginPlay()
 		{
 			FString WeaponName = WeaponData->Sname;
 			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Name: %s"), *WeaponName));
+		}
+	}
+
+	if (HealthBarUIBPClass) //체력바 생성
+	{
+		HealthBarWidget = CreateWidget<UUserWidget>(GetWorld(), HealthBarUIBPClass);
+		if (HealthBarWidget)
+		{
+			HealthBarWidget->AddToViewport();
+			UpdateHealthBar();
+			UpdateXPBar();
 		}
 	}
 }
@@ -258,17 +273,44 @@ void AAGSDCharacter::Dash()
 		LaunchCharacter(DashVector, true, true);
 	}
 }
+//체력바 갱신 함수
+void AAGSDCharacter::UpdateHealthBar()
+{
+	if (HealthBarWidget)
+	{
+		float HealthPercentage = static_cast<float>(CurrentHealth) / static_cast<float>(MaxHealth);
+		UProgressBar* HealthProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("HealthBar")));
+		if (HealthProgressBar)
+		{
+			HealthProgressBar->SetPercent(HealthPercentage);
+		}
+	}
+}
+void AAGSDCharacter::UpdateXPBar()
+{
+	if (HealthBarWidget)
+	{
+		float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
+		UProgressBar* XPProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("XPBar")));
+		if (XPProgressBar)
+		{
+			XPProgressBar->SetPercent(XPPercentage);
+		}
+	}
+}
 
 void AAGSDCharacter::AddXP(int32 XPAmount)
 {
-	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
+	
 	CurrentXP += XPAmount; // 주어진 XP를 현재 경험치에 더함
-
+	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
+	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
 	if (CurrentXP >= XPToNextLevel)
 	{
 		LevelUp();
 	}
+	UpdateXPBar();
 }
 
 void AAGSDCharacter::LevelUp()
