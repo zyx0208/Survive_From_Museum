@@ -13,7 +13,7 @@
 #include "GameFramework/Character.h"//레벨에 등장하는 액터의 방향이나 이동을 조절하기 위한 함수를 가진 헤더파일
 #include "GameFramework/CharacterMovementComponent.h"//캐릭터의 움직임을 제어하는 함수를 참조하기 위한 헤더파일
 #include "DrawDebugHelpers.h"//범위 시각화를 위한 헤더파일
-
+#include "AGSDCharacter.h"
 void AEnemy1AIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -35,6 +35,7 @@ void AEnemy1AIController::AttackTypeA()
 	{
 		//플레이어 구현이 완료되면 이 안에 코드를 수정
 		UE_LOG(LogTemp, Display, TEXT("Hit!"));
+		Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 	}
 	GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
 
@@ -59,6 +60,7 @@ void AEnemy1AIController::AttackTypeB()
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
+			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 		}
 		GetWorld()->SpawnActor<AActor>(AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
 	}
@@ -70,6 +72,7 @@ void AEnemy1AIController::AttackTypeB()
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
+			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 		}
 		GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
 	}
@@ -85,12 +88,12 @@ void AEnemy1AIController::AttackTypeD()
 	//미구현
 }
 
-void AEnemy1AIController::Attacked()
+void AEnemy1AIController::Attacked(float damage)
 {
 	//데미지 계산 방식에 따라 수정 필요
-	CurrentHP--;
+	CurrentHP -= damage;
 	//체력이 0이하일 경우 죽음
-	if (CurrentHP <= 0)
+	if (CurrentHP <= 0.0f)
 	{
 		Died(1);//데미지 계산 방식에 따라 수정 필요
 	}
@@ -103,13 +106,13 @@ void AEnemy1AIController::Died(int64 num)
 	{
 	case 1:
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
+		GetWorld()->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
 	default://버그 등으로 인해 강제로 삭제해야 하는 경우
 		UE_LOG(LogTemp, Display, TEXT("Enemy is isolated!"));
 		break;
 	}
-	//개체 삭제
-	GetCharacter()->Destroy();
+	IsDead = true;
 }
 
 void AEnemy1AIController::Tick(float DeltaTime)

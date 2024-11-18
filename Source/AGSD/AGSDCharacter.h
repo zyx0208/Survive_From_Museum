@@ -126,7 +126,7 @@ public:
 	// XP를 추가하고 레벨 업을 처리하는 함수
 	void AddXP(int32 XPAmount);
 	void LevelUp();
-	
+	void Attacked(float Damage); //데미지를 받을때 발생하는 함수
 
 	//무기 발사
 	UFUNCTION()

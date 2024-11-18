@@ -19,6 +19,7 @@ public:
 	//이 코드가 설정된 블루프린트 캐릭터마다 값을 수정할 수 있도록 public 및 UPROPERTY 설정
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float MoveSpeed = 0;//해당 캐릭터의 이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackRange = 0;//해당 캐릭터의 공격길이
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltime = 0;//해당 캐릭터의 공격속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltimeFirstDelay = 0;//공격범위에 들어왔을 때, 첫 공격이 [AttackCooltime - AttackCooltime_first]초 뒤에 실행됨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackDamage = 0;//해당 캐릭터의 공격력
@@ -28,9 +29,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//해당 캐릭터가 현재 공격중인가?를 나타내는 변수(공격중일때는 추적을 멈춤)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1 = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect2 = NULL;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//대쉬가 있는 적을 위한 설정 기능
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//대쉬 기능이 있을경우 true로 설정
-	virtual void Attacked();//플레이어의 공격을 맞았을 경우
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//대쉬 기능이 있을경우 true로 설정
+	virtual void Attacked(float damage);//플레이어의 공격을 맞았을 경우
 	virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
 	int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
 
