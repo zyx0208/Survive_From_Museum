@@ -28,6 +28,8 @@
 #include "UObject/ConstructorHelpers.h"
 
 
+
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -178,6 +180,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
 			// 로그로 충돌된 위치 출력 (디버깅 용도)
 			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
+			
 		}
 	}
 	else
@@ -337,64 +340,11 @@ void AAGSDCharacter::Fire()
 	else {
 		GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate, false);
 	}
-	// 발사
-	if (ProjectileClass)
+	if (FireMontage && GetMesh())
 	{
-		
-		
-		// 총구 위치
-		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
-
-		// 총구 방향
-		FRotator MuzzleRotation = TraceHitDirection.Rotation();
-		MuzzleRotation.Pitch = 0;
-		MuzzleRotation.Roll = 0;
-
-		// 총구위치 설정
-		MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-		MuzzleLocation.Z = 90;
-		//MuzzleLocation.Normalize();
-
-		MuzzleRotation.Pitch += 0.0f;
-
-		// 탄환 생성
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-
-			//탄환숫자만큼 발사반복
-			for (int i = 0; i < Numberofprojectile; i++) {
-				
-				// 총구에 탄환 생성.
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
-				//AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-				AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-				float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
-				FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
-				if (Projectile)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
-					FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-					if (WeaponData)
-					{
-						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-						//Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-						//Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
-						// 탄환 방향설정
-						FVector LaunchDirection = AdjustedRotation.Vector();
-						Projectile->FireInDirection(LaunchDirection);
-					}
-
-				}
-			}
-		}
+		PlayAnimMontage(FireMontage);
 	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not Found"));
-	}
+	
 }
 
 void AAGSDCharacter::WeaponSwap() {
@@ -428,3 +378,67 @@ void AAGSDCharacter::StopFiring()
 {
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }
+
+void AAGSDCharacter::CreateProjectile()
+{
+	// 발사
+	if (ProjectileClass)
+	{
+
+
+		// 총구 위치
+		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
+
+		// 총구 방향
+		FRotator MuzzleRotation = TraceHitDirection.Rotation();
+		MuzzleRotation.Pitch = 0;
+		MuzzleRotation.Roll = 0;
+
+		// 총구위치 설정
+		MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+		MuzzleLocation.Z = 90;
+		//MuzzleLocation.Normalize();
+
+		MuzzleRotation.Pitch += 0.0f;
+
+		// 탄환 생성
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+
+			//탄환숫자만큼 발사반복
+			for (int i = 0; i < Numberofprojectile; i++) {
+
+				// 총구에 탄환 생성.
+				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
+				//AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+				float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
+				FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
+				if (Projectile)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+					FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+					if (WeaponData)
+					{
+						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
+						//Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
+						//Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+						// 탄환 방향설정
+						FVector LaunchDirection = AdjustedRotation.Vector();
+						Projectile->FireInDirection(LaunchDirection);
+					}
+
+				}
+			}
+		}
+
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not Found"));
+	}
+}
+

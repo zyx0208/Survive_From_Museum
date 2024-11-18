@@ -11,6 +11,9 @@
 
 #include "Blueprint/UserWidget.h"
 
+#include "Animation/AnimMontage.h"
+#include "Components/PoseableMeshComponent.h"
+
 #include "AGSDCharacter.generated.h"
 
 class USpringArmComponent;
@@ -127,6 +130,9 @@ public:
 	UFUNCTION()
 	void StopFiring();
 
+	UFUNCTION()
+	void CreateProjectile();
+
 	//무기 공격속도
 	float FireRate;
 
@@ -164,5 +170,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<AProjectile_Beta> CurrentProjectile;
+
+	//애니메이션
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* FireMontage;
 };
 
