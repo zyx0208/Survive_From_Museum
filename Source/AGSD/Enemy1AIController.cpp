@@ -92,6 +92,8 @@ void AEnemy1AIController::Attacked(float damage)
 {
 	//데미지 계산 방식에 따라 수정 필요
 	CurrentHP -= damage;
+	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), CurrentHP);
+
 	//체력이 0이하일 경우 죽음
 	if (CurrentHP <= 0.0f)
 	{

@@ -2,6 +2,9 @@
 
 
 #include "Projectile_Beta.h"
+#include "Enemy1AIController.h"
+#include "GameFramework/Character.h"
+#include "AIController.h"
 
 // Sets default values
 AProjectile_Beta::AProjectile_Beta()
@@ -112,6 +115,7 @@ void AProjectile_Beta::WeaponHitEffect()
 
 void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+    /*
     if (OtherActor != nullptr && OtherActor != this && OtherComponent != nullptr)
     {
         // 충돌한 오브젝트가 AEnemy 클래스인지 확인
@@ -136,8 +140,7 @@ void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
             WeaponHitEffect();
         }
     }
-
-    
+    */
 }
 
 void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -145,24 +148,19 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
     if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
     {
         //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
-        // 충돌한 오브젝트가 AEnemy 클래스인지 확인
-        if (OtherActor->GetClass()->IsChildOf(AEnemy::StaticClass()))
+        // 충돌한 오브젝트가 ACharacter 클래스인지 확인(적이 캐릭터 클래스이기 때문)
+        if (OtherActor && OtherActor->IsA<ACharacter>())
         {
-            // AEnemy로 캐스팅
-            AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
+            // ACharacter로 캐스팅
+            ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
             if (HitEnemy)
             {
-                // 체력감소
-                HitEnemy->Health -= ProjectileDamage;
-
-                // 적처치
-                if (HitEnemy->Health <= 0.0f)
+                //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
+                AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
+                if (HitEnemyController)
                 {
-                    HitEnemy->Destroy();
+                    HitEnemyController->Attacked(ProjectileDamage);
                 }
-
-                // 체력 감소 결과를 화면에 출력
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Hit enemy's remaining health: %f"), HitEnemy->Health));
             }
             WeaponHitEffect();
         }
