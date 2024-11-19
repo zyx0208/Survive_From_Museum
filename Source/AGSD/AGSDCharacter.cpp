@@ -468,5 +468,6 @@ void AAGSDCharacter::Attacked(float Damage)
 {
 	CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
+	UpdateHealthBar();
 }
 
