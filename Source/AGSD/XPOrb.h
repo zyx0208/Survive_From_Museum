@@ -18,16 +18,31 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 	// 구슬의 충돌을 감지하는 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class USphereComponent* SphereComponent;
+
+	// 구체 오브젝트 (XPOrb)
+	UPROPERTY(VisibleAnywhere, Category = "Visual")
+	class UStaticMeshComponent* OrbMesh;
+
 	// 충돌 이벤트 함수
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	// 경험치량 설정 함수
+	void SetRandomXP();
+	// 크기 조절 함수
+	void AdjustScaleBasedOnXP();
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XP", meta = (AllowPrivateAccess = "true"))
+	int32 XPValue;
 
 };
