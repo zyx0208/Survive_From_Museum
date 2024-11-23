@@ -341,7 +341,7 @@ void AAGSDCharacter::LevelUp()
 
 	// 현재 XP를 리셋하고, 다음 레벨로 가기 위한 XP 임계값 증가
 	CurrentXP -= XPToNextLevel;
-	XPToNextLevel = XPToNextLevel * 1.5; // 예: 다음 레벨로 가기 위한 경험치 50% 증가
+	XPToNextLevel = XPToNextLevel * 1.2; // 예: 다음 레벨로 가기 위한 경험치 20% 증가
 
 	// 선택 사항: 레벨 업을 알리거나 특별한 이벤트를 트리거할 수 있음
 	UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);
@@ -357,16 +357,73 @@ void AAGSDCharacter::ShowLevelUpUI()
 		if (LevelUpWidget)
 		{
 			LevelUpWidget->AddToViewport();
-			// 마우스 입력 활성화 (선택 가능하도록 설정)
-			APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-			if (PlayerController)
-			{
-				FInputModeUIOnly InputMode;
-				InputMode.SetWidgetToFocus(LevelUpWidget->TakeWidget());
-				PlayerController->SetInputMode(InputMode);
-				PlayerController->bShowMouseCursor = true;
-			}
+
+			// 게임 정지
+			PauseGameForLevelUp();
 		}
+	}
+}
+//레벨업시 옵션
+void AAGSDCharacter::ApplyLevelUpOption(int32 OptionIndex)
+{
+	switch (OptionIndex)
+	{
+	case 0:
+		// 현재 체력 모두 회복
+		CurrentHealth = MaxHealth;
+		UE_LOG(LogTemp, Log, TEXT("Option 1: Current Health fully restored. CurrentHealth = %d"), CurrentHealth);
+		break;
+
+	case 1:
+		// 최대 체력 10 증가
+		MaxHealth += 10;
+		CurrentHealth += 10; // 최대 체력 증가 시 증가량 만큼 체력 회복
+		UE_LOG(LogTemp, Log, TEXT("Option 2: Max Health increased. MaxHealth = %d"), MaxHealth);
+		break;
+
+	case 2:
+		// 공격력 1 증가
+		Attack += 1;
+		UE_LOG(LogTemp, Log, TEXT("Option 3: Attack Power increased. AttackPower = %d"), Attack);
+		break;
+
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Invalid OptionIndex: %d"), OptionIndex);
+		break;
+	}
+
+	// 게임 재개
+	ResumeGameAfterLevelUp();
+}
+//레벨업시 게임정지
+void AAGSDCharacter::PauseGameForLevelUp()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController)
+	{
+		PlayerController->SetPause(true);
+		FInputModeUIOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = true;
+	}
+}
+//레벨업 선택 이후 게임 이어하기
+void AAGSDCharacter::ResumeGameAfterLevelUp()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if (PlayerController)
+	{
+		PlayerController->SetPause(false);
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->bShowMouseCursor = false;
+	}
+
+	// UI 제거
+	if (LevelUpWidget)
+	{
+		LevelUpWidget->RemoveFromViewport();
+		LevelUpWidget = nullptr;
 	}
 }
 
