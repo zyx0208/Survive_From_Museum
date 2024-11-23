@@ -93,6 +93,16 @@ AAGSDCharacter::AAGSDCharacter()
 		WeaponDataTableRef = WeaponDataTableFinder.Object;
 	}
 
+	//무기 메쉬 컴포넌트 생성
+	if (!WeaponMeshComponent) {
+		WeaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMeshComponent"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
+		if (WeaponMesh.Succeeded())
+		{
+			WeaponMeshComponent->SetStaticMesh(WeaponMesh.Object);
+		}
+	}
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 10.0f;
@@ -139,6 +149,11 @@ void AAGSDCharacter::BeginPlay()
 			UpdateHealthBar();
 			UpdateXPBar();
 		}
+	}
+
+	if (WeaponMeshComponent)//무기 손에 붙히기
+	{
+		WeaponMeshComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "WeaponSocket");
 	}
 }
 
@@ -382,6 +397,8 @@ void AAGSDCharacter::WeaponSwap() {
 	Numberofprojectile = WeaponData->Inumberofprojectile;
 	ProjectileClass = WeaponData->WeaponProjectile;
 	FireMontage = WeaponData->WeaponAnimationMontage;
+	CurrentWeaponMesh = WeaponData->WeaponMesh;
+	WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }

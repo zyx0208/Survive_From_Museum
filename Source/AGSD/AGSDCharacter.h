@@ -154,6 +154,14 @@ public:
 	//탄환 각도
 	float SpreadAngle;
 
+	//무기 메쉬 컴포넌트
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMeshComponent* WeaponMeshComponent;
+
+	//무기 메쉬
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UStaticMesh* CurrentWeaponMesh;
+
 	//무기 교체
 	UFUNCTION()
 	void WeaponSwap();
