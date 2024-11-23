@@ -45,6 +45,8 @@ AAGSDCharacter::AAGSDCharacter()
 	CurrentXP = 0;             // 초기 경험치
 	XPToNextLevel = 100;       // 첫 번째 레벨 업까지 필요한 경험치
 
+	Attack = 1.0f; //초기 공격력 수정해도 상관없음
+
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
@@ -462,6 +464,7 @@ void AAGSDCharacter::CreateProjectile()
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
 					FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+					Projectile->PlayerAttack = Attack;
 					if (WeaponData)
 					{
 						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정

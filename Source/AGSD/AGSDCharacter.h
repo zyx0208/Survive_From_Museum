@@ -112,6 +112,7 @@ public:
 	int32 MaxHealth;
 	int32 CurrentHealth;
 	int32 Defense;
+	float Attack;
 
 	int32 CharacterLevel;   // 캐릭터 레벨
 	int32 CurrentXP;        // 현재 경험치

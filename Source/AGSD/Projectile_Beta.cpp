@@ -78,6 +78,9 @@ AProjectile_Beta::AProjectile_Beta()
     ProjectileSpeed = 50.0f;
     ProjectileDamage = 1.0f;
     ProjectileRange = 1000.0f;
+
+    // 플레이어 공격력
+    PlayerAttack = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -159,7 +162,7 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
                 AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
                 if (HitEnemyController)
                 {
-                    HitEnemyController->Attacked(ProjectileDamage);
+                    HitEnemyController->Attacked(ProjectileDamage+PlayerAttack);
                 }
             }
             WeaponHitEffect();

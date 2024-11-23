@@ -40,6 +40,9 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	float ProjectileDamage;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	float PlayerAttack;
+
 	// źȯ �浹
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
