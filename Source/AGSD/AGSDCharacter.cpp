@@ -381,6 +381,7 @@ void AAGSDCharacter::WeaponSwap() {
 	FireRate = WeaponData->Frate;
 	Numberofprojectile = WeaponData->Inumberofprojectile;
 	ProjectileClass = WeaponData->WeaponProjectile;
+	FireMontage = WeaponData->WeaponAnimationMontage;
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }

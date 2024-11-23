@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Projectile_Beta.h"
+#include "Animation/AnimMontage.h"
+#include "Components/PoseableMeshComponent.h"
 #include "WeaponDataTableBeta.generated.h"
 
 /**
@@ -34,4 +36,8 @@ public:
 	//무기 탄환
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectile_Beta> WeaponProjectile;
+
+	//무기 공격 모션
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+	UAnimMontage* WeaponAnimationMontage;
 };
