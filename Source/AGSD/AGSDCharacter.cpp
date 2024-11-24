@@ -1,4 +1,4 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AGSDCharacter.h"
 #include "Engine/LocalPlayer.h"
@@ -386,13 +386,13 @@ void AAGSDCharacter::ApplyLevelUpOption(int32 OptionIndex)
 	case 2:
 		// 공격력 1 증가
 		Attack += 1;
-		UE_LOG(LogTemp, Log, TEXT("Option 3: Attack Power increased. AttackPower = %d"), Attack);
+		UE_LOG(LogTemp, Log, TEXT("Option 3: Attack Power increased. AttackPower = %.1f"), Attack);
 		break;
 		
 	case 3:
 		//획득 경험치 50% 증가
 		BounsXPLevel *= 1.5;
-		UE_LOG(LogTemp, Log, TEXT("Option 4: XP add amount = %d"), BounsXPLevel);
+		UE_LOG(LogTemp, Log, TEXT("Option 4: XP add amount = %.1f"), BounsXPLevel);
 		break;
 
 	case 4:
@@ -560,6 +560,39 @@ void AAGSDCharacter::Attacked(float Damage)
 {
 	CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
-	UpdateHealthBar();
+    if (CurrentHealth <= 0)
+    {
+        OnDeath(); // 사망 처리
+    }
+    else
+    {
+        UpdateHealthBar();
+    }
+}
+
+void AAGSDCharacter::OnDeath()
+{
+    // 게임 정지
+    APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+    if (PlayerController)
+    {
+        PlayerController->SetPause(true);
+        FInputModeUIOnly InputMode;
+        PlayerController->SetInputMode(InputMode);
+        PlayerController->bShowMouseCursor = true;
+    }
+
+    // Restart UI 생성
+    if (RestartUIClass)
+    {
+        RestartWidget = CreateWidget<UUserWidget>(GetWorld(), RestartUIClass);
+        if (RestartWidget)
+        {
+            RestartWidget->AddToViewport();
+        }
+    }
+
+    // 로그 출력
+    UE_LOG(LogTemp, Warning, TEXT("Character has died."));
 }
 

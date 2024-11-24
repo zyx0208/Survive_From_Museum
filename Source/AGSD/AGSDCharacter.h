@@ -61,10 +61,10 @@ public:
 	AAGSDCharacter();
 	virtual void Tick(float DeltaTime) override;
 
-	FVector CharacterLocation;//Ä³¸¯ÅÍ À§Ä¡
+	FVector CharacterLocation;//ìºë¦­í„° ìœ„ì¹˜
 
-	FVector TraceHitLocation;  // ¶óÀÎÆ®·¹ÀÌ½º Ãæµ¹ À§Ä¡
-	FVector TraceHitDirection; // ¶óÀÎÆ®·¹ÀÌ½º Ãæµ¹ ¹æÇâ
+	FVector TraceHitLocation;  // ë¼ì¸íŠ¸ë ˆì´ìŠ¤ ì¶©ëŒ ìœ„ì¹˜
+	FVector TraceHitDirection; // ë¼ì¸íŠ¸ë ˆì´ìŠ¤ ì¶©ëŒ ë°©í–¥
 protected:
 
 	/** Called for movement input */
@@ -100,6 +100,12 @@ protected:
 	UPROPERTY()
 	UUserWidget* LevelUpWidget;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> RestartUIClass;
+
+    UPROPERTY()
+    UUserWidget* RestartWidget;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -108,21 +114,21 @@ public:
 
 
 public:
-	//Ä³¸¯ÅÍ ½ºÅÈ
+	//ìºë¦­í„° ìŠ¤íƒ¯
 	int32 MaxHealth;
 	int32 CurrentHealth;
 	int32 Defense;
 	float Attack;
 
-	int32 CharacterLevel;   // Ä³¸¯ÅÍ ·¹º§
-	int32 CurrentXP;        // ÇöÀç °æÇèÄ¡
-	int32 XPToNextLevel;    // ´ÙÀ½ ·¹º§±îÁö ÇÊ¿äÇÑ °æÇèÄ¡
-	float BounsXPLevel;		// ¾÷±×·¹ÀÌµå ¿É¼Ç(È¹µæ °æÇèÄ¡ Áõ°¡ ¿É¼Ç)
+	int32 CharacterLevel;   // ìºë¦­í„° ë ˆë²¨
+	int32 CurrentXP;        // í˜„ì¬ ê²½í—˜ì¹˜
+	int32 XPToNextLevel;    // ë‹¤ìŒ ë ˆë²¨ê¹Œì§€ í•„ìš”í•œ ê²½í—˜ì¹˜
+	float BounsXPLevel;		// ì—…ê·¸ë ˆì´ë“œ ì˜µì…˜(íšë“ ê²½í—˜ì¹˜ ì¦ê°€ ì˜µì…˜)
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
-	void UpdateHealthBar(); //Ã¼·Â¹Ù °»½ÅÇÔ¼ö
+	void UpdateHealthBar(); //ì²´ë ¥ë°” ê°±ì‹ í•¨ìˆ˜
 	UFUNCTION(BlueprintCallable, Category = "UI")
-	void UpdateXPBar(); //°æÇèÄ¡¹Ù °»½ÅÇÔ¼ö
+	void UpdateXPBar(); //ê²½í—˜ì¹˜ë°” ê°±ì‹ í•¨ìˆ˜
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
 	void ApplyLevelUpOption(int32 OptionIndex);
@@ -134,12 +140,16 @@ public:
 	void ResumeGameAfterLevelUp();
 
 	void ShowLevelUpUI();
-	// XP¸¦ Ãß°¡ÇÏ°í ·¹º§ ¾÷À» Ã³¸®ÇÏ´Â ÇÔ¼ö
+	// XPë¥¼ ì¶”ê°€í•˜ê³  ë ˆë²¨ ì—…ì„ ì²˜ë¦¬í•˜ëŠ” í•¨ìˆ˜
 	void AddXP(int32 XPAmount);
 	void LevelUp();
-	void Attacked(float Damage); //µ¥¹ÌÁö¸¦ ¹ŞÀ»¶§ ¹ß»ıÇÏ´Â ÇÔ¼ö
+	void Attacked(float Damage); //ë°ë¯¸ì§€ë¥¼ ë°›ì„ë•Œ ë°œìƒí•˜ëŠ” í•¨ìˆ˜
 
-	//¹«±â ¹ß»ç
+    //ì‚¬ë§ í•¨ìˆ˜
+    UFUNCTION()
+    void OnDeath();
+
+	//ë¬´ê¸° ë°œì‚¬
 	UFUNCTION()
 	void Fire();
 
@@ -152,28 +162,28 @@ public:
 	UFUNCTION()
 	void CreateProjectile();
 
-	//¹«±â °ø°İ¼Óµµ
+	//ë¬´ê¸° ê³µê²©ì†ë„
 	float FireRate;
 
-	//¹«±â Å¸ÀÌ¸Ó
+	//ë¬´ê¸° íƒ€ì´ë¨¸
 	FTimerHandle FireTimerHandle;
 	FTimerHandle FireRateTimerHandle;
 
-	//¹«±â ÅºÈ¯ ¼ıÀÚ
+	//ë¬´ê¸° íƒ„í™˜ ìˆ«ì
 	int Numberofprojectile;
 
-	//ÅºÈ¯ °¢µµ
+	//íƒ„í™˜ ê°ë„
 	float SpreadAngle;
 
-	//¹«±â ¸Ş½¬ ÄÄÆ÷³ÍÆ®
+	//ë¬´ê¸° ë©”ì‰¬ ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* WeaponMeshComponent;
 
-	//¹«±â ¸Ş½¬
+	//ë¬´ê¸° ë©”ì‰¬
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMesh* CurrentWeaponMesh;
 
-	//¹«±â ±³Ã¼
+	//ë¬´ê¸° êµì²´
 	UFUNCTION()
 	void WeaponSwap();
 
@@ -198,7 +208,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<AProjectile_Beta> CurrentProjectile;
 
-	//¾Ö´Ï¸ŞÀÌ¼Ç
+	//ì• ë‹ˆë©”ì´ì…˜
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* FireMontage;
 };
