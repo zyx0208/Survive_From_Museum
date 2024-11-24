@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//대쉬 기능이 있을경우 true로 설정
 	virtual void Attacked(float damage);//플레이어의 공격을 맞았을 경우
 	virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
-	int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
 
 private:
 	ACharacter* PlayerCharacter = NULL; //플레이어 위치 및 방향 정보를 담는 액터 배열
