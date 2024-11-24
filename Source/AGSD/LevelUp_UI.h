@@ -1,0 +1,62 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "LevelUp_UI.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class AGSD_API ULevelUp_UI : public UUserWidget
+{
+	GENERATED_BODY()
+
+protected:
+    // UUserWidget의 NativeConstruct 오버라이드
+    virtual void NativeConstruct() override;
+
+public:
+    // 버튼 위젯 변수
+    UPROPERTY(meta = (BindWidget))
+    class UButton* Option1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* Option2;
+
+    UPROPERTY(meta = (BindWidget))
+    class UButton* Option3;
+
+    // 텍스트 블록 변수
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option1_TextBlock;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option2_TextBlock;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option3_TextBlock;
+
+    // 인덱스와 텍스트 데이터를 관리할 배열
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelUp")
+    TArray<int32> OptionIndices;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelUp")
+    TArray<FText> OptionTexts;
+
+    // 텍스트를 업데이트하는 함수
+    UFUNCTION(BlueprintCallable, Category = "LevelUp")
+    void UpdateOptionTexts();
+
+    // 버튼 클릭 이벤트 처리
+    UFUNCTION()
+    void OnOption1Clicked();
+
+    UFUNCTION()
+    void OnOption2Clicked();
+
+    UFUNCTION()
+    void OnOption3Clicked();
+};

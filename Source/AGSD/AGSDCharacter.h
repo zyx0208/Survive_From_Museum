@@ -117,6 +117,7 @@ public:
 	int32 CharacterLevel;   // 캐릭터 레벨
 	int32 CurrentXP;        // 현재 경험치
 	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
+	float BounsXPLevel;		// 업그레이드 옵션(획득 경험치 증가 옵션)
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateHealthBar(); //체력바 갱신함수

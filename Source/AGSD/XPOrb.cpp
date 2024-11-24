@@ -43,8 +43,20 @@ void AXPOrb::Tick(float DeltaTime)
 }
 void AXPOrb::SetRandomXP()
 {
-    // 경험치량을 5~50 사이의 랜덤 값으로 설정
-    XPValue = FMath::RandRange(5, 50);
+    // 랜덤 값에 따라 경험치 설정 (60%: 2, 30%: 4, 10%: 6)
+    float RandomValue = FMath::FRand(); // 0.0f ~ 1.0f 사이의 랜덤 값
+    if (RandomValue <= 0.6f)
+    {
+        XPValue = 2;
+    }
+    else if (RandomValue <= 0.9f) // 0.6f < RandomValue <= 0.9f
+    {
+        XPValue = 4;
+    }
+    else
+    {
+        XPValue = 6; // 0.9f < RandomValue <= 1.0f
+    }
 }
 
 void AXPOrb::AdjustScaleBasedOnXP()
@@ -52,17 +64,17 @@ void AXPOrb::AdjustScaleBasedOnXP()
     FVector NewScale;
 
     // 경험치량에 따른 크기 조절
-    if (XPValue <= 10)
+    if (XPValue == 2)
     {
-        NewScale = FVector(0.5f); 
+        NewScale = FVector(0.5f);
     }
-    else if (XPValue > 10 && XPValue <= 30)
+    else if (XPValue == 4)
     {
-        NewScale = FVector(1.0f); 
+        NewScale = FVector(1.0f);
     }
-    else
+    else if (XPValue == 6)
     {
-        NewScale = FVector(5.0f); 
+        NewScale = FVector(5.0f);
     }
 
     // OrbMesh에만 크기 적용

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+ï»¿// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AGSDCharacter.h"
 #include "Engine/LocalPlayer.h"
@@ -12,8 +12,8 @@
 #include "InputActionValue.h"
 
 #include "DrawDebugHelpers.h"
-#include "Kismet/KismetSystemLibrary.h" // ¶óÀÎ Æ®·¹ÀÌ½º ÇÔ¼ö »ç¿ëÀ» À§ÇØ ÇÊ¿ä
-#include "Kismet/KismetMathLibrary.h" //´ë½¬ °Å¸® °è»êÀ» À§ÇØ ÇÊ¿ä
+#include "Kismet/KismetSystemLibrary.h" // ë¼ì¸ íŠ¸ë ˆì´ìŠ¤ í•¨ìˆ˜ ì‚¬ìš©ì„ ìœ„í•´ í•„ìš”
+#include "Kismet/KismetMathLibrary.h" //ëŒ€ì‰¬ ê±°ë¦¬ ê³„ì‚°ì„ ìœ„í•´ í•„ìš”
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 
@@ -39,16 +39,18 @@ AAGSDCharacter::AAGSDCharacter()
 {
 	MaxHealth = 100;
 	CurrentHealth = 100;
-	Defense = 10;
+	Defense = 0;
 
-	CharacterLevel = 1;        // Ä³¸¯ÅÍ ÃÊ±â ·¹º§
-	CurrentXP = 0;             // ÃÊ±â °æÇèÄ¡
-	XPToNextLevel = 100;       // Ã¹ ¹øÂ° ·¹º§ ¾÷±îÁö ÇÊ¿äÇÑ °æÇèÄ¡
+	CharacterLevel = 1;        // ìºë¦­í„° ì´ˆê¸° ë ˆë²¨
+	CurrentXP = 0;             // ì´ˆê¸° ê²½í—˜ì¹˜
+	XPToNextLevel = 8;       // ì²« ë²ˆì§¸ ë ˆë²¨ ì—…ê¹Œì§€ í•„ìš”í•œ ê²½í—˜ì¹˜
 
-	Attack = 1.0f; //ÃÊ±â °ø°İ·Â ¼öÁ¤ÇØµµ »ó°ü¾øÀ½
+	BounsXPLevel = 1.0f;		//íšë“ ê²½í—˜ì¹˜ ì¦ê°€
+
+	Attack = 1.0f; //ì´ˆê¸° ê³µê²©ë ¥ ìˆ˜ì •í•´ë„ ìƒê´€ì—†ìŒ
 
 
-	PrimaryActorTick.bCanEverTick = true; // Tick ÇÔ¼ö È°¼ºÈ­
+	PrimaryActorTick.bCanEverTick = true; // Tick í•¨ìˆ˜ í™œì„±í™”
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -76,8 +78,8 @@ AAGSDCharacter::AAGSDCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->bDoCollisionTest = false; // Ä«¸Ş¶ó ºÕ Ãæµ¹ Ã¼Å© ºñÈ°¼ºÈ­ (ÇÊ¿ä ½Ã È°¼ºÈ­ °¡´É)
-	CameraBoom->bUsePawnControlRotation = true; // Ä³¸¯ÅÍÀÇ È¸Àü¿¡ µû¶ó Ä«¸Ş¶ó°¡ È¸ÀüÇÏÁö ¾Êµµ·Ï ¼³Á¤
+	CameraBoom->bDoCollisionTest = false; // ì¹´ë©”ë¼ ë¶ ì¶©ëŒ ì²´í¬ ë¹„í™œì„±í™” (í•„ìš” ì‹œ í™œì„±í™” ê°€ëŠ¥)
+	CameraBoom->bUsePawnControlRotation = true; // ìºë¦­í„°ì˜ íšŒì „ì— ë”°ë¼ ì¹´ë©”ë¼ê°€ íšŒì „í•˜ì§€ ì•Šë„ë¡ ì„¤ì •
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -95,7 +97,7 @@ AAGSDCharacter::AAGSDCharacter()
 		WeaponDataTableRef = WeaponDataTableFinder.Object;
 	}
 
-	//¹«±â ¸Ş½¬ ÄÄÆ÷³ÍÆ® »ı¼º
+	//ë¬´ê¸° ë©”ì‰¬ ì»´í¬ë„ŒíŠ¸ ìƒì„±
 	if (!WeaponMeshComponent) {
 		WeaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMeshComponent"));
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
@@ -118,9 +120,9 @@ void AAGSDCharacter::BeginPlay()
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
-		// ¸¶¿ì½º ÀÔ·Â ¸ğµå ¼³Á¤: °ÔÀÓ ¸ğµå¿¡¼­ ¸¶¿ì½º ÀÔ·ÂÀ» È°¼ºÈ­ÇÏ°í Ä¿¼­ Ç¥½Ã
-		PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()·Î º¯°æÇÏ¿© ¼ø¼ö °ÔÀÓ ¸ğµå·Î ¼³Á¤ °¡´É
-		PlayerController->bShowMouseCursor = false;  // ¸¶¿ì½º Ä¿¼­ Ç¥½Ã
+		// ë§ˆìš°ìŠ¤ ì…ë ¥ ëª¨ë“œ ì„¤ì •: ê²Œì„ ëª¨ë“œì—ì„œ ë§ˆìš°ìŠ¤ ì…ë ¥ì„ í™œì„±í™”í•˜ê³  ì»¤ì„œ í‘œì‹œ
+		PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()ë¡œ ë³€ê²½í•˜ì—¬ ìˆœìˆ˜ ê²Œì„ ëª¨ë“œë¡œ ì„¤ì • ê°€ëŠ¥
+		PlayerController->bShowMouseCursor = false;  // ë§ˆìš°ìŠ¤ ì»¤ì„œ í‘œì‹œ
 
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -133,7 +135,7 @@ void AAGSDCharacter::BeginPlay()
 
 	if (WeaponDataTableRef)
 	{
-		FName RowName = FName(*WeaponID);  // FStringÀ» FNameÀ¸·Î º¯È¯
+		FName RowName = FName(*WeaponID);  // FStringì„ FNameìœ¼ë¡œ ë³€í™˜
 		FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(RowName, TEXT("Weapon Lookup"));
 		if (WeaponData)
 		{
@@ -142,7 +144,7 @@ void AAGSDCharacter::BeginPlay()
 		}
 	}
 
-	if (HealthBarUIBPClass) //Ã¼·Â¹Ù »ı¼º
+	if (HealthBarUIBPClass) //ì²´ë ¥ë°” ìƒì„±
 	{
 		HealthBarWidget = CreateWidget<UUserWidget>(GetWorld(), HealthBarUIBPClass);
 		if (HealthBarWidget)
@@ -153,7 +155,7 @@ void AAGSDCharacter::BeginPlay()
 		}
 	}
 
-	if (WeaponMeshComponent)//¹«±â ¼Õ¿¡ ºÙÈ÷±â
+	if (WeaponMeshComponent)//ë¬´ê¸° ì†ì— ë¶™íˆê¸°
 	{
 		WeaponMeshComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "WeaponSocket");
 	}
@@ -163,39 +165,39 @@ void AAGSDCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ¸¶¿ì½º À§Ä¡ÀÇ ¿ùµå ÁÂÇ¥¸¦ ±¸ÇÔ
+	// ë§ˆìš°ìŠ¤ ìœ„ì¹˜ì˜ ì›”ë“œ ì¢Œí‘œë¥¼ êµ¬í•¨
 	FVector MouseLocation, MouseDirection;
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
 	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
 	{
-		// Ä³¸¯ÅÍÀÇ À§Ä¡¸¦ °¡Á®¿È
+		// ìºë¦­í„°ì˜ ìœ„ì¹˜ë¥¼ ê°€ì ¸ì˜´
 		CharacterLocation = GetActorLocation();
 
-		// ¸¶¿ì½º À§Ä¡·ÎºÎÅÍ ¾Æ·¡ ¹æÇâÀ¸·Î ¶óÀÎ Æ®·¹ÀÌ½º¸¦ ½î¾Æ ¹Ù´Ú°úÀÇ Ãæµ¹ ÁöÁ¡À» Ã£À½
+		// ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¡œë¶€í„° ì•„ë˜ ë°©í–¥ìœ¼ë¡œ ë¼ì¸ íŠ¸ë ˆì´ìŠ¤ë¥¼ ì˜ì•„ ë°”ë‹¥ê³¼ì˜ ì¶©ëŒ ì§€ì ì„ ì°¾ìŒ
 		FHitResult HitResult;
-		FVector TraceStart = MouseLocation; // ¸¶¿ì½º À§Ä¡¸¦ ½ÃÀÛÁ¡À¸·Î ¼³Á¤
-		FVector TraceEnd = TraceStart + (MouseDirection * 10000.0f); // ¸¶¿ì½º ¹æÇâÀ¸·Î ¸Õ °Å¸®±îÁö ¶óÀÎ Æ®·¹ÀÌ½º
+		FVector TraceStart = MouseLocation; // ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¥¼ ì‹œì‘ì ìœ¼ë¡œ ì„¤ì •
+		FVector TraceEnd = TraceStart + (MouseDirection * 10000.0f); // ë§ˆìš°ìŠ¤ ë°©í–¥ìœ¼ë¡œ ë¨¼ ê±°ë¦¬ê¹Œì§€ ë¼ì¸ íŠ¸ë ˆì´ìŠ¤
 
-		// ¶óÀÎ Æ®·¹ÀÌ½º Ã¤³Î ¼³Á¤ (¹Ù´Ú°ú Ãæµ¹ÇÏ±â À§ÇÑ Ã¤³Î ¼³Á¤, ±âº»ÀûÀ¸·Î ECC_Visibility »ç¿ë)
+		// ë¼ì¸ íŠ¸ë ˆì´ìŠ¤ ì±„ë„ ì„¤ì • (ë°”ë‹¥ê³¼ ì¶©ëŒí•˜ê¸° ìœ„í•œ ì±„ë„ ì„¤ì •, ê¸°ë³¸ì ìœ¼ë¡œ ECC_Visibility ì‚¬ìš©)
 		FCollisionQueryParams Params;
-		Params.AddIgnoredActor(this); // ÀÚ±â ÀÚ½Å°úÀÇ Ãæµ¹ ¹«½Ã
+		Params.AddIgnoredActor(this); // ìê¸° ìì‹ ê³¼ì˜ ì¶©ëŒ ë¬´ì‹œ
 
-		// ¶óÀÎ Æ®·¹ÀÌ½º¸¦ ¼öÇàÇÏ¿© ¹Ù´Ú°ú Ãæµ¹ ÁöÁ¡ Ã£±â
+		// ë¼ì¸ íŠ¸ë ˆì´ìŠ¤ë¥¼ ìˆ˜í–‰í•˜ì—¬ ë°”ë‹¥ê³¼ ì¶©ëŒ ì§€ì  ì°¾ê¸°
 		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, Params);
 
 		if (bHit)
 		{
-			// Ãæµ¹µÈ ÁöÁ¡ÀÇ Z ÁÂÇ¥¸¦ »ç¿ëÇÏ¿© ¸¶¿ì½º À§Ä¡¸¦ Á¶Á¤
+			// ì¶©ëŒëœ ì§€ì ì˜ Z ì¢Œí‘œë¥¼ ì‚¬ìš©í•˜ì—¬ ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¥¼ ì¡°ì •
 			FVector AdjustedMouseLocation = HitResult.Location;
 
-			// Ä³¸¯ÅÍ¿Í ¸¶¿ì½º »çÀÌÀÇ ¼±À» µğ¹ö±× ¼±À¸·Î ±×¸®±â
+			// ìºë¦­í„°ì™€ ë§ˆìš°ìŠ¤ ì‚¬ì´ì˜ ì„ ì„ ë””ë²„ê·¸ ì„ ìœ¼ë¡œ ê·¸ë¦¬ê¸°
 			DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
 
-			//¶óÀÎÆ®·¹ÀÌ½º À§Ä¡¿Í ¹æÇâ ÀúÀå
+			//ë¼ì¸íŠ¸ë ˆì´ìŠ¤ ìœ„ì¹˜ì™€ ë°©í–¥ ì €ì¥
 			TraceHitLocation = HitResult.Location;
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
-			// ·Î±×·Î Ãæµ¹µÈ À§Ä¡ Ãâ·Â (µğ¹ö±ë ¿ëµµ)
+			// ë¡œê·¸ë¡œ ì¶©ëŒëœ ìœ„ì¹˜ ì¶œë ¥ (ë””ë²„ê¹… ìš©ë„)
 			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
 			
 		}
@@ -278,22 +280,22 @@ void AAGSDCharacter::Dash()
 {
 	if (CharacterMovementComponent && Controller)
 	{
-		// ÇöÀç ÀÌµ¿ ¹æÇâÀ¸·Î ´ë½ÃÇÏµµ·Ï ¼³Á¤
+		// í˜„ì¬ ì´ë™ ë°©í–¥ìœ¼ë¡œ ëŒ€ì‹œí•˜ë„ë¡ ì„¤ì •
 		FVector CurrentVelocity = GetVelocity();
 		FVector DashDirection = CurrentVelocity.GetSafeNormal();
 		if (DashDirection.IsNearlyZero())
 		{
-			// ÀÌµ¿ ÁßÀÌ ¾Æ´Ò ¶§´Â Ä³¸¯ÅÍ°¡ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î ´ë½Ã
+			// ì´ë™ ì¤‘ì´ ì•„ë‹ ë•ŒëŠ” ìºë¦­í„°ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ ëŒ€ì‹œ
 			FRotator ControlRotation = Controller->GetControlRotation();
 			DashDirection = UKismetMathLibrary::GetForwardVector(ControlRotation);
 		}
-		FVector DashVector = DashDirection * 1500.f; //´ë½¬ °Å¸®
+		FVector DashVector = DashDirection * 1500.f; //ëŒ€ì‰¬ ê±°ë¦¬
 
-		// Ä³¸¯ÅÍ¸¦ ´ë½¬ º¤ÅÍ¸¸Å­ ÀÌµ¿
+		// ìºë¦­í„°ë¥¼ ëŒ€ì‰¬ ë²¡í„°ë§Œí¼ ì´ë™
 		LaunchCharacter(DashVector, true, true);
 	}
 }
-//Ã¼·Â¹Ù °»½Å ÇÔ¼ö
+//ì²´ë ¥ë°” ê°±ì‹  í•¨ìˆ˜
 void AAGSDCharacter::UpdateHealthBar()
 {
 	if (HealthBarWidget)
@@ -322,10 +324,10 @@ void AAGSDCharacter::UpdateXPBar()
 void AAGSDCharacter::AddXP(int32 XPAmount)
 {
 	
-	CurrentXP += XPAmount; // ÁÖ¾îÁø XP¸¦ ÇöÀç °æÇèÄ¡¿¡ ´õÇÔ
+	CurrentXP += XPAmount; // ì£¼ì–´ì§„ XPë¥¼ í˜„ì¬ ê²½í—˜ì¹˜ì— ë”í•¨
 	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
 	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
-	// Ä³¸¯ÅÍ°¡ ÃæºĞÇÑ XP¸¦ ¸ğ¾Ò´ÂÁö È®ÀÎÇÏ¿© ·¹º§ ¾÷ Ã³¸®
+	// ìºë¦­í„°ê°€ ì¶©ë¶„í•œ XPë¥¼ ëª¨ì•˜ëŠ”ì§€ í™•ì¸í•˜ì—¬ ë ˆë²¨ ì—… ì²˜ë¦¬
 	if (CurrentXP >= XPToNextLevel)
 	{
 		ShowLevelUpUI();
@@ -336,17 +338,17 @@ void AAGSDCharacter::AddXP(int32 XPAmount)
 
 void AAGSDCharacter::LevelUp()
 {
-	// Ä³¸¯ÅÍ ·¹º§ Áõ°¡
+	// ìºë¦­í„° ë ˆë²¨ ì¦ê°€
 	CharacterLevel++;
 
-	// ÇöÀç XP¸¦ ¸®¼ÂÇÏ°í, ´ÙÀ½ ·¹º§·Î °¡±â À§ÇÑ XP ÀÓ°è°ª Áõ°¡
+	// í˜„ì¬ XPë¥¼ ë¦¬ì…‹í•˜ê³ , ë‹¤ìŒ ë ˆë²¨ë¡œ ê°€ê¸° ìœ„í•œ XP ì„ê³„ê°’ ì¦ê°€
 	CurrentXP -= XPToNextLevel;
-	XPToNextLevel = XPToNextLevel * 1.2; // ¿¹: ´ÙÀ½ ·¹º§·Î °¡±â À§ÇÑ °æÇèÄ¡ 20% Áõ°¡
+	XPToNextLevel = XPToNextLevel * 1.5; // ì˜ˆ: ë‹¤ìŒ ë ˆë²¨ë¡œ ê°€ê¸° ìœ„í•œ ê²½í—˜ì¹˜ 50% ì¦ê°€
 
-	// ¼±ÅÃ »çÇ×: ·¹º§ ¾÷À» ¾Ë¸®°Å³ª Æ¯º°ÇÑ ÀÌº¥Æ®¸¦ Æ®¸®°ÅÇÒ ¼ö ÀÖÀ½
-	UE_LOG(LogTemp, Log, TEXT("·¹º§ ¾÷! »õ·Î¿î ·¹º§: %d"), CharacterLevel);
+	// ì„ íƒ ì‚¬í•­: ë ˆë²¨ ì—…ì„ ì•Œë¦¬ê±°ë‚˜ íŠ¹ë³„í•œ ì´ë²¤íŠ¸ë¥¼ íŠ¸ë¦¬ê±°í•  ìˆ˜ ìˆìŒ
+	UE_LOG(LogTemp, Log, TEXT("ë ˆë²¨ ì—…! ìƒˆë¡œìš´ ë ˆë²¨: %d"), CharacterLevel);
 
-	// ·¹º§ ¾÷ ½Ã ´É·ÂÄ¡ Áõ°¡³ª »õ·Î¿î ´É·Â ÇØÁ¦ µîÀÇ Ãß°¡ µ¿ÀÛÀ» ±¸ÇöÇÒ ¼ö ÀÖÀ½
+	// ë ˆë²¨ ì—… ì‹œ ëŠ¥ë ¥ì¹˜ ì¦ê°€ë‚˜ ìƒˆë¡œìš´ ëŠ¥ë ¥ í•´ì œ ë“±ì˜ ì¶”ê°€ ë™ì‘ì„ êµ¬í˜„í•  ìˆ˜ ìˆìŒ
 }
 
 void AAGSDCharacter::ShowLevelUpUI()
@@ -358,33 +360,45 @@ void AAGSDCharacter::ShowLevelUpUI()
 		{
 			LevelUpWidget->AddToViewport();
 
-			// °ÔÀÓ Á¤Áö
+			// ê²Œì„ ì •ì§€
 			PauseGameForLevelUp();
 		}
 	}
 }
-//·¹º§¾÷½Ã ¿É¼Ç
+//ë ˆë²¨ì—…ì‹œ ì˜µì…˜
 void AAGSDCharacter::ApplyLevelUpOption(int32 OptionIndex)
 {
 	switch (OptionIndex)
 	{
 	case 0:
-		// ÇöÀç Ã¼·Â ¸ğµÎ È¸º¹
+		// í˜„ì¬ ì²´ë ¥ ëª¨ë‘ íšŒë³µ
 		CurrentHealth = MaxHealth;
 		UE_LOG(LogTemp, Log, TEXT("Option 1: Current Health fully restored. CurrentHealth = %d"), CurrentHealth);
 		break;
 
 	case 1:
-		// ÃÖ´ë Ã¼·Â 10 Áõ°¡
-		MaxHealth += 10;
-		CurrentHealth += 10; // ÃÖ´ë Ã¼·Â Áõ°¡ ½Ã Áõ°¡·® ¸¸Å­ Ã¼·Â È¸º¹
+		// ìµœëŒ€ ì²´ë ¥ 20 ì¦ê°€
+		MaxHealth += 20;
+		CurrentHealth += 20; // ìµœëŒ€ ì²´ë ¥ ì¦ê°€ ì‹œ ì¦ê°€ëŸ‰ ë§Œí¼ ì²´ë ¥ íšŒë³µ
 		UE_LOG(LogTemp, Log, TEXT("Option 2: Max Health increased. MaxHealth = %d"), MaxHealth);
 		break;
 
 	case 2:
-		// °ø°İ·Â 1 Áõ°¡
+		// ê³µê²©ë ¥ 1 ì¦ê°€
 		Attack += 1;
 		UE_LOG(LogTemp, Log, TEXT("Option 3: Attack Power increased. AttackPower = %d"), Attack);
+		break;
+		
+	case 3:
+		//íšë“ ê²½í—˜ì¹˜ 50% ì¦ê°€
+		BounsXPLevel *= 1.5;
+		UE_LOG(LogTemp, Log, TEXT("Option 4: XP add amount = %d"), BounsXPLevel);
+		break;
+
+	case 4:
+		//ë°©ì–´ë ¥ 10% ì¦ê°€
+		Defense += 10;
+		UE_LOG(LogTemp, Log, TEXT("Option 5: Defense = %d"), Defense);
 		break;
 
 	default:
@@ -392,10 +406,10 @@ void AAGSDCharacter::ApplyLevelUpOption(int32 OptionIndex)
 		break;
 	}
 
-	// °ÔÀÓ Àç°³
+	// ê²Œì„ ì¬ê°œ
 	ResumeGameAfterLevelUp();
 }
-//·¹º§¾÷½Ã °ÔÀÓÁ¤Áö
+//ë ˆë²¨ì—…ì‹œ ê²Œì„ì •ì§€
 void AAGSDCharacter::PauseGameForLevelUp()
 {
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -407,7 +421,7 @@ void AAGSDCharacter::PauseGameForLevelUp()
 		PlayerController->bShowMouseCursor = true;
 	}
 }
-//·¹º§¾÷ ¼±ÅÃ ÀÌÈÄ °ÔÀÓ ÀÌ¾îÇÏ±â
+//ë ˆë²¨ì—… ì„ íƒ ì´í›„ ê²Œì„ ì´ì–´í•˜ê¸°
 void AAGSDCharacter::ResumeGameAfterLevelUp()
 {
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -419,7 +433,7 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 		PlayerController->bShowMouseCursor = false;
 	}
 
-	// UI Á¦°Å
+	// UI ì œê±°
 	if (LevelUpWidget)
 	{
 		LevelUpWidget->RemoveFromViewport();
@@ -429,7 +443,7 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 
 void AAGSDCharacter::Fire()
 {
-	//°ø°İ¼Óµµ Á¦ÇÑ
+	//ê³µê²©ì†ë„ ì œí•œ
 	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
 		return;
 	}
@@ -480,27 +494,27 @@ void AAGSDCharacter::StopFiring()
 
 void AAGSDCharacter::CreateProjectile()
 {
-	// ¹ß»ç
+	// ë°œì‚¬
 	if (ProjectileClass)
 	{
 
 
-		// ÃÑ±¸ À§Ä¡
+		// ì´êµ¬ ìœ„ì¹˜
 		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
 
-		// ÃÑ±¸ ¹æÇâ
+		// ì´êµ¬ ë°©í–¥
 		FRotator MuzzleRotation = TraceHitDirection.Rotation();
 		MuzzleRotation.Pitch = 0;
 		MuzzleRotation.Roll = 0;
 
-		// ÃÑ±¸À§Ä¡ ¼³Á¤
+		// ì´êµ¬ìœ„ì¹˜ ì„¤ì •
 		MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
 		MuzzleLocation.Z = 90;
 		//MuzzleLocation.Normalize();
 
 		MuzzleRotation.Pitch += 0.0f;
 
-		// ÅºÈ¯ »ı¼º
+		// íƒ„í™˜ ìƒì„±
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -508,10 +522,10 @@ void AAGSDCharacter::CreateProjectile()
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
 
-			//ÅºÈ¯¼ıÀÚ¸¸Å­ ¹ß»ç¹İº¹
+			//íƒ„í™˜ìˆ«ìë§Œí¼ ë°œì‚¬ë°˜ë³µ
 			for (int i = 0; i < Numberofprojectile; i++) {
 
-				// ÃÑ±¸¿¡ ÅºÈ¯ »ı¼º.
+				// ì´êµ¬ì— íƒ„í™˜ ìƒì„±.
 				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
 				//AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 				AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
@@ -524,10 +538,10 @@ void AAGSDCharacter::CreateProjectile()
 					Projectile->PlayerAttack = Attack;
 					if (WeaponData)
 					{
-						//ÅºÈ¯¿¡¼­ ¸Ş½¬,¸¶Å×¸®¾ó,µ¥¹ÌÁö,¼Óµµ,»ç°Å¸® ¼³Á¤
+						//íƒ„í™˜ì—ì„œ ë©”ì‰¬,ë§ˆí…Œë¦¬ì–¼,ë°ë¯¸ì§€,ì†ë„,ì‚¬ê±°ë¦¬ ì„¤ì •
 						//Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
 						//Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
-						// ÅºÈ¯ ¹æÇâ¼³Á¤
+						// íƒ„í™˜ ë°©í–¥ì„¤ì •
 						FVector LaunchDirection = AdjustedRotation.Vector();
 						Projectile->FireInDirection(LaunchDirection);
 					}
