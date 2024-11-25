@@ -14,6 +14,8 @@
 #include "Animation/AnimMontage.h"
 #include "Components/PoseableMeshComponent.h"
 
+#include "SubWeapon.h"
+
 #include "AGSDCharacter.generated.h"
 
 class USpringArmComponent;
@@ -211,5 +213,25 @@ public:
 	//애니메이션
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* FireMontage;
+
+    //보조무기 추가용
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    ASubWeapon* SubWeaponSlot;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<ASubWeapon> SubWeaponSelector;
+
+    //보유한 보조무기들
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TArray<ASubWeapon*> SubWeapons;
+
+    //보조무기 생성
+    UFUNCTION()
+    void SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon);
+
+    //디버그
+    UFUNCTION()
+    void Debug();
+
 };
 

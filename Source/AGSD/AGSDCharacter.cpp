@@ -233,6 +233,9 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAGSDCharacter::StartFiring);
 		PlayerInputComponent->BindAction("Fire", IE_Released, this, &AAGSDCharacter::StopFiring);
 		PlayerInputComponent->BindAction("WeaponSwap", IE_Pressed, this, &AAGSDCharacter::WeaponSwap);
+
+        //디버그용 버튼
+        PlayerInputComponent->BindAction("Debug", IE_Pressed, this, &AAGSDCharacter::Debug);
 	}
 	else
 	{
@@ -474,6 +477,42 @@ void AAGSDCharacter::WeaponSwap() {
 	WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
+}
+void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
+{
+    if (SubWeapon == nullptr) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Not Found SubWeapon")));
+        return;
+    }
+
+    FVector SpawnLocation = GetActorLocation();
+    FRotator SpawnRotation = GetActorRotation();
+
+    ASubWeapon* NewSubWeapon = GetWorld()->SpawnActor<ASubWeapon>(SubWeapon, SpawnLocation, SpawnRotation);
+    if (NewSubWeapon)
+    {
+        USkeletalMeshComponent* MeshComp = GetMesh();
+        if (MeshComp) {
+            NewSubWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("SubWeaponSocket")));
+            SubWeapons.Add(NewSubWeapon);
+        }
+    }
+    else {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Not Found SubWeapon")));
+    }
+}
+void AAGSDCharacter::Debug()
+{
+
+    if (GetMesh()->DoesSocketExist(FName(TEXT("SubWeaponSocket"))))
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Socket exists!"));
+    }
+    else
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Socket does not exist!"));
+    }
+    SpawnSubWeapon(SubWeaponSelector);
 }
 void AAGSDCharacter::StartFiring()
 {
