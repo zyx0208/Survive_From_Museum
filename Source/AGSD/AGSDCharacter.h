@@ -199,7 +199,7 @@ public:
 	FVector MuzzleLocation;
 
 	UPROPERTY()
-	FString WeaponID;
+	FString WeaponID = "0";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTable;
@@ -228,6 +228,18 @@ public:
     //보조무기 생성
     UFUNCTION()
     void SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon);
+
+    //보유한 주무기 배열
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TArray<int> WeaponArray;
+
+    //현재 든 무기 슬롯
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool CurrentWeaponSlot = true;
+
+    //무기 들기
+    UFUNCTION()
+    void WeaponTake();
 
     //디버그
     UFUNCTION()

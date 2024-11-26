@@ -159,6 +159,11 @@ void AAGSDCharacter::BeginPlay()
 	{
 		WeaponMeshComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "WeaponSocket");
 	}
+
+    if (WeaponArray.Num()>1) {
+        WeaponID = FString::FromInt(WeaponArray[0]);
+        WeaponTake();
+    }
 }
 
 void AAGSDCharacter::Tick(float DeltaTime)
@@ -461,13 +466,18 @@ void AAGSDCharacter::Fire()
 }
 
 void AAGSDCharacter::WeaponSwap() {
-	if (WeaponID == "0") {
-		WeaponID = "2";
+	if (CurrentWeaponSlot) {
+        WeaponID = FString::FromInt(WeaponArray[1]);
+        WeaponTake();
+        CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
 	else
 	{
-		WeaponID = "0";
+        WeaponID = FString::FromInt(WeaponArray[0]);
+        WeaponTake();
+        CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
+    /*
 	FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
 	FireRate = WeaponData->Frate;
 	Numberofprojectile = WeaponData->Inumberofprojectile;
@@ -476,7 +486,7 @@ void AAGSDCharacter::WeaponSwap() {
 	CurrentWeaponMesh = WeaponData->WeaponMesh;
 	WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));*/
 }
 void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
 {
@@ -500,6 +510,18 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
     else {
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Not Found SubWeapon")));
     }
+}
+void AAGSDCharacter::WeaponTake()
+{
+    FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+    FireRate = WeaponData->Frate;
+    Numberofprojectile = WeaponData->Inumberofprojectile;
+    ProjectileClass = WeaponData->WeaponProjectile;
+    FireMontage = WeaponData->WeaponAnimationMontage;
+    CurrentWeaponMesh = WeaponData->WeaponMesh;
+    WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }
 void AAGSDCharacter::Debug()
 {
