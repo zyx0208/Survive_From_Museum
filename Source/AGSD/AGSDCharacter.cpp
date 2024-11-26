@@ -27,6 +27,7 @@
 #include "WeaponDataTableBeta.h"
 #include "UObject/ConstructorHelpers.h"
 
+#include "WeaponDrop.h"
 
 
 
@@ -54,6 +55,9 @@ AAGSDCharacter::AAGSDCharacter()
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+    GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAGSDCharacter::OnOverlapBegin);
+    GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAGSDCharacter::OnComponentEndOverlap);
+
 		
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -239,6 +243,8 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		PlayerInputComponent->BindAction("Fire", IE_Released, this, &AAGSDCharacter::StopFiring);
 		PlayerInputComponent->BindAction("WeaponSwap", IE_Pressed, this, &AAGSDCharacter::WeaponSwap);
 
+        // 드랍된 무기와 현재 무기 교체
+        PlayerInputComponent->BindAction("GetWeapon", IE_Pressed, this, &AAGSDCharacter::GetWeapon);
         //디버그용 버튼
         PlayerInputComponent->BindAction("Debug", IE_Pressed, this, &AAGSDCharacter::Debug);
 	}
@@ -535,6 +541,64 @@ void AAGSDCharacter::Debug()
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Socket does not exist!"));
     }
     SpawnSubWeapon(SubWeaponSelector);
+}
+void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+    {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
+        // 충돌한 오브젝트가 WeaponDrop임을 확인
+        if (OtherActor && OtherActor->IsA<AWeaponDrop>())
+        {
+            OverlapDropWeapon = true;
+            // ACharacter로 캐스팅
+            AWeaponDrop* OverlapWeaponDrop = Cast<AWeaponDrop>(OtherActor);
+            if (OverlapWeaponDrop)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Overlap Weapon: %s"), *OverlapWeaponDrop->WeaponID));
+                OverlapID = *OverlapWeaponDrop->WeaponID;
+            }
+        }
+    }
+}
+
+void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+    {
+        // 충돌한 오브젝트가 WeaponDrop임을 확인
+        if (OtherActor && OtherActor->IsA<AWeaponDrop>())
+        {
+            OverlapDropWeapon = false;
+        }
+    }
+}
+
+bool AAGSDCharacter::IsOverlappingActor(const AActor* Other) const
+{
+    return false;
+}
+
+void AAGSDCharacter::GetWeapon()
+{
+    if (OverlapDropWeapon) {
+        if (CurrentWeaponSlot) {
+            int32 MyInt = FCString::Atoi(*OverlapID);
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MyInt: %d"),MyInt));
+            WeaponArray[0] = MyInt;
+            WeaponID = FString::FromInt(WeaponArray[0]);
+        }
+        else {
+            int32 MyInt = FCString::Atoi(*OverlapID);
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MyInt: %d"), MyInt));
+            WeaponArray[1] = MyInt;
+            WeaponID = FString::FromInt(WeaponArray[1]);
+        }
+        WeaponTake();
+    }
+    else {
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Not Ovelap WeaponDrop")));
+    }
 }
 void AAGSDCharacter::StartFiring()
 {

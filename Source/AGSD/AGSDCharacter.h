@@ -241,9 +241,31 @@ public:
     UFUNCTION()
     void WeaponTake();
 
+    //드랍된 무기와 들고 있는 무기 교체
+    UFUNCTION()
+    void GetWeapon();
+
+    //현재 오버랩된 드랍된 무기 ID
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString OverlapID = "0";
+
+    //현재 무기와 오버랩 되었는지 확인
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool OverlapDropWeapon = false;
+
     //디버그
     UFUNCTION()
     void Debug();
+    
+    //오버랩
+    UFUNCTION()
+    void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+    //오버랩 종료
+    UFUNCTION()
+    void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex);
+
+    //오버랩 확인
+    bool IsOverlappingActor(const AActor* Other) const;
 };
 
