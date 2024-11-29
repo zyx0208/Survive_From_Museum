@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 /*
-¡Ø AI ¼³Á¤ ¹æ¹ı ¡Ø
-1. ¿øÇÏ´Â Ä³¸¯ÅÍ Å¬·¡½º ¶Ç´Â Æù Å¬·¡½º¸¦ »ó¼Ó¹ŞÀº ºí·çÇÁ¸°Æ®¸¦ »ı¼º
-2. ºí·çÇÁ¸°Æ® Ã¢À» ¿­°í Å¬·¡½º µğÆúÆ® Ã¢À» ¿­±â
-3. [µğÅ×ÀÏ - Æù - AI ÄÁÆ®·Ñ·¯ Å¬·¡½º]¿¡ ÇØ´ç ÆÄÀÏÀ» Àû¿ë
-4. ¿øÇÏ´Â AI ÀÎ½Ä ¹üÀ§¸¦ [¾×ÅÍ ¹èÄ¡ - º¼·ı - ³»ºñ ¸Ş½Ã ¹Ù¿îµå º¼·ı]À» ÅëÇØ ÁöÁ¤
-5. ÇØ´ç ¹üÀ§¿¡ 1¹ø¿¡¼­ ¸¸µç Ä³¸¯ÅÍ¸¦ ¹èÄ¡ÇÏ¸é ¾Æ·¡ÀÇ ÄÚµå¸¦ µû¶ó ÀûÀ» ÃßÀûÇÔ
+â€» AI ì„¤ì • ë°©ë²• â€»
+1. ì›í•˜ëŠ” ìºë¦­í„° í´ë˜ìŠ¤ ë˜ëŠ” í° í´ë˜ìŠ¤ë¥¼ ìƒì†ë°›ì€ ë¸”ë£¨í”„ë¦°íŠ¸ë¥¼ ìƒì„±
+2. ë¸”ë£¨í”„ë¦°íŠ¸ ì°½ì„ ì—´ê³  í´ë˜ìŠ¤ ë””í´íŠ¸ ì°½ì„ ì—´ê¸°
+3. [ë””í…Œì¼ - í° - AI ì»¨íŠ¸ë¡¤ëŸ¬ í´ë˜ìŠ¤]ì— í•´ë‹¹ íŒŒì¼ì„ ì ìš©
+4. ì›í•˜ëŠ” AI ì¸ì‹ ë²”ìœ„ë¥¼ [ì•¡í„° ë°°ì¹˜ - ë³¼ë¥¨ - ë‚´ë¹„ ë©”ì‹œ ë°”ìš´ë“œ ë³¼ë¥¨]ì„ í†µí•´ ì§€ì •
+5. í•´ë‹¹ ë²”ìœ„ì— 1ë²ˆì—ì„œ ë§Œë“  ìºë¦­í„°ë¥¼ ë°°ì¹˜í•˜ë©´ ì•„ë˜ì˜ ì½”ë“œë¥¼ ë”°ë¼ ì ì„ ì¶”ì í•¨
 */
 
 #include "Enemy1AIController.h"
-#include "Kismet/GameplayStatics.h"// ·¹º§¿¡¼­ ¾×ÅÍ¸¦ ºÒ·¯¿À±â À§ÇÑ ÇÔ¼ö¸¦ °¡Áø Çì´õÆÄÀÏ
-#include "GameFramework/Character.h"//·¹º§¿¡ µîÀåÇÏ´Â ¾×ÅÍÀÇ ¹æÇâÀÌ³ª ÀÌµ¿À» Á¶ÀıÇÏ±â À§ÇÑ ÇÔ¼ö¸¦ °¡Áø Çì´õÆÄÀÏ
-#include "GameFramework/CharacterMovementComponent.h"//Ä³¸¯ÅÍÀÇ ¿òÁ÷ÀÓÀ» Á¦¾îÇÏ´Â ÇÔ¼ö¸¦ ÂüÁ¶ÇÏ±â À§ÇÑ Çì´õÆÄÀÏ
-#include "DrawDebugHelpers.h"//¹üÀ§ ½Ã°¢È­¸¦ À§ÇÑ Çì´õÆÄÀÏ
+#include "Kismet/GameplayStatics.h"// ë ˆë²¨ì—ì„œ ì•¡í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ê¸° ìœ„í•œ í•¨ìˆ˜ë¥¼ ê°€ì§„ í—¤ë”íŒŒì¼
+#include "GameFramework/Character.h"//ë ˆë²¨ì— ë“±ì¥í•˜ëŠ” ì•¡í„°ì˜ ë°©í–¥ì´ë‚˜ ì´ë™ì„ ì¡°ì ˆí•˜ê¸° ìœ„í•œ í•¨ìˆ˜ë¥¼ ê°€ì§„ í—¤ë”íŒŒì¼
+#include "GameFramework/CharacterMovementComponent.h"//ìºë¦­í„°ì˜ ì›€ì§ì„ì„ ì œì–´í•˜ëŠ” í•¨ìˆ˜ë¥¼ ì°¸ì¡°í•˜ê¸° ìœ„í•œ í—¤ë”íŒŒì¼
+#include "DrawDebugHelpers.h"//ë²”ìœ„ ì‹œê°í™”ë¥¼ ìœ„í•œ í—¤ë”íŒŒì¼
 #include "AGSDCharacter.h"
 void AEnemy1AIController::BeginPlay()
 {
@@ -24,16 +24,16 @@ void AEnemy1AIController::BeginPlay()
 void AEnemy1AIController::AttackTypeA()
 {
 	/*
-	DotProduct´Â ³»ÀûÀ» ±¸ÇÏ´Â ÇÔ¼ö
-	1 : Á¤¸é(0µµ)
-	0.7 : ¾à 45µµ
-	0 : ¼öÁ÷(90µµ)
-	-1: ÈÄ¸é(180µµ)
-	ex : 0 ÀÌ»óÀ¸·Î ¼³Á¤ÇÏ¸é Ä³¸¯ÅÍÀÇ ¾ÕÀ» ±âÁØÀ¸·Î ÁÂ¿ì 90µµ°¡ ¹üÀ§
+	DotProductëŠ” ë‚´ì ì„ êµ¬í•˜ëŠ” í•¨ìˆ˜
+	1 : ì •ë©´(0ë„)
+	0.7 : ì•½ 45ë„
+	0 : ìˆ˜ì§(90ë„)
+	-1: í›„ë©´(180ë„)
+	ex : 0 ì´ìƒìœ¼ë¡œ ì„¤ì •í•˜ë©´ ìºë¦­í„°ì˜ ì•ì„ ê¸°ì¤€ìœ¼ë¡œ ì¢Œìš° 90ë„ê°€ ë²”ìœ„
 	*/
-	if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//ÀûÀÌ °ø°İ¹üÀ§ ¾È¿¡ ÀÖÀ¸¸é¼­, Àü¹æ¿¡ ÀÖÀ» °æ¿ì °ø°İ ÆÇÁ¤
+	if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//ì ì´ ê³µê²©ë²”ìœ„ ì•ˆì— ìˆìœ¼ë©´ì„œ, ì „ë°©ì— ìˆì„ ê²½ìš° ê³µê²© íŒì •
 	{
-		//ÇÃ·¹ÀÌ¾î ±¸ÇöÀÌ ¿Ï·áµÇ¸é ÀÌ ¾È¿¡ ÄÚµå¸¦ ¼öÁ¤
+		//í”Œë ˆì´ì–´ êµ¬í˜„ì´ ì™„ë£Œë˜ë©´ ì´ ì•ˆì— ì½”ë“œë¥¼ ìˆ˜ì •
 		UE_LOG(LogTemp, Display, TEXT("Hit!"));
 		Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 	}
@@ -43,22 +43,22 @@ void AEnemy1AIController::AttackTypeA()
 
 void AEnemy1AIController::AttackTypeB()
 {
-	if (BossCount >= 2) //3¹øÂ° °ø°İÀº °ø°İ¹üÀ§ÀÇ Àü¹üÀ§ °ø°İ
+	if (BossCount >= 2) //3ë²ˆì§¸ ê³µê²©ì€ ê³µê²©ë²”ìœ„ì˜ ì „ë²”ìœ„ ê³µê²©
 	{
 		BossCount = 0;
-		DrawDebugCylinder(GetWorld(), //°ø°İ ¹üÀ§ ±×¸®±â
-			GetCharacter()->GetActorLocation(), //¿øÅë ½ÃÀÛÀ§Ä¡
-			GetCharacter()->GetActorLocation(), //¿øÅë ³¡ À§Ä¡
-			AttackRange * 1.0f, //¿øÅë ¹İÁö¸§
-			36, //¿øÅëÀÇ ¼¼±×¸ÕÆ® °³¼ö
-			FColor::Red, //¿øÅë »ö»ó
-			false, //Áö¼ÓÀûÀ¸·Î È­¸é¿¡ Ç¥½ÃÇÏ´Â°¡?
-			0.3f, //Áö¼Ó½Ã°£
-			100.0f, //¼± µÎ²²(0ÀÌ ±âº»)
-			1.0f); //Åõ¸íµµ(ºÒÅõ¸í = 1)
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.0f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
+		DrawDebugCylinder(GetWorld(), //ê³µê²© ë²”ìœ„ ê·¸ë¦¬ê¸°
+			GetCharacter()->GetActorLocation(), //ì›í†µ ì‹œì‘ìœ„ì¹˜
+			GetCharacter()->GetActorLocation(), //ì›í†µ ë ìœ„ì¹˜
+			AttackRange * 1.5f, //ì›í†µ ë°˜ì§€ë¦„
+			36, //ì›í†µì˜ ì„¸ê·¸ë¨¼íŠ¸ ê°œìˆ˜
+			FColor::Red, //ì›í†µ ìƒ‰ìƒ
+			false, //ì§€ì†ì ìœ¼ë¡œ í™”ë©´ì— í‘œì‹œí•˜ëŠ”ê°€?
+			0.3f, //ì§€ì†ì‹œê°„
+			100.0f, //ì„  ë‘ê»˜(0ì´ ê¸°ë³¸)
+			1.0f); //íˆ¬ëª…ë„(ë¶ˆíˆ¬ëª… = 1)
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.5f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
 		{
-			//ÇÃ·¹ÀÌ¾î ±¸ÇöÀÌ ¿Ï·áµÇ¸é ÀÌ ¾È¿¡ ÄÚµå¸¦ ¼öÁ¤
+			//í”Œë ˆì´ì–´ êµ¬í˜„ì´ ì™„ë£Œë˜ë©´ ì´ ì•ˆì— ì½”ë“œë¥¼ ìˆ˜ì •
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
 			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 		}
@@ -68,9 +68,9 @@ void AEnemy1AIController::AttackTypeB()
 	{
 		UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
 		BossCount++;
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)//ÀûÀÌ °ø°İ¹üÀ§ ¾È¿¡ ÀÖÀ¸¸é¼­, Àü¹æ¿¡ ÀÖÀ» °æ¿ì °ø°İ ÆÇÁ¤
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)//ì ì´ ê³µê²©ë²”ìœ„ ì•ˆì— ìˆìœ¼ë©´ì„œ, ì „ë°©ì— ìˆì„ ê²½ìš° ê³µê²© íŒì •
 		{
-			//ÇÃ·¹ÀÌ¾î ±¸ÇöÀÌ ¿Ï·áµÇ¸é ÀÌ ¾È¿¡ ÄÚµå¸¦ ¼öÁ¤
+			//í”Œë ˆì´ì–´ êµ¬í˜„ì´ ì™„ë£Œë˜ë©´ ì´ ì•ˆì— ì½”ë“œë¥¼ ìˆ˜ì •
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
 			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
 		}
@@ -80,37 +80,37 @@ void AEnemy1AIController::AttackTypeB()
 
 void AEnemy1AIController::AttackTypeC()
 {
-	//¹Ì±¸Çö
+	//ë¯¸êµ¬í˜„
 }
 
 void AEnemy1AIController::AttackTypeD()
 {
-	//¹Ì±¸Çö
+	//ë¯¸êµ¬í˜„
 }
 
 void AEnemy1AIController::Attacked(float damage)
 {
-	//µ¥¹ÌÁö °è»ê ¹æ½Ä¿¡ µû¶ó ¼öÁ¤ ÇÊ¿ä
+	//ë°ë¯¸ì§€ ê³„ì‚° ë°©ì‹ì— ë”°ë¼ ìˆ˜ì • í•„ìš”
 	CurrentHP -= damage;
 	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), CurrentHP);
 
-	//Ã¼·ÂÀÌ 0ÀÌÇÏÀÏ °æ¿ì Á×À½
+	//ì²´ë ¥ì´ 0ì´í•˜ì¼ ê²½ìš° ì£½ìŒ
 	if (CurrentHP <= 0.0f)
 	{
-		Died(1);//µ¥¹ÌÁö °è»ê ¹æ½Ä¿¡ µû¶ó ¼öÁ¤ ÇÊ¿ä
+		Died(1);//ë°ë¯¸ì§€ ê³„ì‚° ë°©ì‹ì— ë”°ë¼ ìˆ˜ì • í•„ìš”
 	}
 }
 
 void AEnemy1AIController::Died(int64 num)
 {
-	//µå¶ø ¾ÆÀÌÅÛ ¼³Á¤
+	//ë“œë ì•„ì´í…œ ì„¤ì •
 	switch (num)
 	{
 	case 1:
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
 		GetWorld()->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
-	default://¹ö±× µîÀ¸·Î ÀÎÇØ °­Á¦·Î »èÁ¦ÇØ¾ß ÇÏ´Â °æ¿ì
+	default://ë²„ê·¸ ë“±ìœ¼ë¡œ ì¸í•´ ê°•ì œë¡œ ì‚­ì œí•´ì•¼ í•˜ëŠ” ê²½ìš°
 		UE_LOG(LogTemp, Display, TEXT("Enemy is isolated!"));
 		break;
 	}
@@ -120,22 +120,22 @@ void AEnemy1AIController::Died(int64 num)
 void AEnemy1AIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//beginº¸´Ù ´Ê°Ô ½ÇÇàÇÏ¸é¼­ Tickº¸´Ù´Â »¡¸® ½ÇÇàÇÏ´Â ÇÑ¹ø¸¸ ¹ß»ıÇÏ´Â ÄÚµå
-	//µ¿ÀûÀ¸·Î »ı¼ºÇÒ ¶§ beginplay¸¦ ºíÇÁ¶û ¿©±â¼­ µÑ´Ù ½ÇÇàÇÏ¸é ÅÍÁö´Â ¿À·ù°¡ ÀÖÀ½
+	//beginë³´ë‹¤ ëŠ¦ê²Œ ì‹¤í–‰í•˜ë©´ì„œ Tickë³´ë‹¤ëŠ” ë¹¨ë¦¬ ì‹¤í–‰í•˜ëŠ” í•œë²ˆë§Œ ë°œìƒí•˜ëŠ” ì½”ë“œ
+	//ë™ì ìœ¼ë¡œ ìƒì„±í•  ë•Œ beginplayë¥¼ ë¸”í”„ë‘ ì—¬ê¸°ì„œ ë‘˜ë‹¤ ì‹¤í–‰í•˜ë©´ í„°ì§€ëŠ” ì˜¤ë¥˜ê°€ ìˆìŒ
 	if (IsFisrt)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Enemy created."));//»ı¼ºµÆÀ½À» ¾Ë¸®´Â ·Î±×
+		UE_LOG(LogTemp, Display, TEXT("Enemy created."));//ìƒì„±ëìŒì„ ì•Œë¦¬ëŠ” ë¡œê·¸
 		IsAttacking = false;
 		IsFisrt = true;
 		PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 		ChenkIsolated_1 = GetCharacter()->GetActorLocation();
 		ChenkIsolated_2 = GetCharacter()->GetActorLocation();
 		IsFisrt = false;
-		AttackCooltime_temp = AttackCooltimeFirstDelay;//°ø°İ¼Óµµ ÃÊ±âÈ­
+		AttackCooltime_temp = AttackCooltimeFirstDelay;//ê³µê²©ì†ë„ ì´ˆê¸°í™”
 		CurrentHP = MaxHP;
 	}
 
-	//°ÔÀÓ ½ÇÇà Áß¿¡ Â¦¼ö È¤Àº È¦¼öÀÇ Æ½¸¶´Ù ¹ßµ¿µÇ´Â ÄÚµå¸¦ ÀÛ¼ºÇÏ±â À§ÇÔ
+	//ê²Œì„ ì‹¤í–‰ ì¤‘ì— ì§ìˆ˜ í˜¹ì€ í™€ìˆ˜ì˜ í‹±ë§ˆë‹¤ ë°œë™ë˜ëŠ” ì½”ë“œë¥¼ ì‘ì„±í•˜ê¸° ìœ„í•¨
 	if (TickSwitch)
 	{
 		TickSwitch = false;
@@ -145,16 +145,16 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		TickSwitch = true;
 	}
 
-	//Ä³¸¯ÅÍ ¿òÁ÷ÀÓ °ü·Ã
-	if (PlayerCharacter)//ÇÃ·¹ÀÌ¾î Å½»öÀÌ µÆÀ» °æ¿ì
+	//ìºë¦­í„° ì›€ì§ì„ ê´€ë ¨
+	if (PlayerCharacter)//í”Œë ˆì´ì–´ íƒìƒ‰ì´ ëì„ ê²½ìš°
 	{
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= AttackRange) and (!IsAttacking)) //ÇÃ·¹ÀÌ¾î°¡ °ø°İ¹üÀ§ ¹Û¿¡ ÀÖÀ¸¸é¼­ °ø°İ ÁßÀÌ ¾Æ´Ò °æ¿ì 
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= AttackRange) and (!IsAttacking)) //í”Œë ˆì´ì–´ê°€ ê³µê²©ë²”ìœ„ ë°–ì— ìˆìœ¼ë©´ì„œ ê³µê²© ì¤‘ì´ ì•„ë‹ ê²½ìš° 
 		{
-			//Àû ÃßÀû
+			//ì  ì¶”ì 
 			GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 			AttackCooltime_temp = AttackCooltimeFirstDelay;
 			MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true);
-			//´ë½¬±â´É
+			//ëŒ€ì‰¬ê¸°ëŠ¥
 			if (Dash)
 			{
 				if (IsDashing)
@@ -178,7 +178,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 					}
 				}
 			}
-			//¸¸¾à °ø°İ ÁßÀÌ ¾Æ´Ï¸é¼­ Å½»öÀ» Çß´Âµ¥ Ä³¸¯ÅÍ°¡ ÀÏÁ¤½Ã°£µ¿¾È ¿òÁ÷ÀÌÁö ¾ÊÀ» °æ¿ì
+			//ë§Œì•½ ê³µê²© ì¤‘ì´ ì•„ë‹ˆë©´ì„œ íƒìƒ‰ì„ í–ˆëŠ”ë° ìºë¦­í„°ê°€ ì¼ì •ì‹œê°„ë™ì•ˆ ì›€ì§ì´ì§€ ì•Šì„ ê²½ìš°
 			if (TickSwitch)
 			{
 				ChenkIsolated_1 = GetCharacter()->GetActorLocation();
@@ -204,22 +204,22 @@ void AEnemy1AIController::Tick(float DeltaTime)
 				}
 			}
 
-			//¼³Á¤µÈ ½Ã°£ ³»¿¡ ¿òÁ÷ÀÓÀÌ ¾øÀ» °æ¿ì °´Ã¼¸¦ °­Á¦ »èÁ¦
+			//ì„¤ì •ëœ ì‹œê°„ ë‚´ì— ì›€ì§ì„ì´ ì—†ì„ ê²½ìš° ê°ì²´ë¥¼ ê°•ì œ ì‚­ì œ
 			if (ChenkIsolated_Timer >= 30.0f)
 			{
 				Died(-1);
 			}
 		}
-		else//ÇÃ·¹ÀÌ¾î°¡ °ø°İ¹üÀ§ ¾È¿¡ ÀÖÀ» °æ¿ì
+		else//í”Œë ˆì´ì–´ê°€ ê³µê²©ë²”ìœ„ ì•ˆì— ìˆì„ ê²½ìš°
 		{
-			//°ø°İ »óÈ£ÀÛ¿ë
+			//ê³µê²© ìƒí˜¸ì‘ìš©
 			StopMovement();
 			IsAttacking = true;
 			AttackCooltime_temp += DeltaTime;
-			if (AttackCooltime_temp >= AttackCooltime)//°ø°İ½ÇÇà
+			if (AttackCooltime_temp >= AttackCooltime)//ê³µê²©ì‹¤í–‰
 			{
 				AttackCooltime_temp = 0.0f;
-				switch (AttackType)//°ø°İ¹æ½Ä¿¡ µû¶ó °ø°İ ½ÇÇà
+				switch (AttackType)//ê³µê²©ë°©ì‹ì— ë”°ë¼ ê³µê²© ì‹¤í–‰
 				{
 				case 1:
 					AttackTypeA();
@@ -227,13 +227,13 @@ void AEnemy1AIController::Tick(float DeltaTime)
 				case 2:
 					AttackTypeB();
 					break;
-				default://°ø°İÅ¸ÀÔÀÌ ¼³Á¤µÇÁö ¾Ê¾ÒÀ» °æ¿ì
+				default://ê³µê²©íƒ€ì…ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ì„ ê²½ìš°
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));
 					break;
 				}
 
 				IsAttacking = false;
-				MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true); //Àç°ø°İ ½Ã ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸µµ·Ï
+				MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true); //ì¬ê³µê²© ì‹œ í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ë„ë¡
 			}
 		}
 	}

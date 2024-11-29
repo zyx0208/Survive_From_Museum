@@ -22,13 +22,17 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TArray<TSubclassOf<AActor>> Enemys; //¸ó½ºÅÍÀÇ Á¤º¸¸¦ ´ã´Â ¹è¿­
-	ACharacter* PlayerCharacter; //ÇÃ·¹ÀÌ¾î À§Ä¡ ¹× ¹æÇâ Á¤º¸¸¦ ´ã´Â ¾×ÅÍ ¹è¿­
-	//¾ÈÂÊ ¹üÀ§ ¹Û ºÎºĞ, ¹Ù±ùÂÊ ¹üÀ§ÀÇ ¾È ºÎºĞ¿¡¼­ ÀûÀÌ µîÀå(µµ³Ó ¸ğ¾ç)
-	float InnerCircleRange; 
-	float OuterCircleRange; 
-	float SpawnTime;//¸îÃÊ¸¶´Ù »ı¼ºÇÒÁö
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TArray<TSubclassOf<AActor>> Enemys; //ëª¬ìŠ¤í„°ì˜ ì •ë³´ë¥¼ ë‹´ëŠ” ë°°ì—´
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")int Stage = 0; //ìŠ¤í…Œì´ì§€ ìˆ«ì ì…ë ¥(1 ~ ...)
+    ACharacter* PlayerCharacter; //í”Œë ˆì´ì–´ ìœ„ì¹˜ ë° ë°©í–¥ ì •ë³´ë¥¼ ë‹´ëŠ” ì•¡í„° ë°°ì—´
+	//ì•ˆìª½ ë²”ìœ„ ë°– ë¶€ë¶„, ë°”ê¹¥ìª½ ë²”ìœ„ì˜ ì•ˆ ë¶€ë¶„ì—ì„œ ì ì´ ë“±ì¥(ë„ë„› ëª¨ì–‘)
+	float InnerCircleRange = 0.0f;
+	float OuterCircleRange = 0.0f;
+	float SpawnTime = 0.0f;//ëª‡ì´ˆë§ˆë‹¤ ìƒì„±í• ì§€
+    int SpawnNum = 0;//ëª‡ë§ˆë¦¬ ìƒì„±í• ì§€
 private:
-	float TempTimer;//»ı¼º ½Ã°£À» Á¦¾îÇÏ±â À§ÇÑ ÀÓÀÇ º¯¼ö
-	float TempEnemyCounter;//Àû »ı¼ºÀ» Á¦¾îÇÏ±â À§ÇÑ ÀÓÀÇ º¯¼ö
+    float TotalTime = 0.0f;//ìŠ¤í…Œì´ì§€ ì‹œì‘ í›„ ì´ ê±¸ë¦° ì‹œê°„
+	float TempTime = 0.0f;//ìƒì„± ì‹œê°„ì„ ì œì–´í•˜ê¸° ìœ„í•œ ì„ì˜ ë³€ìˆ˜
+	float TempEnemyCounter = 0.0f;//ì  ìƒì„±ì„ ì œì–´í•˜ê¸° ìœ„í•œ ì„ì˜ ë³€ìˆ˜
+    float LogTime = 0.0f; //ê°œë°œìê°€ ëª‡ë¶„ ì§€ë‚¬ëŠ”ì§€ ì•Œê¸° ìœ„í•´ ì„¤ì •í•œ ì„ì˜ ë³€ìˆ˜
 };

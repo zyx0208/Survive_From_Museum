@@ -2,9 +2,9 @@
 
 
 #include "EnemySpawner.h"
-#include "Kismet/GameplayStatics.h"// ·¹º§¿¡¼­ ¾×ÅÍ¸¦ ºÒ·¯¿À±â À§ÇÑ ÇÔ¼ö¸¦ °¡Áø Çì´õÆÄÀÏ
-#include "Math/UnrealMathUtility.h"//·£´ı ¼ö ÃßÃâÀ» À§ÇÑ Çì´õ
-#include "GameFramework/Character.h"//·¹º§¿¡ µîÀåÇÏ´Â ¾×ÅÍÀÇ ¹æÇâÀÌ³ª ÀÌµ¿À» Á¶ÀıÇÏ±â À§ÇÑ ÇÔ¼ö¸¦ °¡Áø Çì´õÆÄÀÏ
+#include "Kismet/GameplayStatics.h"// ë ˆë²¨ì—ì„œ ì•¡í„°ë¥¼ ë¶ˆëŸ¬ì˜¤ê¸° ìœ„í•œ í•¨ìˆ˜ë¥¼ ê°€ì§„ í—¤ë”íŒŒì¼
+#include "Math/UnrealMathUtility.h"//ëœë¤ ìˆ˜ ì¶”ì¶œì„ ìœ„í•œ í—¤ë”
+#include "GameFramework/Character.h"//ë ˆë²¨ì— ë“±ì¥í•˜ëŠ” ì•¡í„°ì˜ ë°©í–¥ì´ë‚˜ ì´ë™ì„ ì¡°ì ˆí•˜ê¸° ìœ„í•œ í•¨ìˆ˜ë¥¼ ê°€ì§„ í—¤ë”íŒŒì¼
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -20,7 +20,7 @@ void AEnemySpawner::BeginPlay()
 	Super::BeginPlay();
 	InnerCircleRange = 500.0f;
 	OuterCircleRange = 1000.0f;
-	SpawnTime = 3.0f;
+	SpawnTime = 5.0f;
 	PlayerCharacter = NULL;
 }
 
@@ -29,21 +29,144 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-	if (PlayerCharacter)
-	{
-		TempTimer += DeltaTime;
-		if (TempTimer >= SpawnTime)
-		{
-			TempTimer = 0.0f;
-			if (Enemys.Num() > 0)
-			{
-				TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 1); //0ºÎÅÍ EnemysÀÇ [º¯¼ö °³¼ö - 1]±îÁöÀÇ ÀÎµ¦½º
+    switch (Stage)
+    {
+    case 1: //1 ìŠ¤í…Œì´ì§€(15ë¶„ = 900ì´ˆ)
+        if (PlayerCharacter)
+        {
+            TempTime += DeltaTime;
+            TotalTime += DeltaTime;
 
-				GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-					PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-					FRotator::ZeroRotator);
-			}
-		}
-	}
+            //ì‹œê°„ í™•ì¸ì„ ìœ„í•œ ë¡œê·¸ í•¨ìˆ˜ ë¶€ë¶„(í›„ì— íƒ€ì´ë¨¸ ê¸°ëŠ¥ì´ ìƒê¸°ë©´ ì‚­ì œ)
+            LogTime += DeltaTime;
+            if (LogTime >= 60.0f)
+            {
+                LogTime = 0.0f;
+                UE_LOG(LogTemp, Display, TEXT("TotalTime : %f"), TotalTime);
+            }
+
+            //60ì´ˆ ë§ˆë‹¤ íŒ¨í„´ ë³€í™”
+            if (TotalTime >= 840.0f)
+            {
+                SpawnTime = 0.5f;
+                SpawnNum = 20;
+            }
+            else if (TotalTime >= 780.0f)
+            {
+                SpawnTime = 0.5f;
+                SpawnNum = 15;
+            }
+            else if (TotalTime >= 720.0f)
+            {
+                SpawnTime = 0.5f;
+                SpawnNum = 10;
+            }
+            else if (TotalTime >= 660.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 10;
+            }
+            else if (TotalTime >= 600.0f) //ì •ì˜ˆ ëª¹ ë‹¤ìˆ˜ ë“±ì¥
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 8;
+            }
+            else if (TotalTime >= 540.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 7;
+            }
+            else if (TotalTime >= 480.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 6;
+            }
+            else if (TotalTime >= 420.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 5;
+            }
+            else if (TotalTime >= 360.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 4;
+            }
+            else if (TotalTime >= 300.0f) //ì •ì˜ˆ ëª¹ ë“±ì¥ ì‹œê¸°
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 3;
+            }
+            else if (TotalTime >= 240.0f)
+            {
+                SpawnTime = 1.0f;
+                SpawnNum = 2;
+            }
+            else if (TotalTime >= 180.0f)
+            {
+                SpawnTime = 2.0f;
+                SpawnNum = 2;
+            }
+            else if (TotalTime >= 120.0f)
+            {
+                SpawnTime = 3.0f;
+                SpawnNum = 2;
+            }
+            else if (TotalTime >= 60.0f)
+            {
+                SpawnTime = 3.0f;
+                SpawnNum = 1;
+            }
+            else
+            {
+                SpawnTime = 5.0f;
+                SpawnNum = 1;
+            }
+        }
+        if (TempTime >= SpawnTime)
+        {
+            TempTime = 0.0f;
+            if (Enemys.Num() > 0)
+            {
+                if (TotalTime >= 600.0f) //600ì´ˆ ~ 900ì´ˆ : ì •ì˜ˆëª¹ì´ ìµœì†Œ í•œë§ˆë¦¬ëŠ” í¬í•¨
+                {
+                    for (int i = 0; i < SpawnNum - 1; i++)
+                    {
+                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 1);
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                            FRotator::ZeroRotator);
+                    }
+                    GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator); //ë§ˆì§€ë§‰ ì¸ë±ìŠ¤(ì •ì˜ˆëª¹)ì„ í™•ì •ìœ¼ë¡œ ì†Œí™˜
+                }
+                else if(TotalTime >= 300.0f) //300ì´ˆ ~ 600ì´ˆ : ì •ì˜ˆëª¹ í™•ë¥ ì ìœ¼ë¡œ ë“±ì¥
+                {
+                    for (int i = 0; i < SpawnNum; i++)
+                    {
+                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 1);
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                            FRotator::ZeroRotator);
+                    }
+                }
+                else //0ì´ˆ ~ 300ì´ˆ : ì •ì˜ˆëª¹ ë“±ì¥ X
+                {
+                    for (int i = 0; i < SpawnNum; i++)
+                    {
+                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+        }
+        break;
+
+    default: //ìŠ¤í…Œì´ì§€ê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ì„ ê²½ìš°
+        UE_LOG(LogTemp, Display, TEXT("Setting Stage Number."));
+        break;
+    }
 }
 
