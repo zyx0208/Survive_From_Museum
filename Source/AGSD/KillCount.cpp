@@ -3,3 +3,11 @@
 
 #include "KillCount.h"
 
+UKillCount::UKillCount() {
+
+}
+
+void UKillCount::KillEnemy()
+{
+    KillCount++;
+}

@@ -7,19 +7,19 @@ UGameTimer::UGameTimer() {
     InitTime = 10.0f;
 }
 
-void UGameTimer::TimeSet()
+void UGameTimer::TimeSet(float Time)
 {
-    GetWorld()->GetTimerManager().SetTimer(GameTimer, this, &UGameTimer::UpdateTime, 1.0f, true);
-    UITime = InitTime;
-    StringTime = MinutesSeconds(UITime);
+    GetWorld()->GetTimerManager().SetTimer(GameTimer, this, &UGameTimer::UpdateTime, 1.0f, true);//타이머 생성
+    UITime = Time;//입력값을 UItime으로 설정
+    StringTime = MinutesSeconds(UITime);//UItime을 분초 변환 후 문자열로
 }
 
 void UGameTimer::UpdateTime()
 {
-    UITime--;
-    StringTime = MinutesSeconds(UITime);
+    UITime--;//정수형 시간 --
+    StringTime = MinutesSeconds(UITime);//UItime을 분초 변환 후 문자열로
     if (UITime <= 0) {
-        TimeOver();
+        TimeOver();//정수형 시간이 0이되면 TimeOver
     }
 }
 

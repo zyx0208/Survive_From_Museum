@@ -13,6 +13,8 @@
 #include "GameFramework/Character.h"//레벨에 등장하는 액터의 방향이나 이동을 조절하기 위한 함수를 가진 헤더파일
 #include "GameFramework/CharacterMovementComponent.h"//캐릭터의 움직임을 제어하는 함수를 참조하기 위한 헤더파일
 #include "DrawDebugHelpers.h"//범위 시각화를 위한 헤더파일
+#include "KillCount.h"//킬카운트용
+#include "Engine/LevelScriptActor.h"//레벨블루프린트
 #include "AGSDCharacter.h"
 void AEnemy1AIController::BeginPlay()
 {
@@ -103,18 +105,45 @@ void AEnemy1AIController::Attacked(float damage)
 
 void AEnemy1AIController::Died(int64 num)
 {
+    UWorld* World = GetWorld();
 	//드랍 아이템 설정
 	switch (num)
 	{
 	case 1:
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
-		GetWorld()->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+        if (World)
+        {
+            KillCountCall(World);
+        }
+		World->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
 	default://버그 등으로 인해 강제로 삭제해야 하는 경우
 		UE_LOG(LogTemp, Display, TEXT("Enemy is isolated!"));
 		break;
 	}
 	IsDead = true;
+}
+
+void AEnemy1AIController::KillCountCall(UWorld* World)
+{
+    if (!World) {
+        return;
+    }
+    ALevelScriptActor* LevelScript = World->GetLevelScriptActor();
+    if (LevelScript)
+    {
+        // LevelBlueprint의 FunctionName 호출
+        FName FunctionName(TEXT("KillEnemy")); // 레벨 블루프린트 함수 이름
+        UFunction* Function = LevelScript->FindFunction(FunctionName);
+        if (Function)
+        {
+            LevelScript->ProcessEvent(Function, nullptr); // 함수 호출
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Function '%s' not found in LevelScriptActor!"), *FunctionName.ToString());
+        }
+    }
 }
 
 void AEnemy1AIController::Tick(float DeltaTime)

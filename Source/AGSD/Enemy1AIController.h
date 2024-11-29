@@ -16,40 +16,42 @@ class AGSD_API AEnemy1AIController : public AAIController
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	//ÀÌ ÄÚµå°¡ ¼³Á¤µÈ ºí·çÇÁ¸°Æ® Ä³¸¯ÅÍ¸¶´Ù °ªÀ» ¼öÁ¤ÇÒ ¼ö ÀÖµµ·Ï public ¹× UPROPERTY ¼³Á¤
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float MoveSpeed = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ ÀÌµ¿¼Óµµ
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackRange = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ °ø°İ±æÀÌ
+	//ì´ ì½”ë“œê°€ ì„¤ì •ëœ ë¸”ë£¨í”„ë¦°íŠ¸ ìºë¦­í„°ë§ˆë‹¤ ê°’ì„ ìˆ˜ì •í•  ìˆ˜ ìˆë„ë¡ public ë° UPROPERTY ì„¤ì •
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float MoveSpeed = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ì´ë™ì†ë„
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackRange = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ê³µê²©ê¸¸ì´
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltime = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ °ø°İ¼Óµµ
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltimeFirstDelay = 0;//°ø°İ¹üÀ§¿¡ µé¾î¿ÔÀ» ¶§, Ã¹ °ø°İÀÌ [AttackCooltime - AttackCooltime_first]ÃÊ µÚ¿¡ ½ÇÇàµÊ
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackDamage = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ °ø°İ·Â
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 MaxHP = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ ÃÖ´ëÃ¼·Â (¼ıÀÚ ¹üÀ§ : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 CurrentHP = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ ÇöÀçÃ¼·Â (¼ıÀÚ ¹üÀ§ : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int AttackType = 0;//ÇØ´ç Ä³¸¯ÅÍÀÇ °ø°İ ¹æ½Ä
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//ÇØ´ç Ä³¸¯ÅÍ°¡ ÇöÀç °ø°İÁßÀÎ°¡?¸¦ ³ªÅ¸³»´Â º¯¼ö(°ø°İÁßÀÏ¶§´Â ÃßÀûÀ» ¸ØÃã)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltime = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ê³µê²©ì†ë„
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltimeFirstDelay = 0;//ê³µê²©ë²”ìœ„ì— ë“¤ì–´ì™”ì„ ë•Œ, ì²« ê³µê²©ì´ [AttackCooltime - AttackCooltime_first]ì´ˆ ë’¤ì— ì‹¤í–‰ë¨
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackDamage = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ê³µê²©ë ¥
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 MaxHP = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ìµœëŒ€ì²´ë ¥ (ìˆ«ì ë²”ìœ„ : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 CurrentHP = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ í˜„ì¬ì²´ë ¥ (ìˆ«ì ë²”ìœ„ : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int AttackType = 0;//í•´ë‹¹ ìºë¦­í„°ì˜ ê³µê²© ë°©ì‹
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//í•´ë‹¹ ìºë¦­í„°ê°€ í˜„ì¬ ê³µê²©ì¤‘ì¸ê°€?ë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë³€ìˆ˜(ê³µê²©ì¤‘ì¼ë•ŒëŠ” ì¶”ì ì„ ë©ˆì¶¤)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1 = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect2 = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//´ë½¬°¡ ÀÖ´Â ÀûÀ» À§ÇÑ ¼³Á¤ ±â´É
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//´ë½¬ ±â´ÉÀÌ ÀÖÀ»°æ¿ì true·Î ¼³Á¤
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//´ë½¬ ±â´ÉÀÌ ÀÖÀ»°æ¿ì true·Î ¼³Á¤
-	virtual void Attacked(float damage);//ÇÃ·¹ÀÌ¾îÀÇ °ø°İÀ» ¸Â¾ÒÀ» °æ¿ì
-	virtual void Died(int64 num);//Á×À» °æ¿ì(¸Å°³º¯¼ö´Â Àû µå·Ó ¾ÆÀÌÅÛ µîÀ» ¼³Á¤ÇÏ±â À§ÇÑ ¼ö)
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //º¸½º °ø°İ È½¼ö¸¦ ÃøÁ¤ÇÏ±â À§ÇÑ ÇÔ¼ö
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//ëŒ€ì‰¬ê°€ ìˆëŠ” ì ì„ ìœ„í•œ ì„¤ì • ê¸°ëŠ¥
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//ëŒ€ì‰¬ ê¸°ëŠ¥ì´ ìˆì„ê²½ìš° trueë¡œ ì„¤ì •
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//ëŒ€ì‰¬ ê¸°ëŠ¥ì´ ìˆì„ê²½ìš° trueë¡œ ì„¤ì •
+	virtual void Attacked(float damage);//í”Œë ˆì´ì–´ì˜ ê³µê²©ì„ ë§ì•˜ì„ ê²½ìš°
+	virtual void Died(int64 num);//ì£½ì„ ê²½ìš°(ë§¤ê°œë³€ìˆ˜ëŠ” ì  ë“œë¡­ ì•„ì´í…œ ë“±ì„ ì„¤ì •í•˜ê¸° ìœ„í•œ ìˆ˜)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //ë³´ìŠ¤ ê³µê²© íšŸìˆ˜ë¥¼ ì¸¡ì •í•˜ê¸° ìœ„í•œ í•¨ìˆ˜
+
+    void KillCountCall(UWorld* World);
 
 private:
-	ACharacter* PlayerCharacter = NULL; //ÇÃ·¹ÀÌ¾î À§Ä¡ ¹× ¹æÇâ Á¤º¸¸¦ ´ã´Â ¾×ÅÍ ¹è¿­
-	float AttackCooltime_temp = 0.0f; //°ø°İ¼Óµµ °è»êÀ» À§ÇÑ ÀÓÀÇÀÇ º¯¼ö
-	bool IsFisrt = true;//C++°ú ºí·çÇÁ¸°Æ®¿¡¼­ begin ÇÔ¼öº¸´Ù ¹İµå½Ã ´Ê°Ô ½ÇÇàÇØ¾ß ÇÏÁö¸¸ ÇÑ¹ø¸¸ ½ÇÇàÇØ¾ß µÇ´Â ÇÔ¼ö¸¦ »ç¿ëÇÏ±â À§ÇØ
-	bool TickSwitch = false;//°ÔÀÓ ½ÇÇà Áß¿¡ Â¦¼ö È¤Àº È¦¼öÀÇ Æ½¸¶´Ù ¹ßµ¿µÇ´Â ÄÚµå¸¦ ÀÛ¼ºÇÏ±â À§ÇÔ
-	virtual void AttackTypeA();//1¹ø °ø°İ Å¸ÀÔ : ±Ù°Å¸®°ø°İ
-	virtual void AttackTypeB();//2¹ø °ø°İ Å¸ÀÔ : º¸½º1
-	virtual void AttackTypeC();//3¹ø °ø°İ Å¸ÀÔ : 
-	virtual void AttackTypeD();//4¹ø °ø°İ Å¸ÀÔ : 
-	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);//ÀûÀÌ Å½»öÀÌ µÆ´Âµ¥ ¿òÁ÷ÀÌÁö ¾ÊÀ» °æ¿ì(¹ö±×)¸¦ À§ÇÑ º¯¼ö1
-	FVector ChenkIsolated_2 = FVector(0.0f, 0.0f, 0.0f);//ÀûÀÌ Å½»öÀÌ µÆ´Âµ¥ ¿òÁ÷ÀÌÁö ¾ÊÀ» °æ¿ì(¹ö±×)¸¦ À§ÇÑ º¯¼ö2
-	float ChenkIsolated_Timer = 0.0f;//ÀûÀÌ Å½»öÀÌ µÆ´Âµ¥ ¿òÁ÷ÀÌÁö ¾ÊÀ» °æ¿ì(¹ö±×)¸¦ À§ÇÑ º¯¼ö3
-	float DashCoolTime_Temp = 0;//´ë½¬ ÄğÅ¸ÀÓÀ» °è»êÇÏ±â À§ÇÑ º¯¼ö
-	bool IsDashing = false;//´ë½¬ÁßÀÎ°¡¸¦ ³ªÅ¸³»´Â º¯¼ö
+	ACharacter* PlayerCharacter = NULL; //í”Œë ˆì´ì–´ ìœ„ì¹˜ ë° ë°©í–¥ ì •ë³´ë¥¼ ë‹´ëŠ” ì•¡í„° ë°°ì—´
+	float AttackCooltime_temp = 0.0f; //ê³µê²©ì†ë„ ê³„ì‚°ì„ ìœ„í•œ ì„ì˜ì˜ ë³€ìˆ˜
+	bool IsFisrt = true;//C++ê³¼ ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ begin í•¨ìˆ˜ë³´ë‹¤ ë°˜ë“œì‹œ ëŠ¦ê²Œ ì‹¤í–‰í•´ì•¼ í•˜ì§€ë§Œ í•œë²ˆë§Œ ì‹¤í–‰í•´ì•¼ ë˜ëŠ” í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ê¸° ìœ„í•´
+	bool TickSwitch = false;//ê²Œì„ ì‹¤í–‰ ì¤‘ì— ì§ìˆ˜ í˜¹ì€ í™€ìˆ˜ì˜ í‹±ë§ˆë‹¤ ë°œë™ë˜ëŠ” ì½”ë“œë¥¼ ì‘ì„±í•˜ê¸° ìœ„í•¨
+	virtual void AttackTypeA();//1ë²ˆ ê³µê²© íƒ€ì… : ê·¼ê±°ë¦¬ê³µê²©
+	virtual void AttackTypeB();//2ë²ˆ ê³µê²© íƒ€ì… : ë³´ìŠ¤1
+	virtual void AttackTypeC();//3ë²ˆ ê³µê²© íƒ€ì… : 
+	virtual void AttackTypeD();//4ë²ˆ ê³µê²© íƒ€ì… : 
+	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);//ì ì´ íƒìƒ‰ì´ ëëŠ”ë° ì›€ì§ì´ì§€ ì•Šì„ ê²½ìš°(ë²„ê·¸)ë¥¼ ìœ„í•œ ë³€ìˆ˜1
+	FVector ChenkIsolated_2 = FVector(0.0f, 0.0f, 0.0f);//ì ì´ íƒìƒ‰ì´ ëëŠ”ë° ì›€ì§ì´ì§€ ì•Šì„ ê²½ìš°(ë²„ê·¸)ë¥¼ ìœ„í•œ ë³€ìˆ˜2
+	float ChenkIsolated_Timer = 0.0f;//ì ì´ íƒìƒ‰ì´ ëëŠ”ë° ì›€ì§ì´ì§€ ì•Šì„ ê²½ìš°(ë²„ê·¸)ë¥¼ ìœ„í•œ ë³€ìˆ˜3
+	float DashCoolTime_Temp = 0;//ëŒ€ì‰¬ ì¿¨íƒ€ì„ì„ ê³„ì‚°í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
+	bool IsDashing = false;//ëŒ€ì‰¬ì¤‘ì¸ê°€ë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë³€ìˆ˜
 };
