@@ -11,6 +11,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 
+#include "Particles/ParticleSystemComponent.h"//이펙트 만들기
+#include "Kismet/GameplayStatics.h"
+
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h" // 라인 트레이스 함수 사용을 위해 필요
 #include "Kismet/KismetMathLibrary.h" //대쉬 거리 계산을 위해 필요
@@ -495,6 +498,12 @@ void AAGSDCharacter::WeaponSwap() {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));*/
 }
+void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
+{
+    if(WeaponParticle) {
+        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponParticle, Location, Rotation, true);
+    }
+}
 void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
 {
     if (SubWeapon == nullptr) {
@@ -527,6 +536,12 @@ void AAGSDCharacter::WeaponTake()
     FireMontage = WeaponData->WeaponAnimationMontage;
     CurrentWeaponMesh = WeaponData->WeaponMesh;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+    if (WeaponData->WeaponParticle != nullptr) {
+        WeaponParticle = WeaponData->WeaponParticle;
+    }
+    else {
+        WeaponParticle = nullptr;
+    }
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }
@@ -673,6 +688,10 @@ void AAGSDCharacter::CreateProjectile()
 					}
 
 				}
+                //파티클 생성
+                if (WeaponParticle) {
+                    SpawnParticle(MuzzleLocation, AdjustedRotation);
+                }
 			}
 		}
 

@@ -16,6 +16,7 @@ AProjectile_Jelda::AProjectile_Jelda()
         // ProjectileMeshComponent를 180도 회전 (Yaw 축 기준)
         FRotator NewRotation = FRotator(0.0f, 180.0f, 0.0f);
         ProjectileMeshComponent->SetRelativeRotation(NewRotation);
+        ProjectileMeshComponent->SetHiddenInGame(true);
     }
 }
 

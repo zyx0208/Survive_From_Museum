@@ -8,6 +8,7 @@
 #include "Animation/AnimMontage.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "WeaponDataTableBeta.generated.h"
 
 /**
@@ -18,31 +19,35 @@ struct FWeaponDataTableBetaStruct : public FTableRowBase
 {
 public:
 	GENERATED_USTRUCT_BODY()
-	//¹«±â ¹øÈ£
+	//ë¬´ê¸° ë²ˆí˜¸
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int IID;
 
-	//¹«±â ÀÌ¸§
+	//ë¬´ê¸° ì´ë¦„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Sname;
 
-	//¹«±â ¹ß»ç ¼Óµµ
+	//ë¬´ê¸° ë°œì‚¬ ì†ë„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Frate;
 
-	//¹«±â ÅºÈ¯ ¼ıÀÚ
+	//ë¬´ê¸° íƒ„í™˜ ìˆ«ì
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Inumberofprojectile;
 
-	//¹«±â ÅºÈ¯
+	//ë¬´ê¸° íƒ„í™˜
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectile_Beta> WeaponProjectile;
 
-	//¹«±â °ø°İ ¸ğ¼Ç
+	//ë¬´ê¸° ê³µê²© ëª¨ì…˜
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* WeaponAnimationMontage;
 
-	//¹«±â ¸ğ¾ç
+	//ë¬´ê¸° ëª¨ì–‘
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StaticMesh")
 	UStaticMesh* WeaponMesh;
+
+    //ë¬´ê¸° ê³µê²© íŒŒí‹°í´
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UParticleSystem* WeaponParticle;
 };

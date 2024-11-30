@@ -214,6 +214,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* FireMontage;
 
+    // 파티클 스폰 함수
+    UFUNCTION(BlueprintCallable, Category = "Particle")
+    void SpawnParticle(FVector Location, FRotator Rotation);
+
+    //파티클
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
+    UParticleSystem* WeaponParticle;
+
     //보조무기 추가용
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ASubWeapon* SubWeaponSlot;
