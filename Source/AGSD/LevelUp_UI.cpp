@@ -26,13 +26,13 @@ void ULevelUp_UI::NativeConstruct()
 		Option3->OnClicked.AddDynamic(this, &ULevelUp_UI::OnOption3Clicked);
 	}
 
-	OptionTexts = {
+	/*OptionTexts = {
 		FText::FromString("모든 체력 회복"),
 		FText::FromString("최대 체력 20 증가"),
 		FText::FromString("공격력 1 증가"),
 		FText::FromString("경험치 획득량 50% 증가"),
 		FText::FromString("방어력 10% 증가")
-	};
+	};*/
 
 	TArray<int32> AllIndices = { 0,1,2,3,4 };
 	OptionIndices.Empty();

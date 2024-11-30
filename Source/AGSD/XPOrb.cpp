@@ -4,26 +4,26 @@
 #include "XPOrb.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "AGSDCharacter.h"  // Ä³¸¯ÅÍ Å¬·¡½º Çì´õ Æ÷ÇÔ
+#include "AGSDCharacter.h"  // ìºë¦­í„° í´ë˜ìŠ¤ í—¤ë” í¬í•¨
 
 // Sets default values
 AXPOrb::AXPOrb()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
-    // ±¸½½¿¡ Ãæµ¹ ÄÄÆ÷³ÍÆ® Ãß°¡
+    // êµ¬ìŠ¬ì— ì¶©ëŒ ì»´í¬ë„ŒíŠ¸ ì¶”ê°€
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-    SphereComponent->InitSphereRadius(50.0f);  // Ãæµ¹ ¹üÀ§ ¼³Á¤
+    SphereComponent->InitSphereRadius(50.0f);  // ì¶©ëŒ ë²”ìœ„ ì„¤ì •
     RootComponent = SphereComponent;
 
-    // ±¸Ã¼ ¿ÀºêÁ§Æ® ÃÊ±âÈ­
+    // êµ¬ì²´ ì˜¤ë¸Œì íŠ¸ ì´ˆê¸°í™”
     OrbMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OrbMesh"));
-    OrbMesh->SetupAttachment(SphereComponent); // SphereComponentÀÇ ÀÚ½ÄÀ¸·Î ¼³Á¤
+    OrbMesh->SetupAttachment(SphereComponent); // SphereComponentì˜ ìì‹ìœ¼ë¡œ ì„¤ì •
 
-    // Ãæµ¹ ÀÌº¥Æ® ¹ÙÀÎµù
+    // ì¶©ëŒ ì´ë²¤íŠ¸ ë°”ì¸ë”©
     SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AXPOrb::OnOverlapBegin);
 
-    // °æÇèÄ¡¿Í Å©±â¸¦ ¼³Á¤
+    // ê²½í—˜ì¹˜ì™€ í¬ê¸°ë¥¼ ì„¤ì •
     SetRandomXP();
     AdjustScaleBasedOnXP();
 }
@@ -43,8 +43,8 @@ void AXPOrb::Tick(float DeltaTime)
 }
 void AXPOrb::SetRandomXP()
 {
-    // ·£´ı °ª¿¡ µû¶ó °æÇèÄ¡ ¼³Á¤ (60%: 2, 30%: 4, 10%: 6)
-    float RandomValue = FMath::FRand(); // 0.0f ~ 1.0f »çÀÌÀÇ ·£´ı °ª
+    // ëœë¤ ê°’ì— ë”°ë¼ ê²½í—˜ì¹˜ ì„¤ì • (60%: 2, 30%: 4, 10%: 6)
+    float RandomValue = FMath::FRand(); // 0.0f ~ 1.0f ì‚¬ì´ì˜ ëœë¤ ê°’
     if (RandomValue <= 0.6f)
     {
         XPValue = 2;
@@ -63,7 +63,7 @@ void AXPOrb::AdjustScaleBasedOnXP()
 {
     FVector NewScale;
 
-    // °æÇèÄ¡·®¿¡ µû¸¥ Å©±â Á¶Àı
+    // ê²½í—˜ì¹˜ëŸ‰ì— ë”°ë¥¸ í¬ê¸° ì¡°ì ˆ
     if (XPValue == 2)
     {
         NewScale = FVector(0.5f);
@@ -74,24 +74,24 @@ void AXPOrb::AdjustScaleBasedOnXP()
     }
     else if (XPValue == 6)
     {
-        NewScale = FVector(5.0f);
+        NewScale = FVector(2.0f);
     }
 
-    // OrbMesh¿¡¸¸ Å©±â Àû¿ë
+    // OrbMeshì—ë§Œ í¬ê¸° ì ìš©
     OrbMesh->SetWorldScale3D(NewScale);
 }
 
 void AXPOrb::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // Ä³¸¯ÅÍ¿Í Ãæµ¹Çß´ÂÁö È®ÀÎ
+    // ìºë¦­í„°ì™€ ì¶©ëŒí–ˆëŠ”ì§€ í™•ì¸
     AAGSDCharacter* Character = Cast<AAGSDCharacter>(OtherActor);
     if (Character)
     {
-        // Ä³¸¯ÅÍ¿¡ XP Ãß°¡
+        // ìºë¦­í„°ì— XP ì¶”ê°€
         Character->AddXP(XPValue);
 
-        // ±¸½½À» ÆÄ±« (¿øÇÑ´Ù¸é)
+        // êµ¬ìŠ¬ì„ íŒŒê´´ (ì›í•œë‹¤ë©´)
         Destroy();
     }
 }
