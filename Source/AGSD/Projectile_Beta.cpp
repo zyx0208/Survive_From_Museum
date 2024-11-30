@@ -12,33 +12,44 @@ AProjectile_Beta::AProjectile_Beta()
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
+    // íˆ¬ì‚¬ì²´ ìƒì„± ìœ„ì¹˜ ì €ì¥
+    StartLocation = FVector::ZeroVector;
+
+    // íˆ¬ì‚¬ì²´ ì†ë„, ë°ë¯¸ì§€, ì‚¬ê±°ë¦¬
+    ProjectileSpeed = 50.0f;
+    ProjectileDamage = 1.0f;
+    ProjectileRange = 1000.0f;
+
+    // í”Œë ˆì´ì–´ ê³µê²©ë ¥
+    PlayerAttack = 1.0f;
+
     if (!RootComponent)
     {
-        //Åõ»çÃ¼ »ı¼º
+        //íˆ¬ì‚¬ì²´ ìƒì„±
         RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
     }
 
     if (!CollisionComponent)
     {
-        //Åõ»çÃ¼ÀÇ ¸ğ¾ç »ı¼º
+        //íˆ¬ì‚¬ì²´ì˜ ëª¨ì–‘ ìƒì„±
         CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-        // Åõ»çÃ¼ Äİ¸®Àü ÀÌ¸§
+        // íˆ¬ì‚¬ì²´ ì½œë¦¬ì „ ì´ë¦„
         CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-        //Åõ»çÃ¼ Å©±â ¼³Á¤
+        //íˆ¬ì‚¬ì²´ í¬ê¸° ì„¤ì •
         CollisionComponent->InitSphereRadius(15.0f);
         // Event called when component hits something.
         CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectile_Beta::OnHit);
         
-        //Åõ»çÃ¼ Ãæµ¹¼³Á¤
+        //íˆ¬ì‚¬ì²´ ì¶©ëŒì„¤ì •
         RootComponent = CollisionComponent;
-        //Äİ¸®Àü Ã¤³Î ¼³Á¤
+        //ì½œë¦¬ì „ ì±„ë„ ì„¤ì •
         //CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         //CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
     }
 
     if (!ProjectileMovementComponent)
     {
-        // Åõ»çÃ¼ ¼Óµµ ¼³Á¤
+        // íˆ¬ì‚¬ì²´ ì†ë„ ì„¤ì •
         ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
         ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
         ProjectileMovementComponent->InitialSpeed = 3000.0f;
@@ -68,19 +79,8 @@ AProjectile_Beta::AProjectile_Beta()
         ProjectileMeshComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
     }
 
-    //½Ã°£ Áö³ª¸é ÆÄ±«
+    //ì‹œê°„ ì§€ë‚˜ë©´ íŒŒê´´
     InitialLifeSpan = 30.0f;
-
-    // Åõ»çÃ¼ »ı¼º À§Ä¡ ÀúÀå
-    StartLocation = FVector::ZeroVector;
-
-    // Åõ»çÃ¼ ¼Óµµ, µ¥¹ÌÁö, »ç°Å¸®
-    ProjectileSpeed = 50.0f;
-    ProjectileDamage = 1.0f;
-    ProjectileRange = 1000.0f;
-
-    // ÇÃ·¹ÀÌ¾î °ø°İ·Â
-    PlayerAttack = 1.0f;
 }
 
 // Called when the game starts or when spawned
@@ -94,10 +94,10 @@ void AProjectile_Beta::BeginPlay()
 void AProjectile_Beta::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    // ÇöÀç À§Ä¡¿Í ½ÃÀÛ À§Ä¡ÀÇ °Å¸®¸¦ °è»ê
+    // í˜„ì¬ ìœ„ì¹˜ì™€ ì‹œì‘ ìœ„ì¹˜ì˜ ê±°ë¦¬ë¥¼ ê³„ì‚°
     float DistanceTraveled = FVector::Dist(StartLocation, GetActorLocation());
 
-    // Æ¯Á¤ °Å¸® ÀÌ»ó ÀÌµ¿ÇÏ¸é ÆÄ±«
+    // íŠ¹ì • ê±°ë¦¬ ì´ìƒ ì´ë™í•˜ë©´ íŒŒê´´
     if (DistanceTraveled > ProjectileRange)
     {
         Destroy();
@@ -107,10 +107,10 @@ void AProjectile_Beta::Tick(float DeltaTime)
 void AProjectile_Beta::FireInDirection(const FVector& ShootDirection)
 {
     StartLocation = GetActorLocation();
-    //ÅºÈ¯½ÃÀÛ¹æÇâ¼³Á¤
+    //íƒ„í™˜ì˜ ì†ë„
+    ProjectileMovementComponent->InitialSpeed = ProjectileMovementComponent->InitialSpeed * ProjectileSpeed;
     ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
-
 void AProjectile_Beta::WeaponHitEffect()
 {
 }
@@ -121,23 +121,23 @@ void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
     /*
     if (OtherActor != nullptr && OtherActor != this && OtherComponent != nullptr)
     {
-        // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ AEnemy Å¬·¡½ºÀÎÁö È®ÀÎ
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ AEnemy í´ë˜ìŠ¤ì¸ì§€ í™•ì¸
         if (OtherActor->GetClass()->IsChildOf(AEnemy::StaticClass()))
         {
-            // AEnemy·Î Ä³½ºÆÃ
+            // AEnemyë¡œ ìºìŠ¤íŒ…
             AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
             if (HitEnemy)
             {
-                // Ã¼·Â°¨¼Ò
+                // ì²´ë ¥ê°ì†Œ
                 HitEnemy->Health -= ProjectileDamage;
 
-                // ÀûÃ³Ä¡
+                // ì ì²˜ì¹˜
                 if (HitEnemy->Health <= 0.0f)
                 {
                     HitEnemy->Destroy();
                 }
 
-                // Ã¼·Â °¨¼Ò °á°ú¸¦ È­¸é¿¡ Ãâ·Â
+                // ì²´ë ¥ ê°ì†Œ ê²°ê³¼ë¥¼ í™”ë©´ì— ì¶œë ¥
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Hit enemy's remaining health: %f"), HitEnemy->Health));
             }
             WeaponHitEffect();
@@ -151,14 +151,14 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
     if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
     {
         //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
-        // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ ACharacter Å¬·¡½ºÀÎÁö È®ÀÎ(ÀûÀÌ Ä³¸¯ÅÍ Å¬·¡½ºÀÌ±â ¶§¹®)
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ ACharacter í´ë˜ìŠ¤ì¸ì§€ í™•ì¸(ì ì´ ìºë¦­í„° í´ë˜ìŠ¤ì´ê¸° ë•Œë¬¸)
         if (OtherActor && OtherActor->IsA<ACharacter>())
         {
-            // ACharacter·Î Ä³½ºÆÃ
+            // ACharacterë¡œ ìºìŠ¤íŒ…
             ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
             if (HitEnemy)
             {
-                //HitEnemyÀÇ °¡Áø AEnemy1AIController¸¦ °¡Á®¿È(¿©±â¿¡ ÇÇ°İ ÇÔ¼ö°¡ ÀÖÀ½)
+                //HitEnemyì˜ ê°€ì§„ AEnemy1AIControllerë¥¼ ê°€ì ¸ì˜´(ì—¬ê¸°ì— í”¼ê²© í•¨ìˆ˜ê°€ ìˆìŒ)
                 AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
                 if (HitEnemyController)
                 {

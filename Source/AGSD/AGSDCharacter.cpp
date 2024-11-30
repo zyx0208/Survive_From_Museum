@@ -104,6 +104,7 @@ AAGSDCharacter::AAGSDCharacter()
 	//무기 메쉬 컴포넌트 생성
 	if (!WeaponMeshComponent) {
 		WeaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMeshComponent"));
+        WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		static ConstructorHelpers::FObjectFinder<UStaticMesh>WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
 		if (WeaponMesh.Succeeded())
 		{

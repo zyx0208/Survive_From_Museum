@@ -35,7 +35,7 @@ public:
     UStaticMesh* CurrentWeaponMesh;
 
     //무기 ID
-    UPROPERTY()
+    UPROPERTY(BlueprintReadWrite,EditAnywhere)
     FString WeaponID = "0";
 
     //참조할 무기 데이터 테이블

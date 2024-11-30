@@ -7,15 +7,15 @@
 
 AProjectile_Melee_Weapon::AProjectile_Melee_Weapon()
 {
-	// Åõ»çÃ¼ ¼Óµµ, µ¥¹ÌÁö, »ç°Å¸®
-	ProjectileSpeed = 10.0f;
+	// íˆ¬ì‚¬ì²´ ì†ë„, ë°ë¯¸ì§€, ì‚¬ê±°ë¦¬
+	ProjectileSpeed = 1.0f;
 	ProjectileDamage = 4.0f;
 	ProjectileRange = 100.0f;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> NewStaticMeshComponet(TEXT("/Script/Engine.StaticMesh'/Game/Projectile/Mesh/Melee.Melee'"));
 	if (NewStaticMeshComponet.Succeeded()) {
 		ProjectileMeshComponent->SetStaticMesh(NewStaticMeshComponet.Object);
-		// ProjectileMeshComponent¸¦ 180µµ È¸Àü (Yaw Ãà ±âÁØ)
+		// ProjectileMeshComponentë¥¼ 180ë„ íšŒì „ (Yaw ì¶• ê¸°ì¤€)
 		FRotator NewRotation = FRotator(0.0f, 180.0f, 0.0f);
 		ProjectileMeshComponent->SetRelativeRotation(NewRotation);
 	}
@@ -23,6 +23,6 @@ AProjectile_Melee_Weapon::AProjectile_Melee_Weapon()
 
 void AProjectile_Melee_Weapon::WeaponHitEffect()
 {
-	// Ãß°¡ÀûÀÎ ±â´ÉÀ» ±¸Çö
+	// ì¶”ê°€ì ì¸ ê¸°ëŠ¥ì„ êµ¬í˜„
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("MeleeHit")));
 }

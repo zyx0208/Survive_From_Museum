@@ -5,16 +5,16 @@
 
 AProjectile_Beta_Red::AProjectile_Beta_Red()
 {
-    // Åõ»çÃ¼ ¼Óµµ, µ¥¹ÌÁö, »ç°Å¸®
-    ProjectileSpeed = 5.0f;
+    // íˆ¬ì‚¬ì²´ ì†ë„, ë°ë¯¸ì§€, ì‚¬ê±°ë¦¬
+    ProjectileSpeed = 1.0f;
     ProjectileDamage = 5.0f;
     ProjectileRange = 2000.0f;
 }
 
 void AProjectile_Beta_Red::WeaponHitEffect()
 {
-    // Ãß°¡ÀûÀÎ ±â´ÉÀ» ±¸Çö
+    // ì¶”ê°€ì ì¸ ê¸°ëŠ¥ì„ êµ¬í˜„
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("RedHit")));
-    // ¹ß»çÃ¼¸¦ ÆÄ±« (ÇÊ¿ä½Ã)
+    // ë°œì‚¬ì²´ë¥¼ íŒŒê´´ (í•„ìš”ì‹œ)
     Destroy();
 }
