@@ -338,7 +338,7 @@ void AAGSDCharacter::UpdateXPBar()
 void AAGSDCharacter::AddXP(int32 XPAmount)
 {
 	
-	CurrentXP += XPAmount; // 주어진 XP를 현재 경험치에 더함
+	CurrentXP += XPAmount * BounsXPLevel; // 주어진 XP를 현재 경험치에 더함
 	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
 	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
