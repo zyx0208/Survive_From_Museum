@@ -34,6 +34,7 @@
 
 
 
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -172,6 +173,26 @@ void AAGSDCharacter::BeginPlay()
         WeaponID = FString::FromInt(WeaponArray[0]);
         WeaponTake();
     }
+    // 현재 맵 이름 확인
+    FString CurrentMapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+    // GameTimer 생성 및 초기화
+    if (CurrentMapName == "stage1")
+    {
+        InGameTimer = NewObject<UGameTimer>();
+        if (InGameTimer)
+        {
+            InGameTimer->TimeSet(10.0f); // 60초 타이머 설정
+            UE_LOG(LogTemp, Warning, TEXT("GameTimer successfully created."));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("Failed to create GameTimer."));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("GameTimer not started. Current map: %s"), *CurrentMapName);
+    }
 }
 
 void AAGSDCharacter::Tick(float DeltaTime)
@@ -219,6 +240,11 @@ void AAGSDCharacter::Tick(float DeltaTime)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Failed to get the mouse position in world space."));
 	}
+
+    if (InGameTimer && InGameTimer->TimeEnd)
+    {
+        Clear();
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -739,5 +765,30 @@ void AAGSDCharacter::OnDeath()
 
     // 로그 출력
     UE_LOG(LogTemp, Warning, TEXT("Character has died."));
+}
+
+void AAGSDCharacter::Clear()
+{
+    // 게임 정지
+    APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+    if (PlayerController)
+    {
+        PlayerController->SetPause(true);
+        FInputModeUIOnly InputMode;
+        PlayerController->SetInputMode(InputMode);
+        PlayerController->bShowMouseCursor = true;
+    }
+    // Restart UI 생성
+    if (RestartUIClass)
+    {
+        RestartWidget = CreateWidget<UUserWidget>(GetWorld(), RestartUIClass);
+        if (RestartWidget)
+        {
+            RestartWidget->AddToViewport();
+        }
+    }
+
+    // 로그 출력
+    UE_LOG(LogTemp, Warning, TEXT("Level Clear"));
 }
 

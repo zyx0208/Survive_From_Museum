@@ -2,16 +2,22 @@
 
 
 #include "GameTimer.h"
+#include "AGSDCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerController.h"
 
 UGameTimer::UGameTimer() {
-    InitTime = 10.0f;
+    //InitTime = 10.0f;
+    TimeEnd = false;
 }
 
 void UGameTimer::TimeSet(float Time)
 {
-    GetWorld()->GetTimerManager().SetTimer(GameTimer, this, &UGameTimer::UpdateTime, 1.0f, true);//타이머 생성
-    UITime = Time;//입력값을 UItime으로 설정
-    StringTime = MinutesSeconds(UITime);//UItime을 분초 변환 후 문자열로
+    UITime = Time;
+    if (GWorld)
+    {
+        GWorld->GetTimerManager().SetTimer(GameTimer, this, &UGameTimer::UpdateTime, 1.0f, true);
+    }
 }
 
 void UGameTimer::UpdateTime()
@@ -25,9 +31,15 @@ void UGameTimer::UpdateTime()
 
 void UGameTimer::TimeOver()
 {
-    GetWorld()->GetTimerManager().ClearTimer(GameTimer);
+    if (GWorld)
+    {
+        GWorld->GetTimerManager().ClearTimer(GameTimer);
+    }
     StringTime = "LevelEnd";
     TimeEnd = true;
+
+    // 로그 출력
+    UE_LOG(LogTemp, Warning, TEXT("TimeOver called. TimeEnd is now true."));
 }
 
 FString UGameTimer::MinutesSeconds(int Time)
@@ -36,3 +48,4 @@ FString UGameTimer::MinutesSeconds(int Time)
     int Seconds = Time % 60;
     return FString::Printf(TEXT("Time : %02d:%02d"), Minutes, Seconds);
 }
+

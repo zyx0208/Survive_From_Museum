@@ -15,6 +15,7 @@
 #include "Components/PoseableMeshComponent.h"
 
 #include "SubWeapon.h"
+#include "GameTimer.h"
 
 #include "AGSDCharacter.generated.h"
 
@@ -67,6 +68,7 @@ public:
 
 	FVector TraceHitLocation;  // 라인트레이스 충돌 위치
 	FVector TraceHitDirection; // 라인트레이스 충돌 방향
+
 protected:
 
 	/** Called for movement input */
@@ -108,6 +110,8 @@ protected:
     UPROPERTY()
     UUserWidget* RestartWidget;
 
+    
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -126,6 +130,10 @@ public:
 	int32 CurrentXP;        // 현재 경험치
 	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
 	float BounsXPLevel;		// 업그레이드 옵션(획득 경험치 증가 옵션)
+
+    // GameTimer 인스턴스
+    UPROPERTY()
+    UGameTimer* InGameTimer;
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateHealthBar(); //체력바 갱신함수
@@ -147,9 +155,14 @@ public:
 	void LevelUp();
 	void Attacked(float Damage); //데미지를 받을때 발생하는 함수
 
+    
+
     //사망 함수
     UFUNCTION()
     void OnDeath();
+
+    UFUNCTION()
+    void Clear();
 
 	//무기 발사
 	UFUNCTION()
