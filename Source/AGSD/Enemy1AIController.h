@@ -30,6 +30,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1 = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect2 = NULL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> WeaponDrop = NULL;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//대쉬가 있는 적을 위한 설정 기능
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//대쉬 기능이 있을경우 true로 설정

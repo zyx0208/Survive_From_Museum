@@ -16,6 +16,8 @@
 #include "KillCount.h"//킬카운트용
 #include "Engine/LevelScriptActor.h"//레벨블루프린트
 #include "AGSDCharacter.h"
+#include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
+
 void AEnemy1AIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -114,6 +116,10 @@ void AEnemy1AIController::Died(int64 num)
         if (World)
         {
             KillCountCall(World);
+        }
+        if (FMath::RandRange(1, 100) <= 5) //5% 확률로 무기 드랍
+        {
+            World->SpawnActor<AActor>(WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
 		World->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
