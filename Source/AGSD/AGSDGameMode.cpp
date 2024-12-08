@@ -12,4 +12,8 @@ AAGSDGameMode::AAGSDGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+    if (GEngine)
+    {
+        GEngine->bEnableOnScreenDebugMessages = false; // 디버그 메시지 끄기
+    }
 }

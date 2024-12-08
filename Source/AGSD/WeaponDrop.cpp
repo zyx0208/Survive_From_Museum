@@ -32,7 +32,7 @@ AWeaponDrop::AWeaponDrop()
         CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
         CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
         
-        CollisionComponent->SetHiddenInGame(false);
+        CollisionComponent->SetHiddenInGame(true);
     }
 
     if (!WeaponMeshComponent) {
@@ -48,6 +48,7 @@ AWeaponDrop::AWeaponDrop()
     }
 
     WeaponIDInt = FMath::RandRange(5, 6);
+    WeaponID = FString::FromInt(WeaponIDInt);
 }
 
 // Called when the game starts or when spawned

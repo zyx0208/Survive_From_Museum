@@ -9,7 +9,7 @@ AProjectile_Melee_Weapon::AProjectile_Melee_Weapon()
 {
 	// 투사체 속도, 데미지, 사거리
 	ProjectileSpeed = 1.0f;
-	ProjectileDamage = 4.0f;
+	ProjectileDamage = 8.0f;
 	ProjectileRange = 100.0f;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> NewStaticMeshComponet(TEXT("/Script/Engine.StaticMesh'/Game/Projectile/Mesh/Melee.Melee'"));

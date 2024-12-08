@@ -127,7 +127,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                if (TotalTime >= 600.0f) //600초 ~ 900초 : 정예몹이 최소 한마리는 포함
+                if (TotalTime >= 110.0f) //600초 ~ 900초 : 정예몹이 최소 한마리는 포함
                 {
                     for (int i = 0; i < SpawnNum - 1; i++)
                     {
@@ -139,7 +139,7 @@ void AEnemySpawner::Tick(float DeltaTime)
                     GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
                         PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
-                }
+                }/*
                 else if(TotalTime >= 300.0f) //300초 ~ 600초 : 정예몹 확률적으로 등장
                 {
                     for (int i = 0; i < SpawnNum; i++)
@@ -149,7 +149,7 @@ void AEnemySpawner::Tick(float DeltaTime)
                             PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                             FRotator::ZeroRotator);
                     }
-                }
+                }*/
                 else //0초 ~ 300초 : 정예몹 등장 X
                 {
                     for (int i = 0; i < SpawnNum; i++)

@@ -5,7 +5,7 @@
 
 // Sets default values
 AProjectile_A::AProjectile_A()
-{
+{/*
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -31,27 +31,27 @@ AProjectile_A::AProjectile_A()
     }
     if (!RootComponent)
     {
-        //Åõ»çÃ¼ »ı¼º
+        //íˆ¬ì‚¬ì²´ ìƒì„±
         RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
     }
 
     if (!CollisionComponent)
     {
-        //Åõ»çÃ¼ÀÇ ¸ğ¾ç »ı¼º
+        //íˆ¬ì‚¬ì²´ì˜ ëª¨ì–‘ ìƒì„±
         CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-        // Åõ»çÃ¼ Äİ¸®Àü ÀÌ¸§
+        // íˆ¬ì‚¬ì²´ ì½œë¦¬ì „ ì´ë¦„
         CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-        //Åõ»çÃ¼ Å©±â ¼³Á¤
+        //íˆ¬ì‚¬ì²´ í¬ê¸° ì„¤ì •
         CollisionComponent->InitSphereRadius(15.0f);
         // Event called when component hits something.
         CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectile_A::OnHit);
-        //Åõ»çÃ¼ Ãæµ¹¼³Á¤
+        //íˆ¬ì‚¬ì²´ ì¶©ëŒì„¤ì •
         RootComponent = CollisionComponent;
     }
 
     if (!ProjectileMovementComponent)
     {
-        // Åõ»çÃ¼ ¼Óµµ ¼³Á¤
+        // íˆ¬ì‚¬ì²´ ì†ë„ ì„¤ì •
         ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
         ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
         ProjectileMovementComponent->InitialSpeed = 3000.0f;
@@ -79,80 +79,83 @@ AProjectile_A::AProjectile_A()
         ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
         ProjectileMeshComponent->SetupAttachment(RootComponent);
     }
-    //½Ã°£ Áö³ª¸é ÆÄ±«
+    //ì‹œê°„ ì§€ë‚˜ë©´ íŒŒê´´
     InitialLifeSpan = 30.0f;
 
-    // Åõ»çÃ¼ »ı¼º À§Ä¡ ÀúÀå
+    // íˆ¬ì‚¬ì²´ ìƒì„± ìœ„ì¹˜ ì €ì¥
     StartLocation = FVector::ZeroVector;
 
-    // Åõ»çÃ¼ ¼Óµµ, µ¥¹ÌÁö, »ç°Å¸®
+    // íˆ¬ì‚¬ì²´ ì†ë„, ë°ë¯¸ì§€, ì‚¬ê±°ë¦¬
     ProjectileSpeed = 50.0f;
     ProjectileDamage = 1.0f;
     ProjectileRange = 1000.0f;
-
+    */
 }
 
 // Called when the game starts or when spawned
 void AProjectile_A::BeginPlay()
 {
-	Super::BeginPlay();
+	/*Super::BeginPlay();*/
 	
 }
 
 // Called every frame
 void AProjectile_A::Tick(float DeltaTime)
-{
+{/*
 	Super::Tick(DeltaTime);
-    // ÇöÀç À§Ä¡¿Í ½ÃÀÛ À§Ä¡ÀÇ °Å¸®¸¦ °è»ê
+    // í˜„ì¬ ìœ„ì¹˜ì™€ ì‹œì‘ ìœ„ì¹˜ì˜ ê±°ë¦¬ë¥¼ ê³„ì‚°
     float DistanceTraveled = FVector::Dist(StartLocation, GetActorLocation());
 
-    // Æ¯Á¤ °Å¸® ÀÌ»ó ÀÌµ¿ÇÏ¸é ÆÄ±«
+    // íŠ¹ì • ê±°ë¦¬ ì´ìƒ ì´ë™í•˜ë©´ íŒŒê´´
     if (DistanceTraveled > ProjectileRange)
     {
         Destroy();
-    }
+    }*/
 }
 
-//Åõ»çÃ¼
+//íˆ¬ì‚¬ì²´
 void AProjectile_A::FireInDirection(const FVector& ShootDirection)
 {
+    /*
     StartLocation = GetActorLocation();
-    //ÅºÈ¯½ÃÀÛ¹æÇâ¼³Á¤
+    //íƒ„í™˜ì‹œì‘ë°©í–¥ì„¤ì •
     ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+    */
 }
 
 void AProjectile_A::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+    /*
     if (OtherActor != nullptr && OtherActor != this && OtherComponent != nullptr)
     {
-        // Ãæµ¹ÇÑ ¿ÀºêÁ§Æ®°¡ AEnemy Å¬·¡½ºÀÎÁö È®ÀÎ
+        // ì¶©ëŒí•œ ì˜¤ë¸Œì íŠ¸ê°€ AEnemy í´ë˜ìŠ¤ì¸ì§€ í™•ì¸
         if (OtherActor->GetClass()->IsChildOf(AEnemy::StaticClass()))
         {
-            // AEnemy·Î Ä³½ºÆÃ
+            // AEnemyë¡œ ìºìŠ¤íŒ…
             AEnemy* HitEnemy = Cast<AEnemy>(OtherActor);
             if (HitEnemy)
             {
-                // Ã¼·Â°¨¼Ò
+                // ì²´ë ¥ê°ì†Œ
                 HitEnemy->Health -= ProjectileDamage;
 
-                // ÀûÃ³Ä¡
+                // ì ì²˜ì¹˜
                 if (HitEnemy->Health <= 0.0f)
                 {
                     HitEnemy->Destroy();
                 }
 
-                // Ã¼·Â °¨¼Ò °á°ú¸¦ È­¸é¿¡ Ãâ·Â
+                // ì²´ë ¥ ê°ì†Œ ê²°ê³¼ë¥¼ í™”ë©´ì— ì¶œë ¥
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Hit enemy's remaining health: %f"), HitEnemy->Health));
             }
         }
     }
 
-    // ¹ß»çÃ¼¸¦ ÆÄ±« (ÇÊ¿ä½Ã)
-    Destroy();
+    // ë°œì‚¬ì²´ë¥¼ íŒŒê´´ (í•„ìš”ì‹œ)
+    Destroy();*/
 }
 
 void AProjectile_A::SetProjectileMeshAndMarterial(UStaticMesh* ProjectileMesh, UMaterialInterface* ProjectileMaterial)
-{
+{/*
     if (ProjectileMeshComponent)
     {
         if (ProjectileMesh)
@@ -163,13 +166,13 @@ void AProjectile_A::SetProjectileMeshAndMarterial(UStaticMesh* ProjectileMesh, U
         {
             ProjectileMeshComponent->SetMaterial(0, ProjectileMaterial);
         }
-    }
+    }*/
 }
 
 void AProjectile_A::SetProjectileSpeedDamageAndRange(float Speed, float Damage, float Range)
-{
+{/*
     ProjectileMovementComponent->InitialSpeed = Speed * 100;
     ProjectileMovementComponent->MaxSpeed = Speed * 100;
     ProjectileDamage = Damage;
-    ProjectileRange = Range;
+    ProjectileRange = Range;*/
 }
