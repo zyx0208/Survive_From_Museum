@@ -15,6 +15,7 @@
 #include "Components/PoseableMeshComponent.h"
 
 #include "SubWeapon.h"
+#include "WeaponDrop.h"
 #include "GameTimer.h"
 
 #include "AGSDCharacter.generated.h"
@@ -265,6 +266,10 @@ public:
     //드랍된 무기와 들고 있는 무기 교체
     UFUNCTION()
     void GetWeapon();
+
+    //오버랩된 무기드랍
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    AWeaponDrop* OverlapWeaponDrop;
 
     //현재 오버랩된 드랍된 무기 ID
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

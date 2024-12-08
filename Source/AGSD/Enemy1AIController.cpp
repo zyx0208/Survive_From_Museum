@@ -117,7 +117,7 @@ void AEnemy1AIController::Died(int64 num)
         {
             KillCountCall(World);
         }
-        if (FMath::RandRange(1, 100) <= 5) //5% 확률로 무기 드랍
+        if (FMath::RandRange(1, 100) <= 20) //5% 확률로 무기 드랍
         {
             World->SpawnActor<AActor>(WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }

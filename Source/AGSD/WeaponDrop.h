@@ -38,6 +38,8 @@ public:
     UPROPERTY(BlueprintReadWrite,EditAnywhere)
     FString WeaponID = "0";
 
+    INT32 WeaponIDInt = 0;
+
     //참조할 무기 데이터 테이블
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
     UDataTable* WeaponDataTableRef;
@@ -49,4 +51,8 @@ public:
     //콜리전 컴포넌트
     UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
     USphereComponent* CollisionComponent;
+
+    //파괴
+    UFUNCTION()
+    void DestroySelf();
 };

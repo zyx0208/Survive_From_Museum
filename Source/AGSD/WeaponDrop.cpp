@@ -46,6 +46,8 @@ AWeaponDrop::AWeaponDrop()
         }
         
     }
+
+    WeaponIDInt = FMath::RandRange(5, 6);
 }
 
 // Called when the game starts or when spawned
@@ -72,5 +74,10 @@ void AWeaponDrop::Tick(float DeltaTime)
 void AWeaponDrop::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Debug! WeaponDrop Overlap Begin")));
+}
+
+void AWeaponDrop::DestroySelf()
+{
+    Destroy();
 }
 

@@ -181,7 +181,7 @@ void AAGSDCharacter::BeginPlay()
         InGameTimer = NewObject<UGameTimer>();
         if (InGameTimer)
         {
-            InGameTimer->TimeSet(10.0f); // 60초 타이머 설정
+            InGameTimer->TimeSet(120.0f); // 60초 타이머 설정
             UE_LOG(LogTemp, Warning, TEXT("GameTimer successfully created."));
         }
         else
@@ -594,7 +594,7 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
         {
             OverlapDropWeapon = true;
             // ACharacter로 캐스팅
-            AWeaponDrop* OverlapWeaponDrop = Cast<AWeaponDrop>(OtherActor);
+            OverlapWeaponDrop = Cast<AWeaponDrop>(OtherActor);
             if (OverlapWeaponDrop)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Overlap Weapon: %s"), *OverlapWeaponDrop->WeaponID));
@@ -636,6 +636,7 @@ void AAGSDCharacter::GetWeapon()
             WeaponArray[1] = MyInt;
             WeaponID = FString::FromInt(WeaponArray[1]);
         }
+        OverlapWeaponDrop->DestroySelf();
         WeaponTake();
     }
     else {
