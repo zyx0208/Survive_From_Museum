@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Enemy1Class.h"
 #include "Enemy1AIController.generated.h"
-
 /**
  * 
  */
@@ -16,25 +16,6 @@ class AGSD_API AEnemy1AIController : public AAIController
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	//이 코드가 설정된 블루프린트 캐릭터마다 값을 수정할 수 있도록 public 및 UPROPERTY 설정
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float MoveSpeed = 0;//해당 캐릭터의 이동속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackRange = 0;//해당 캐릭터의 공격길이
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltime = 0;//해당 캐릭터의 공격속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackCooltimeFirstDelay = 0;//공격범위에 들어왔을 때, 첫 공격이 [AttackCooltime - AttackCooltime_first]초 뒤에 실행됨
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float AttackDamage = 0;//해당 캐릭터의 공격력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 MaxHP = 0;//해당 캐릭터의 최대체력 (숫자 범위 : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int64 CurrentHP = 0;//해당 캐릭터의 현재체력 (숫자 범위 : -9,223,372,036,854,775,808 ~ 9,223,372,036,854,775,807)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")int AttackType = 0;//해당 캐릭터의 공격 방식
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//해당 캐릭터가 현재 공격중인가?를 나타내는 변수(공격중일때는 추적을 멈춤)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1 = NULL;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect2 = NULL;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> WeaponDrop = NULL;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//대쉬가 있는 적을 위한 설정 기능
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//대쉬 기능이 있을경우 true로 설정
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//대쉬 기능이 있을경우 true로 설정
 	virtual void Attacked(float damage);//플레이어의 공격을 맞았을 경우
 	virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
@@ -42,7 +23,8 @@ public:
     void KillCountCall(UWorld* World);
 
 private:
-	ACharacter* PlayerCharacter = NULL; //플레이어 위치 및 방향 정보를 담는 액터 배열
+    AEnemy1Class* Enemy; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
+	ACharacter* PlayerCharacter; //플레이어 위치 및 방향 정보를 담는 액터 배열
 	float AttackCooltime_temp = 0.0f; //공격속도 계산을 위한 임의의 변수
 	bool IsFisrt = true;//C++과 블루프린트에서 begin 함수보다 반드시 늦게 실행해야 하지만 한번만 실행해야 되는 함수를 사용하기 위해
 	bool TickSwitch = false;//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
