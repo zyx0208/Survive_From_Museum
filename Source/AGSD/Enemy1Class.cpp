@@ -33,19 +33,3 @@ void AEnemy1Class::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-void AEnemy1AIController::Attacked(float damage)//구현은 AEnemy1AIController에 있음
-{
-    Cast<AEnemy1AIController>(GetCharacter()->GetController())->Attacked(damage);
-}
-
-void AEnemy1AIController::Died(int64 num)//구현은 AEnemy1AIController에 있음
-{
-    Cast<AEnemy1AIController>(GetCharacter()->GetController())->Died(num);
-}
-
-void AEnemy1AIController::KillCountCall(UWorld* World)//구현은 AEnemy1AIController에 있음
-{
-    Cast<AEnemy1AIController>(GetCharacter()->GetController())->KillCountCall(World);
-}
-

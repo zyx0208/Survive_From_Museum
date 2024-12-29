@@ -41,7 +41,4 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-    void Attacked(float damage);//플레이어의 공격을 맞았을 경우
-    virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
-    void KillCountCall(UWorld* World);
 };
