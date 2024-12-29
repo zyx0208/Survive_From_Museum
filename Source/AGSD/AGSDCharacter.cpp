@@ -45,14 +45,17 @@ AAGSDCharacter::AAGSDCharacter()
 	MaxHealth = 100;
 	CurrentHealth = 100;
 	Defense = 0;
+    SpeedLevel = 500.f;
+
+    Attack = 1.0f; //초기 공격력 수정해도 상관없음
+
 
 	CharacterLevel = 1;        // 캐릭터 초기 레벨
 	CurrentXP = 0;             // 초기 경험치
 	XPToNextLevel = 8;       // 첫 번째 레벨 업까지 필요한 경험치
-
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
 
-	Attack = 1.0f; //초기 공격력 수정해도 상관없음
+	
 
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
@@ -76,7 +79,7 @@ AAGSDCharacter::AAGSDCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MaxWalkSpeed = SpeedLevel;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
