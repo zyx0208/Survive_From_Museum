@@ -689,7 +689,7 @@ void AAGSDCharacter::CreateProjectile()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();
-
+            /*
 			//탄환숫자만큼 발사반복
 			for (int i = 0; i < Numberofprojectile; i++) {
 
@@ -719,7 +719,32 @@ void AAGSDCharacter::CreateProjectile()
                 if (WeaponParticle) {
                     SpawnParticle(MuzzleLocation, AdjustedRotation);
                 }
-			}
+			}*/
+
+            // 총구에 탄환 생성.
+                //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
+                //AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+            AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+            if (Projectile)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+                FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+                Projectile->PlayerAttack = Attack;
+                if (WeaponData)
+                {
+                    //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
+                    //Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
+                    //Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+                    // 탄환 방향설정
+                    FVector LaunchDirection = MuzzleRotation.Vector();
+                    Projectile->FireInDirection(LaunchDirection);
+                }
+
+            }
+            //파티클 생성
+            if (WeaponParticle) {
+                SpawnParticle(MuzzleLocation, MuzzleRotation);
+            }
 		}
 
 	}

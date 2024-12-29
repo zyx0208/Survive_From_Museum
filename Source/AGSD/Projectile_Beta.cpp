@@ -63,16 +63,6 @@ AProjectile_Beta::AProjectile_Beta()
     if (!ProjectileMeshComponent)
     {
         ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
-        static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
-        if (Mesh.Succeeded())
-        {
-            ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
-        }
-        static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Script/Engine.Material'/Game/Projectile/Material/Projectile_Red.Projectile_Red'"));
-        if (Material.Succeeded())
-        {
-            ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
-        }
         ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
         ProjectileMeshComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
         ProjectileMeshComponent->SetupAttachment(RootComponent);

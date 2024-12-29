@@ -5,24 +5,16 @@
 
 AProjectile_Beta_Blue::AProjectile_Beta_Blue()
 {
-	// Åõ»çÃ¼ ¼Óµµ, µ¥¹ÌÁö, »ç°Å¸®
+	// íˆ¬ì‚¬ì²´ ì†ë„, ë°ë¯¸ì§€, ì‚¬ê±°ë¦¬
 	ProjectileSpeed = 7.0f;
 	ProjectileDamage = 4.0f;
-	ProjectileRange = 500.0f;
-
-	static ConstructorHelpers::FObjectFinder<UMaterial> NewMaterial(TEXT("/Script/Engine.Material'/Game/Projectile/Material/Projectile_Blue.Projectile_Blue'"));
-	if (NewMaterial.Succeeded())
-	{
-		// ProjectileMeshComponent°¡ ºÎ¸ğ Å¬·¡½º¿¡¼­ »ı¼ºµÇ¾úÀ¸¹Ç·Î, ¿©±â¼­ ¸¶Å×¸®¾óÀ» ¼³Á¤ÇÕ´Ï´Ù.
-		ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(NewMaterial.Object, ProjectileMeshComponent);
-		ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
-	}
+    ProjectileRange = 500.0f;
 }
 
 void AProjectile_Beta_Blue::WeaponHitEffect()
 {
-	// Ãß°¡ÀûÀÎ ±â´ÉÀ» ±¸Çö
+	// ì¶”ê°€ì ì¸ ê¸°ëŠ¥ì„ êµ¬í˜„
 	UE_LOG(LogTemp, Warning, TEXT("BlueHit"));
-	// ¹ß»çÃ¼¸¦ ÆÄ±« (ÇÊ¿ä½Ã)
+	// ë°œì‚¬ì²´ë¥¼ íŒŒê´´ (í•„ìš”ì‹œ)
 	Destroy();
 }
