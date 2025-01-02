@@ -32,6 +32,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//대쉬가 있는 적을 위한 설정 기능
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//대쉬 기능이 있을경우 true로 설정
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float FDash = 0.0f;//대쉬 계수(몇배속으로 할 것인가?)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//대쉬 기능이 있을경우 true로 설정
 
 protected:

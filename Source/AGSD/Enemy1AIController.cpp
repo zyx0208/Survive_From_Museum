@@ -94,7 +94,31 @@ void AEnemy1AIController::AttackTypeC()
 
 void AEnemy1AIController::AttackTypeD()
 {
-    GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+    if (BossCount >= 2) //3번째 공격은 오크통 발사
+    {
+        BossCount = 0;
+        FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+        for (int i = 0; i < 16; i++)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+            EnemyRotator.Yaw += 22.5f;
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+        BossCount++;
+        if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)
+        {
+            //플레이어 구현이 완료되면 이 안에 코드를 수정
+            UE_LOG(LogTemp, Display, TEXT("Hit!"));
+            //Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+        }
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
+    }
+
+
+
 }
 
 void AEnemy1AIController::Attacked(float damage)
@@ -207,7 +231,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 					{
 						DashCoolTime_Temp = 0.0f;
 						IsDashing = false;
-                        Enemy->MoveSpeed /= 10.0f;
+                        Enemy->MoveSpeed /= Enemy->FDash;
 					}
 				}
 				else
@@ -217,7 +241,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 					{
 						DashCoolTime_Temp = 0.0f;
 						IsDashing = true;
-                        Enemy->MoveSpeed *= 10.0f;
+                        Enemy->MoveSpeed *= Enemy->FDash;
 					}
 				}
 			}

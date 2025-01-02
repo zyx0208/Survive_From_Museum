@@ -31,7 +31,7 @@ private:
 	virtual void AttackTypeA();//1번 공격 타입 : 근거리
 	virtual void AttackTypeB();//2번 공격 타입 : 보스1
 	virtual void AttackTypeC();//3번 공격 타입 : 공격모션이 없는 근거리
-	virtual void AttackTypeD();//4번 공격 타입 : 원거리
+	virtual void AttackTypeD();//4번 공격 타입 : 고릴라 보스
 	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수1
 	FVector ChenkIsolated_2 = FVector(0.0f, 0.0f, 0.0f);//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수2
 	float ChenkIsolated_Timer = 0.0f;//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수3
