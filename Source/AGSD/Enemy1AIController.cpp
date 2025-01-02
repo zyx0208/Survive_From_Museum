@@ -87,7 +87,7 @@ void AEnemy1AIController::AttackTypeC()
     {
         //플레이어 구현이 완료되면 이 안에 코드를 수정
         UE_LOG(LogTemp, Display, TEXT("Hit!"));
-        //Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackRange);
+        Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     }
 }
@@ -112,7 +112,7 @@ void AEnemy1AIController::AttackTypeD()
         {
             //플레이어 구현이 완료되면 이 안에 코드를 수정
             UE_LOG(LogTemp, Display, TEXT("Hit!"));
-            //Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+            Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
         }
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
     }
