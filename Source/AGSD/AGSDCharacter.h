@@ -122,15 +122,22 @@ public:
 
 public:
 	//캐릭터 스탯
-	int32 MaxHealth;
-	int32 CurrentHealth;
-	int32 Defense;
-	float Attack;
+	int32 MaxHealth;        // 최대 체력
+	int32 CurrentHealth;    // 현제 체력
+	int32 Defense;          // 방어력
+    float SpeedLevel;       // 이동속도
+
+	float Attack;           // 공격력
+    float AttackRangeLevel; // 공격 범위
+    float AttackSpeedLevel; // 공격 속도
 
 	int32 CharacterLevel;   // 캐릭터 레벨
 	int32 CurrentXP;        // 현재 경험치
 	int32 XPToNextLevel;    // 다음 레벨까지 필요한 경험치
 	float BounsXPLevel;		// 업그레이드 옵션(획득 경험치 증가 옵션)
+    float XPRangeLevel;     // 경험치 획득 반경
+
+
 
     // GameTimer 인스턴스
     UPROPERTY()

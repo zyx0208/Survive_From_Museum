@@ -17,12 +17,11 @@
 #include "Engine/LevelScriptActor.h"//레벨블루프린트
 #include "AGSDCharacter.h"
 #include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
+#include "Enemy1Class.h"
 
 void AEnemy1AIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 void AEnemy1AIController::AttackTypeA()
@@ -35,13 +34,13 @@ void AEnemy1AIController::AttackTypeA()
 	-1: 후면(180도)
 	ex : 0 이상으로 설정하면 캐릭터의 앞을 기준으로 좌우 90도가 범위
 	*/
-	if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
+	if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
 	{
 		//플레이어 구현이 완료되면 이 안에 코드를 수정
 		UE_LOG(LogTemp, Display, TEXT("Hit!"));
-		Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
+		Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
 	}
-	GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
+	GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
 
 }
 
@@ -53,53 +52,83 @@ void AEnemy1AIController::AttackTypeB()
 		DrawDebugCylinder(GetWorld(), //공격 범위 그리기
 			GetCharacter()->GetActorLocation(), //원통 시작위치
 			GetCharacter()->GetActorLocation(), //원통 끝 위치
-			AttackRange * 1.5f, //원통 반지름
+            Enemy->AttackRange * 1.5f, //원통 반지름
 			36, //원통의 세그먼트 개수
 			FColor::Red, //원통 색상
 			false, //지속적으로 화면에 표시하는가?
 			0.3f, //지속시간
 			100.0f, //선 두께(0이 기본)
 			1.0f); //투명도(불투명 = 1)
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.5f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.5f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
-			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
+			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
 		}
-		GetWorld()->SpawnActor<AActor>(AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+		GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
 	}
 	else
 	{
 		UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
 		BossCount++;
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)
 		{
 			//플레이어 구현이 완료되면 이 안에 코드를 수정
 			UE_LOG(LogTemp, Display, TEXT("Hit!"));
-			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(AttackDamage);
+			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
 		}
-		GetWorld()->SpawnActor<AActor>(AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * AttackRange, GetCharacter()->GetActorRotation());
+		GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
 	}
 }
 
 void AEnemy1AIController::AttackTypeC()
 {
-	//미구현
+    if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.0f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
+    {
+        //플레이어 구현이 완료되면 이 안에 코드를 수정
+        UE_LOG(LogTemp, Display, TEXT("Hit!"));
+        Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+    }
 }
 
 void AEnemy1AIController::AttackTypeD()
 {
-	//미구현
+    if (BossCount >= 2) //3번째 공격은 오크통 발사
+    {
+        BossCount = 0;
+        FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+        for (int i = 0; i < 16; i++)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+            EnemyRotator.Yaw += 22.5f;
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+        BossCount++;
+        if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)
+        {
+            //플레이어 구현이 완료되면 이 안에 코드를 수정
+            UE_LOG(LogTemp, Display, TEXT("Hit!"));
+            Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+        }
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
+    }
+
+
+
 }
 
 void AEnemy1AIController::Attacked(float damage)
 {
 	//데미지 계산 방식에 따라 수정 필요
-	CurrentHP -= damage;
-	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), CurrentHP);
+    Enemy->CurrentHP -= damage;
+	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
 
 	//체력이 0이하일 경우 죽음
-	if (CurrentHP <= 0.0f)
+	if (Enemy->CurrentHP <= 0.0f)
 	{
 		Died(1);//데미지 계산 방식에 따라 수정 필요
 	}
@@ -119,15 +148,15 @@ void AEnemy1AIController::Died(int64 num)
         }
         if (FMath::RandRange(1, 100) <= 20) //5% 확률로 무기 드랍
         {
-            World->SpawnActor<AActor>(WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
-		World->SpawnActor<AActor>(EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+		World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
 	default://버그 등으로 인해 강제로 삭제해야 하는 경우
 		UE_LOG(LogTemp, Display, TEXT("Enemy is isolated!"));
 		break;
 	}
-	IsDead = true;
+    Enemy->IsDead = true;
 }
 
 void AEnemy1AIController::KillCountCall(UWorld* World)
@@ -156,18 +185,21 @@ void AEnemy1AIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	//begin보다 늦게 실행하면서 Tick보다는 빨리 실행하는 한번만 발생하는 코드
-	//동적으로 생성할 때 beginplay를 블프랑 여기서 둘다 실행하면 터지는 오류가 있음
+	//동적으로 생성(ex:스포너로 생성)할 때 beginplay를 블프랑 여기서 둘다 실행하면 터지는 오류가 있음
 	if (IsFisrt)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Enemy created."));//생성됐음을 알리는 로그
-		IsAttacking = false;
-		IsFisrt = true;
-		PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+        //플레이어 캐릭터 및 적 캐릭터의 변수 지정
+        Enemy = Cast<AEnemy1Class>(GetPawn());
+        PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+        //기본값 설정
+        Enemy->IsAttacking = false;
 		ChenkIsolated_1 = GetCharacter()->GetActorLocation();
 		ChenkIsolated_2 = GetCharacter()->GetActorLocation();
 		IsFisrt = false;
-		AttackCooltime_temp = AttackCooltimeFirstDelay;//공격속도 초기화
-		CurrentHP = MaxHP;
+		AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;//공격속도 초기화
+        Enemy->CurrentHP = Enemy->MaxHP;
 	}
 
 	//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
@@ -183,14 +215,14 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
 	{
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= AttackRange) and (!IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
+		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
 		{
 			//적 추적
-			GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
-			AttackCooltime_temp = AttackCooltimeFirstDelay;
+			GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = Enemy->MoveSpeed;
+			AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;
 			MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true);
 			//대쉬기능
-			if (Dash)
+			if (Enemy->Dash)
 			{
 				if (IsDashing)
 				{
@@ -199,17 +231,17 @@ void AEnemy1AIController::Tick(float DeltaTime)
 					{
 						DashCoolTime_Temp = 0.0f;
 						IsDashing = false;
-						MoveSpeed /= 10.0f;
+                        Enemy->MoveSpeed /= Enemy->FDash;
 					}
 				}
 				else
 				{
 					DashCoolTime_Temp += DeltaTime;
-					if (DashCoolTime_Temp >= DashCoolTime)
+					if (DashCoolTime_Temp >= Enemy->DashCoolTime)
 					{
 						DashCoolTime_Temp = 0.0f;
 						IsDashing = true;
-						MoveSpeed *= 10.0f;
+                        Enemy->MoveSpeed *= Enemy->FDash;
 					}
 				}
 			}
@@ -249,12 +281,12 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		{
 			//공격 상호작용
 			StopMovement();
-			IsAttacking = true;
+            Enemy->IsAttacking = true;
 			AttackCooltime_temp += DeltaTime;
-			if (AttackCooltime_temp >= AttackCooltime)//공격실행
+			if (AttackCooltime_temp >= Enemy->AttackCooltime)//공격실행
 			{
 				AttackCooltime_temp = 0.0f;
-				switch (AttackType)//공격방식에 따라 공격 실행
+				switch (Enemy->AttackType)//공격방식에 따라 공격 실행
 				{
 				case 1:
 					AttackTypeA();
@@ -262,12 +294,18 @@ void AEnemy1AIController::Tick(float DeltaTime)
 				case 2:
 					AttackTypeB();
 					break;
+                case 3:
+                    AttackTypeC();
+                    break;
+                case 4:
+                    AttackTypeD();
+                    break;
 				default://공격타입이 설정되지 않았을 경우
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));
 					break;
 				}
 
-				IsAttacking = false;
+                Enemy->IsAttacking = false;
 				MoveToActor(PlayerCharacter, -1.0f, true, true, true, 0, true); //재공격 시 플레이어를 바라보도록
 			}
 		}
