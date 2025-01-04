@@ -195,8 +195,14 @@ public:
 	//무기 탄환 숫자
 	int Numberofprojectile;
 
+    //무기 반복 발사
+    int RepeatFire;
+
 	//탄환 각도
 	float SpreadAngle;
+
+    //무기 유형
+    bool WeaponType;
 
 	//무기 메쉬 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -300,5 +306,20 @@ public:
 
     //오버랩 확인
     bool IsOverlappingActor(const AActor* Other) const;
+
+    //몽타주 재생
+    UFUNCTION()
+    void PlayFireMontage(UAnimMontage* Montage, int ReapeatNumber);
+
+    UFUNCTION()
+    void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+    UAnimMontage* CurrentMontage;
+
+    int RepeatCount;
+    int CurrentCount;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UAnimInstance* AnimInstance;
 };
 

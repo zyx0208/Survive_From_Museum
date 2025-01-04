@@ -35,6 +35,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Inumberofprojectile;
 
+    //무기 발사 반복
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int RepeatFire;
+
 	//무기 탄환
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AProjectile_Beta> WeaponProjectile;
@@ -50,4 +54,8 @@ public:
     //무기 공격 파티클
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UParticleSystem* WeaponParticle;
+
+    //무기 공격 유형
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool WeaponType;
 };

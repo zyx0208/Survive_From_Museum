@@ -32,6 +32,9 @@
 
 #include "WeaponDrop.h"
 
+#include "Animation/AnimInstance.h"
+#include "Animation/AnimMontage.h"
+
 
 
 
@@ -55,7 +58,8 @@ AAGSDCharacter::AAGSDCharacter()
 	XPToNextLevel = 8;       // 첫 번째 레벨 업까지 필요한 경험치
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
 
-	
+    AttackSpeedLevel = 1.0f;
+    AttackRangeLevel = 1.0f;
 
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
@@ -195,6 +199,11 @@ void AAGSDCharacter::BeginPlay()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("GameTimer not started. Current map: %s"), *CurrentMapName);
+    }
+
+    AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance) {
+        UE_LOG(LogTemp, Warning, TEXT("No Anim"));
     }
 }
 
@@ -495,13 +504,57 @@ void AAGSDCharacter::Fire()
 		return;
 	}
 	else {
-		GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate, false);
+		GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate/AttackSpeedLevel, false);
 	}
 	if (FireMontage && GetMesh())
 	{
-		PlayAnimMontage(FireMontage);
+        if (!AnimInstance) {
+            UE_LOG(LogTemp, Log, TEXT("NO Anim"));
+            return;
+        }
+        PlayFireMontage(FireMontage, RepeatFire);
 	}
 	
+}
+
+void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage, int RepeatNumber)
+{
+    if (!Montage || RepeatNumber <= 0) return;
+
+    // 변수 초기화
+    CurrentMontage = Montage;
+    RepeatCount = RepeatNumber;
+    CurrentCount = 0;
+
+    // Delegate 설정
+    FOnMontageEnded MontageEndedDelegate;
+    MontageEndedDelegate.BindUObject(this, &AAGSDCharacter::OnMontageEnded);
+
+    // 몽타주 재생 및 Delegate 바인딩
+    AnimInstance->Montage_Play(Montage,1.0f*RepeatFire*AttackSpeedLevel);
+    AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, Montage);
+}
+
+void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+    if (Montage != CurrentMontage || bInterrupted)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Montage was interrupted or not the expected montage."));
+        return;
+    }
+
+    CurrentCount++;
+
+    if (CurrentCount < RepeatCount)
+    {
+        // 반복 재생
+        AnimInstance->Montage_Play(Montage, 1.0f * RepeatFire * AttackSpeedLevel);
+    }
+    else
+    {
+        // 반복 종료
+        UE_LOG(LogTemp, Log, TEXT("Montage playback completed %d times."), RepeatCount);
+    }
 }
 
 void AAGSDCharacter::WeaponSwap() {
@@ -564,7 +617,9 @@ void AAGSDCharacter::WeaponTake()
     ProjectileClass = WeaponData->WeaponProjectile;
     FireMontage = WeaponData->WeaponAnimationMontage;
     CurrentWeaponMesh = WeaponData->WeaponMesh;
+    RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+	WeaponType = WeaponData->WeaponType;
     if (WeaponData->WeaponParticle != nullptr) {
         WeaponParticle = WeaponData->WeaponParticle;
     }
@@ -624,6 +679,8 @@ bool AAGSDCharacter::IsOverlappingActor(const AActor* Other) const
     return false;
 }
 
+
+
 void AAGSDCharacter::GetWeapon()
 {
     if (OverlapDropWeapon) {
@@ -665,95 +722,131 @@ void AAGSDCharacter::StopFiring()
 
 void AAGSDCharacter::CreateProjectile()
 {
-	// 발사
-	if (ProjectileClass)
-	{
+    // 발사
+    if (!WeaponType) {
+        if (ProjectileClass)
+        {
 
 
-		// 총구 위치
-		MuzzleOffset.Set(50.0f, 0.0f, 0.0f);
+            // 총구 위치
+            MuzzleOffset.Set(0.1f, 0.0f, 0.0f);
 
-		// 총구 방향
-		FRotator MuzzleRotation = TraceHitDirection.Rotation();
-		MuzzleRotation.Pitch = 0;
-		MuzzleRotation.Roll = 0;
+            // 총구 방향
+            FRotator MuzzleRotation = TraceHitDirection.Rotation();
+            MuzzleRotation.Pitch = 0;
+            MuzzleRotation.Roll = 0;
 
-		// 총구위치 설정
-		MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-		MuzzleLocation.Z = 90;
-		//MuzzleLocation.Normalize();
+            // 총구위치 설정
+            MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+            MuzzleLocation.Z = 90;
+            //MuzzleLocation.Normalize();
 
-		MuzzleRotation.Pitch += 0.0f;
+            MuzzleRotation.Pitch += 0.0f;
 
-		// 탄환 생성
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = GetInstigator();
-            /*
-			//탄환숫자만큼 발사반복
-			for (int i = 0; i < Numberofprojectile; i++) {
-
-				// 총구에 탄환 생성.
-				//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
-				//AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-				AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-				float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
-				FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
-				if (Projectile)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
-					FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-					Projectile->PlayerAttack = Attack;
-					if (WeaponData)
-					{
-						//탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-						//Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-						//Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
-						// 탄환 방향설정
-						FVector LaunchDirection = AdjustedRotation.Vector();
-						Projectile->FireInDirection(LaunchDirection);
-					}
-
-				}
-                //파티클 생성
-                if (WeaponParticle) {
-                    SpawnParticle(MuzzleLocation, AdjustedRotation);
-                }
-			}*/
-
-            // 총구에 탄환 생성.
-                //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
-                //AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-            AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-            if (Projectile)
+            // 탄환 생성
+            UWorld* World = GetWorld();
+            if (World)
             {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
-                FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                Projectile->PlayerAttack = Attack;
-                if (WeaponData)
-                {
-                    //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-                    //Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-                    //Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
-                    // 탄환 방향설정
-                    FVector LaunchDirection = MuzzleRotation.Vector();
-                    Projectile->FireInDirection(LaunchDirection);
+                FActorSpawnParameters SpawnParams;
+                SpawnParams.Owner = this;
+                SpawnParams.Instigator = GetInstigator();
+                //탄환숫자만큼 발사반복
+                for (int i = 0; i < Numberofprojectile; i++) {
+
+                    // 총구에 탄환 생성.
+                    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
+                    //AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+                    AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+                    float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
+                    FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
+                    if (Projectile)
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+                        FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+                        Projectile->PlayerAttack = Attack;
+                        Projectile->PlayerRange = AttackRangeLevel;
+                        if (WeaponData)
+                        {
+                            //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
+                            //Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
+                            //Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
+                            // 탄환 방향설정
+                            FVector LaunchDirection = AdjustedRotation.Vector();
+                            Projectile->FireInDirection(LaunchDirection);
+                        }
+
+                    }
+                    //파티클 생성
+                    if (WeaponParticle) {
+                        SpawnParticle(MuzzleLocation, AdjustedRotation);
+                    }
                 }
 
             }
-            //파티클 생성
-            if (WeaponParticle) {
-                SpawnParticle(MuzzleLocation, MuzzleRotation);
-            }
-		}
+        }
+    }
+    else {
+        if (ProjectileClass)
+        {
 
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not Found"));
-	}
+
+            // 총구 위치
+            MuzzleOffset.Set(0.1f, 0.0f, 0.0f);
+
+            // 총구 방향
+            FRotator MuzzleRotation = TraceHitDirection.Rotation();
+            MuzzleRotation.Pitch = 0;
+            MuzzleRotation.Roll = 0;
+
+            // 총구위치 설정
+            MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+            MuzzleLocation.Z = 90;
+
+            MuzzleRotation.Pitch += 0.0f;
+
+            // 탄환 생성
+            UWorld* World = GetWorld();
+            if (World)
+            {
+                FActorSpawnParameters SpawnParams;
+                SpawnParams.Owner = this;
+                SpawnParams.Instigator = GetInstigator();
+                float LeftRight = 15.0f;
+                //탄환숫자만큼 발사반복
+                for (int i = 0; i < Numberofprojectile; i++) {
+                    if (i % 2 == 1) {
+                        MuzzleOffset.Y = -1 * LeftRight;
+                        
+                    }
+                    else if (i!=0 && i % 2 == 0) {
+                        MuzzleOffset.Y = 1 * LeftRight;
+                        LeftRight += 15.0f;
+                    }
+                    MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+                    AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+                    if (Projectile)
+                    {
+                        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+                        FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+                        Projectile->PlayerAttack = Attack;
+                        Projectile->PlayerRange = AttackRangeLevel;
+                        if (WeaponData)
+                        {
+                            // 탄환 방향설정
+                            FVector LaunchDirection = MuzzleRotation.Vector();
+                            Projectile->FireInDirection(LaunchDirection);
+                        }
+
+                    }
+                    //파티클 생성
+                    if (WeaponParticle) {
+                        SpawnParticle(MuzzleLocation, MuzzleRotation);
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 void AAGSDCharacter::Attacked(float Damage)

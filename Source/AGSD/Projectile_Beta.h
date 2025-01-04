@@ -26,11 +26,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// ÅºÈ¯ Ãâ¹ßÁöÁ¡ ÀúÀå
+	// íƒ„í™˜ ì¶œë°œì§€ì  ì €ì¥
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	FVector StartLocation;
 
-	// ÅºÈ¯ ¼Óµµ, »ç°Å¸®, µ¥¹ÌÁö º¯¼ö
+	// íƒ„í™˜ ì†ë„, ì‚¬ê±°ë¦¬, ë°ë¯¸ì§€ ë³€ìˆ˜
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	float ProjectileSpeed;
 
@@ -43,32 +43,35 @@ public:
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	float PlayerAttack;
 
-	// ÅºÈ¯ Ãæµ¹
+    UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+    float PlayerRange;
+
+	// íƒ„í™˜ ì¶©ëŒ
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
 
-	// ÅºÈ¯ ÀÌµ¿
+	// íƒ„í™˜ ì´ë™
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
-	// ÅºÈ¯ ¹æÇâ ÇÔ¼ö
+	// íƒ„í™˜ ë°©í–¥ í•¨ìˆ˜
 	void FireInDirection(const FVector& ShootDirection);
 
-	// ÅºÈ¯ ¸Å½¬
+	// íƒ„í™˜ ë§¤ì‰¬
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	UStaticMeshComponent* ProjectileMeshComponent;
 
-	// ÅºÈ¯ ¸¶Å×¸®¾ó
+	// íƒ„í™˜ ë§ˆí…Œë¦¬ì–¼
 	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
 	UMaterialInstanceDynamic* ProjectileMaterialInstance;
 
-	// Ãæµ¹ÆÇÁ¤ ÇÔ¼ö
+	// ì¶©ëŒíŒì • í•¨ìˆ˜
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// ¹«±â ÀûÁß½Ã È¿°ú
+	// ë¬´ê¸° ì ì¤‘ì‹œ íš¨ê³¼
 	UFUNCTION()
 	virtual void WeaponHitEffect();
 };

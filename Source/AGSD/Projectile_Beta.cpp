@@ -20,8 +20,9 @@ AProjectile_Beta::AProjectile_Beta()
     ProjectileDamage = 1.0f;
     ProjectileRange = 1000.0f;
 
-    // 플레이어 공격력
+    // 플레이어 능력치
     PlayerAttack = 1.0f;
+    PlayerRange = 1.0f;
 
     if (!RootComponent)
     {
@@ -88,7 +89,7 @@ void AProjectile_Beta::Tick(float DeltaTime)
     float DistanceTraveled = FVector::Dist(StartLocation, GetActorLocation());
 
     // 특정 거리 이상 이동하면 파괴
-    if (DistanceTraveled > ProjectileRange)
+    if (DistanceTraveled > ProjectileRange*PlayerRange)
     {
         Destroy();
     }
