@@ -163,7 +163,37 @@ public:
 	void LevelUp();
 	void Attacked(float Damage); //데미지를 받을때 발생하는 함수
 
-    
+    //자석 범위
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
+    class USphereComponent* MagnetSphere;
+    //자석 범위 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
+    float MagnetStrength = 200.0f;
+
+    //대쉬 관련 변수
+    // 쿨타임 관련 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+    float DashCooldown = 3.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
+    bool bCanDash = true;
+
+    // 무적 상태 변수
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
+    bool bIsInvincible = false;
+    // 대쉬 쿨타임 타이머 함수
+    UFUNCTION()
+    void ResetDashCooldown();
+
+    // 쿨타임 타이머 핸들
+    FTimerHandle DashCooldownTimerHandle;
+
+    // 무적 해제 타이머 핸들
+    FTimerHandle InvincibilityTimerHandle;
+
+    // 무적 해제 함수
+    UFUNCTION()
+    void ResetInvincibility();
 
     //사망 함수
     UFUNCTION()

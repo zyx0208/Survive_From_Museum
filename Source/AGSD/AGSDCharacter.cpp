@@ -19,9 +19,12 @@
 #include "Kismet/KismetMathLibrary.h" //대쉬 거리 계산을 위해 필요
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
+#include "TimerManager.h"
 
 #include "InputAction.h"
 #include "InputMappingContext.h"
+
+#include "XPOrb.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
@@ -57,6 +60,7 @@ AAGSDCharacter::AAGSDCharacter()
 	CurrentXP = 0;             // 초기 경험치
 	XPToNextLevel = 8;       // 첫 번째 레벨 업까지 필요한 경험치
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
+    XPRangeLevel = 1.0f;        //획득 자석 범위
 
     AttackSpeedLevel = 1.0f;
     AttackRangeLevel = 1.0f;
@@ -100,6 +104,12 @@ AAGSDCharacter::AAGSDCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+    // 자석 범위 콜리전 컴포넌트 생성
+    MagnetSphere = CreateDefaultSubobject<USphereComponent>(TEXT("MagnetSphere"));
+    MagnetSphere->SetupAttachment(RootComponent);
+    MagnetSphere->SetSphereRadius(200.0f); // 기본 반경
+    MagnetSphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
@@ -215,6 +225,10 @@ void AAGSDCharacter::Tick(float DeltaTime)
 	FVector MouseLocation, MouseDirection;
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
+    // 자석 기능 처리
+    TArray<AActor*> OverlappingActors;
+    MagnetSphere->GetOverlappingActors(OverlappingActors);
+
 	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
 	{
 		// 캐릭터의 위치를 가져옴
@@ -256,6 +270,20 @@ void AAGSDCharacter::Tick(float DeltaTime)
     if (InGameTimer && InGameTimer->TimeEnd)
     {
         Clear();
+    }
+
+    for (AActor* Actor : OverlappingActors)
+    {
+        // XPOrb_BP인지 확인
+        AXPOrb* XPOrb = Cast<AXPOrb>(Actor);
+        if (XPOrb)
+        {
+            // 방향과 힘 적용
+            FVector Direction = GetActorLocation() - XPOrb->GetActorLocation();
+            Direction.Normalize();
+            FVector Force = Direction * MagnetStrength * DeltaTime * 0.5;
+            XPOrb->AddActorWorldOffset(Force, true);
+        }
     }
 }
 
@@ -334,6 +362,11 @@ void AAGSDCharacter::Look(const FInputActionValue& Value)
 
 void AAGSDCharacter::Dash()
 {
+    if (!bCanDash) // 쿨타임 중이면 실행 X
+    {
+        return;
+    }
+
 	if (CharacterMovementComponent && Controller)
 	{
 		// 현재 이동 방향으로 대시하도록 설정
@@ -349,8 +382,29 @@ void AAGSDCharacter::Dash()
 
 		// 캐릭터를 대쉬 벡터만큼 이동
 		LaunchCharacter(DashVector, true, true);
+        // 쿨타임 및 무적 설정
+        bCanDash = false;           // 쿨타임 시작
+        bIsInvincible = true;       // 무적 상태 설정
+
+        // 쿨타임 타이머 시작
+        GetWorldTimerManager().SetTimer(
+            DashCooldownTimerHandle, this, &AAGSDCharacter::ResetDashCooldown, DashCooldown, false);
+
+        // 무적 해제 타이머 시작
+        GetWorldTimerManager().SetTimer(
+            InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 0.5f, false);
 	}
 }
+void AAGSDCharacter::ResetDashCooldown()
+{
+    bCanDash = true; // 대쉬 가능 상태로 변경
+}
+
+void AAGSDCharacter::ResetInvincibility()
+{
+    bIsInvincible = false; // 무적 해제
+}
+
 //체력바 갱신 함수
 void AAGSDCharacter::UpdateHealthBar()
 {
@@ -851,6 +905,10 @@ void AAGSDCharacter::CreateProjectile()
 
 void AAGSDCharacter::Attacked(float Damage)
 {
+    if (bIsInvincible) // 무적 상태에서는 피해 무시
+    {
+        return;
+    }
 	CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     if (CurrentHealth <= 0)
