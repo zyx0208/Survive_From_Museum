@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Engine/DataTable.h"
+#include "AccessoryData.h" // 장신구 데이터 구조체 헤더
 #include "LevelUp_UI.generated.h"
 
 /**
@@ -17,6 +19,14 @@ class AGSD_API ULevelUp_UI : public UUserWidget
 protected:
     // UUserWidget의 NativeConstruct 오버라이드
     virtual void NativeConstruct() override;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelUp")
+    UDataTable* AccessoryDataTable;
+
+    UPROPERTY(BlueprintReadWrite, Category = "LevelUp")
+    TArray<FAccessoryData> SelectedAccessories;
+
+    void SelectRandomAccessories();
 
 public:
     // 버튼 위젯 변수

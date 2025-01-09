@@ -149,7 +149,14 @@ public:
 	void UpdateXPBar(); //경험치바 갱신함수
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
-	void ApplyLevelUpOption(int32 OptionIndex);
+	void ApplyLevelUpOption(const FAccessoryData& SelectedAccessory);
+
+    UFUNCTION(BlueprintCallable, Category = "LevelUp")
+    void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);
+
+    UFUNCTION(BlueprintCallable, Category = "LevelUp")
+    void ApplyAccessoryEffect(const FAccessoryData& Accessory);
+
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
 	void PauseGameForLevelUp();
