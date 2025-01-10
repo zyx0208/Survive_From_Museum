@@ -153,7 +153,7 @@ void AEnemy1AIController::Died(int64 num)
 		World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
 	default://버그 등으로 인해 강제로 삭제해야 하는 경우
-		UE_LOG(LogTemp, Display, TEXT("Enemy is isolated!"));
+		UE_LOG(LogTemp, Display, TEXT("Enemy is deleted!"));
 		break;
 	}
     Enemy->IsDead = true;

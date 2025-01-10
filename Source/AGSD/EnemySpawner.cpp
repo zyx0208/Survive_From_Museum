@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"// 레벨에서 액터를 불러오기 위한 함수를 가진 헤더파일
 #include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
 #include "GameFramework/Character.h"//레벨에 등장하는 액터의 방향이나 이동을 조절하기 위한 함수를 가진 헤더파일
+#include "Enemy1Class.h"
+#include "Enemy1AIController.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -31,95 +33,61 @@ void AEnemySpawner::Tick(float DeltaTime)
 	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     switch (Stage)
     {
-    case 1: //1 스테이지(15분 = 900초)
+    case 1: //1 스테이지(300초 / 10초 당 1웨이브 / 5웨이브마다 등장 패턴 변화)
         if (PlayerCharacter)
         {
             TempTime += DeltaTime;
             TotalTime += DeltaTime;
 
-            //시간 확인을 위한 로그 함수 부분(후에 타이머 기능이 생기면 삭제)
-            LogTime += DeltaTime;
-            if (LogTime >= 60.0f)
+            //보스라운드
+            if (TotalTime >= 300.0f and !BossRound)
             {
-                LogTime = 0.0f;
-                UE_LOG(LogTemp, Display, TEXT("TotalTime : %f"), TotalTime);
-            }
+                BossRound = true;
+                SpawnNum = -3;//일반 몹 생성안하도록 설정
 
-            //60초 마다 패턴 변화
-            if (TotalTime >= 840.0f)
-            {
-                SpawnTime = 0.5f;
-                SpawnNum = 20;
+                //모든 적 캐릭터 강제 삭제
+                TArray<AActor*> AllEnemys;
+                UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+                for (int i = 0; i < AllEnemys.Num(); i++)
+                {
+                    AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+                    if (Enemy)
+                    {
+                        AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                        if (AIC)
+                        {
+                            AIC->Died(-1);
+                        }
+                    }
+                }
+                //보스 몹 소환 및 스테이지 구현
+
             }
-            else if (TotalTime >= 780.0f)
+            //50초 마다 패턴 변화
+            if (TotalTime >= 250.0f)
             {
-                SpawnTime = 0.5f;
-                SpawnNum = 15;
+                SpawnNum = 13;
             }
-            else if (TotalTime >= 720.0f)
+            else if (TotalTime >= 200.0f)
             {
-                SpawnTime = 0.5f;
-                SpawnNum = 10;
+                SpawnNum = 11;
             }
-            else if (TotalTime >= 660.0f)
+            else if (TotalTime >= 150.0f)
             {
-                SpawnTime = 1.0f;
-                SpawnNum = 10;
+                SpawnNum = 9;
             }
-            else if (TotalTime >= 600.0f) //정예 몹 다수 등장
+            else if (TotalTime >= 100.0f)
             {
-                SpawnTime = 1.0f;
-                SpawnNum = 8;
-            }
-            else if (TotalTime >= 540.0f)
-            {
-                SpawnTime = 1.0f;
                 SpawnNum = 7;
             }
-            else if (TotalTime >= 480.0f)
+            else if (TotalTime >= 50.0f)
             {
-                SpawnTime = 1.0f;
-                SpawnNum = 6;
-            }
-            else if (TotalTime >= 420.0f)
-            {
-                SpawnTime = 1.0f;
                 SpawnNum = 5;
-            }
-            else if (TotalTime >= 360.0f)
-            {
-                SpawnTime = 1.0f;
-                SpawnNum = 4;
-            }
-            else if (TotalTime >= 300.0f) //정예 몹 등장 시기
-            {
-                SpawnTime = 1.0f;
-                SpawnNum = 3;
-            }
-            else if (TotalTime >= 240.0f)
-            {
-                SpawnTime = 1.0f;
-                SpawnNum = 2;
-            }
-            else if (TotalTime >= 180.0f)
-            {
-                SpawnTime = 2.0f;
-                SpawnNum = 2;
-            }
-            else if (TotalTime >= 120.0f)
-            {
-                SpawnTime = 3.0f;
-                SpawnNum = 2;
-            }
-            else if (TotalTime >= 60.0f)
-            {
-                SpawnTime = 3.0f;
-                SpawnNum = 1;
             }
             else
             {
-                SpawnTime = 5.0f;
-                SpawnNum = 1;
+                SpawnTime = 10.0f;
+                SpawnNum = 3;
             }
         }
         if (TempTime >= SpawnTime)
@@ -127,38 +95,20 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                if (TotalTime >= 110.0f) //600초 ~ 900초 : 정예몹이 최소 한마리는 포함
+                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3)/2);
+                for (int i = 0; i < (SpawnNum + 3)/2; i++) //일반몹 소환
                 {
-                    for (int i = 0; i < SpawnNum - 1; i++)
-                    {
-                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 1);
-                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                            FRotator::ZeroRotator);
-                    }
+                    TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
+                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator);
+                }
+                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
+                for (int i = 0; i < (SpawnNum - 3)/2; i++) //정예몹 소환(정예몹 인덱스 : 마지막 인덱스)
+                {
                     GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
                         PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
-                }/*
-                else if(TotalTime >= 300.0f) //300초 ~ 600초 : 정예몹 확률적으로 등장
-                {
-                    for (int i = 0; i < SpawnNum; i++)
-                    {
-                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 1);
-                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                            FRotator::ZeroRotator);
-                    }
-                }*/
-                else //0초 ~ 300초 : 정예몹 등장 X
-                {
-                    for (int i = 0; i < SpawnNum; i++)
-                    {
-                        TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
-                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                            PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                            FRotator::ZeroRotator);
-                    }
                 }
             }
         }
