@@ -60,8 +60,9 @@ void AEnemySpawner::Tick(float DeltaTime)
                         }
                     }
                 }
-                //보스 몹 소환 및 스테이지 구현
-
+                //보스 몹 소환 및 플레이어 이동
+                GetWorld()->SpawnActor<AActor>(Boss, FVector(-4800.0f, 28850.0f, 400.0f), FRotator::ZeroRotator);
+                PlayerCharacter->SetActorLocation(FVector(-6150.0f, 28850.0f, 400.0f));
             }
             //50초 마다 패턴 변화
             if (TotalTime >= 250.0f)
