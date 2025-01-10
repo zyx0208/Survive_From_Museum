@@ -47,6 +47,7 @@ void AEnemyProjectile::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
         if (Player)
         {
             Player->Attacked(Damage);  // 플레이어의 Attacked 함수 호출
+            GetWorld()->SpawnActor<AActor>(HitSound, GetActorLocation(), FRotator::ZeroRotator);
             Destroy();
         }
     }

@@ -98,6 +98,7 @@ void AEnemy1AIController::AttackTypeD()
     {
         BossCount = 0;
         FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
         for (int i = 0; i < 16; i++)
         {
             GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);

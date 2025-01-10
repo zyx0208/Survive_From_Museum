@@ -28,6 +28,8 @@ public:
     // 충돌을 감지할 콜리전 컴포넌트
     UPROPERTY(VisibleAnywhere)
     class USphereComponent* CollisionComponent;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> HitSound = NULL;
+
 private:
     bool IsFirst = true;//처음으로 실행되는 경우를 나타내기 위한 변수
 
