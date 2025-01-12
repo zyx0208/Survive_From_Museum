@@ -29,7 +29,7 @@
 #include "Engine/DataTable.h"
 #include "AccessoryData.h" // 장신구 데이터 구조체 헤더
 
-#include "Blueprint/UserWidget.h"
+#include "Blueprint/UserWidget.h" 
 #include "Components/ProgressBar.h"
 
 #include "WeaponDataTable.h"
