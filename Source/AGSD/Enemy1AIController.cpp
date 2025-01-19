@@ -124,14 +124,13 @@ void AEnemy1AIController::AttackTypeD()
 
 void AEnemy1AIController::Attacked(float damage)
 {
-	//데미지 계산 방식에 따라 수정 필요
     Enemy->CurrentHP -= damage;
 	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
 
 	//체력이 0이하일 경우 죽음
 	if (Enemy->CurrentHP <= 0.0f)
 	{
-		Died(1);//데미지 계산 방식에 따라 수정 필요
+		Died(Enemy->AttackType);
 	}
 }
 
@@ -141,17 +140,46 @@ void AEnemy1AIController::Died(int64 num)
 	//드랍 아이템 설정
 	switch (num)
 	{
-	case 1:
+    case 1: //일반 몬스터(공격타입 1, 3번) : [무기 : 1%] [경험치 : 초록(48%), 파랑(24%), 빨강(8%)] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
+	case 3: 
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
         if (World)
         {
             KillCountCall(World);
         }
-        if (FMath::RandRange(1, 100) <= 20) //5% 확률로 무기 드랍
+        int DropNum = FMath::RandRange(1, 100);
+        if (DropNum <= 1) //1% 확률로 무기 드랍
         {
             World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
-		World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+        else if (DropNum <= 49) //48% 확률로 초록 경험치 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+        }
+        else if (DropNum <= 73) //24% 확률로 파랑 경험치 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//파랑 경험치가 없어서 초록 경험치로 대체
+        }
+        else if (DropNum <= 81) //8% 확률로 빨강 경험치 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//빨강 경험치가 없어서 초록 경험치로 대체
+        }
+        else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//HP 절반 회복이 없어서 초록 경험치로 대체
+        }
+        else if (DropNum <= 90) //3% 확률로 HP 전부 회복 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//HP 전부 회복이 없어서 초록 경험치로 대체
+        }
+        else if (DropNum <= 95) //5% 확률로 자석 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//자석이 없어서 초록 경험치로 대체
+        }
+        else//5% 확률로 폭탄 드랍
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//폭탄이 없어서 초록 경험치로 대체
+        }
 		break;
 	default://버그나 보스전 등으로 인해 강제로 삭제해야 하는 경우
 		UE_LOG(LogTemp, Display, TEXT("Enemy is deleted!"));
