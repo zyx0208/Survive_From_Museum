@@ -153,10 +153,14 @@ void AEnemy1AIController::Died(int64 num)
         }
 		World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
 		break;
-	default://버그 등으로 인해 강제로 삭제해야 하는 경우
+	default://버그나 보스전 등으로 인해 강제로 삭제해야 하는 경우
 		UE_LOG(LogTemp, Display, TEXT("Enemy is deleted!"));
 		break;
 	}
+    if (Enemy->IsBoss)
+    {
+        Cast<AAGSDCharacter>(PlayerCharacter)->Clear();
+    }
     Enemy->IsDead = true;
 }
 
@@ -202,6 +206,12 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;//공격속도 초기화
         Enemy->CurrentHP = Enemy->MaxHP;
 	}
+    
+    //테스트 중 죽는 경우를 테스트하기 위한 코드
+    if (Enemy->IsDead)
+    {
+        Died(-1);
+    }
 
 	//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
 	if (TickSwitch)

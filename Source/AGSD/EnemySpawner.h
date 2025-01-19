@@ -31,10 +31,11 @@ public:
 	float OuterCircleRange = 0.0f;
 	float SpawnTime = 0.0f;//몇초마다 생성할지
     int SpawnNum = 0;//몇마리 생성할지
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")bool BossRound = false; //보스전이 시작됐는지 확인하기 위한 변수
+
 private:
     float TotalTime = 0.0f;//스테이지 시작 후 총 걸린 시간
 	float TempTime = 0.0f;//생성 시간을 제어하기 위한 임의 변수
 	int64 TempEnemyCounter = 0;//적 생성을 제어하기 위한 임의 변수
     float LogTime = 0.0f; //개발자가 몇분 지났는지 알기 위해 설정한 임의 변수
-    bool BossRound = false;
 };

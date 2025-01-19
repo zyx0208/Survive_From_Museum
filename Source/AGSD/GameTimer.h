@@ -46,7 +46,7 @@ public:
     void UpdateTime();
     //1초당 UITime업데이트 및 문자열 변환
 
-    UFUNCTION()
+    UFUNCTION(BlueprintCallable)
     void TimeOver();
     //시간 종료시 호출되는 함수
 

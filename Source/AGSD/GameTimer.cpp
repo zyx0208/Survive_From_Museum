@@ -22,9 +22,13 @@ void UGameTimer::TimeSet(float Time)
 
 void UGameTimer::UpdateTime()
 {
-    UITime--;//정수형 시간 --
-    StringTime = MinutesSeconds(UITime);//UItime을 분초 변환 후 문자열로
-    if (UITime <= 0) {
+    if (UITime > 0)
+    {
+        UITime--;//정수형 시간 --
+        StringTime = MinutesSeconds(UITime);//UItime을 분초 변환 후 문자열로
+    }
+    else
+    {
         TimeOver();//정수형 시간이 0이되면 TimeOver
     }
 }
@@ -35,7 +39,7 @@ void UGameTimer::TimeOver()
     {
         GWorld->GetTimerManager().ClearTimer(GameTimer);
     }
-    StringTime = "LevelEnd";
+    StringTime = "Boss Stage";
     TimeEnd = true;
 
     // 로그 출력

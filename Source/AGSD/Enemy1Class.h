@@ -29,12 +29,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EnemyProjectile = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> WeaponDrop = NULL;
-
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")TSubclassOf<UUserWidget> RestartUIClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float DashCoolTime = 0.0f;//대쉬가 있는 적을 위한 설정 기능
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool Dash = false;//대쉬 기능이 있을경우 true로 설정
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")float FDash = 0.0f;//대쉬 계수(몇배속으로 할 것인가?)
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//대쉬 기능이 있을경우 true로 설정
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;//죽었는지 확인하기 위한 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsBoss = false;//보스인지 아닌지 확인하는 용도(스테이지 클리어 여부를 위함)
+
 
 protected:
 	// Called when the game starts or when spawned

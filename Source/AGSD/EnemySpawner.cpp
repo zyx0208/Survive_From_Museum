@@ -20,8 +20,8 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	InnerCircleRange = 500.0f;
-	OuterCircleRange = 1000.0f;
+	InnerCircleRange = 1000.0f;
+	OuterCircleRange = 1500.0f;
 	SpawnTime = 5.0f;
 	PlayerCharacter = NULL;
 }
@@ -40,32 +40,34 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 300.0f and !BossRound)
+            if (TotalTime >= 300.0f)
             {
-                BossRound = true;
-                SpawnNum = -3;//일반 몹 생성안하도록 설정
-
-                //모든 적 캐릭터 강제 삭제
-                TArray<AActor*> AllEnemys;
-                UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
-                for (int i = 0; i < AllEnemys.Num(); i++)
+                if (!BossRound)
                 {
-                    AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
-                    if (Enemy)
+                    BossRound = true;
+                    //모든 적 캐릭터 강제 삭제
+                    TArray<AActor*> AllEnemys;
+                    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+                    for (int i = 0; i < AllEnemys.Num(); i++)
                     {
-                        AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
-                        if (AIC)
+                        AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+                        if (Enemy)
                         {
-                            AIC->Died(-1);
+                            AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                            if (AIC)
+                            {
+                                AIC->Died(-1);
+                            }
                         }
                     }
+                    //보스 몹 소환 및 플레이어 이동
+                    GetWorld()->SpawnActor<AActor>(Boss, FVector(-4800.0f, 28850.0f, 400.0f), FRotator::ZeroRotator);
+                    PlayerCharacter->SetActorLocation(FVector(-6150.0f, 28850.0f, 400.0f));
                 }
-                //보스 몹 소환 및 플레이어 이동
-                GetWorld()->SpawnActor<AActor>(Boss, FVector(-4800.0f, 28850.0f, 400.0f), FRotator::ZeroRotator);
-                PlayerCharacter->SetActorLocation(FVector(-6150.0f, 28850.0f, 400.0f));
+                SpawnNum = -3;//일반 몹 생성안하도록 설정
             }
             //50초 마다 패턴 변화
-            if (TotalTime >= 250.0f)
+            else if (TotalTime >= 250.0f)
             {
                 SpawnNum = 13;
             }

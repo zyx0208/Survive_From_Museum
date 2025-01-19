@@ -195,6 +195,8 @@ void AAGSDCharacter::BeginPlay()
     }
     // 현재 맵 이름 확인
     FString CurrentMapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+    
+    /*
     // GameTimer 생성 및 초기화
     if (CurrentMapName == "stage1")
     {
@@ -213,7 +215,7 @@ void AAGSDCharacter::BeginPlay()
     {
         UE_LOG(LogTemp, Warning, TEXT("GameTimer not started. Current map: %s"), *CurrentMapName);
     }
-
+    */
     AnimInstance = GetMesh()->GetAnimInstance();
     if (AnimInstance) {
         UE_LOG(LogTemp, Warning, TEXT("No Anim"));
@@ -269,12 +271,12 @@ void AAGSDCharacter::Tick(float DeltaTime)
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("Failed to get the mouse position in world space."));
 	}
-
+    /*
     if (InGameTimer && InGameTimer->TimeEnd)
     {
         Clear();
     }
-
+    */
     for (AActor* Actor : OverlappingActors)
     {
         // XPOrb_BP인지 확인
