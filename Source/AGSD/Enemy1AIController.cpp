@@ -137,6 +137,7 @@ void AEnemy1AIController::Attacked(float damage)
 void AEnemy1AIController::Died(int64 num)
 {
     UWorld* World = GetWorld();
+    int DropNum = FMath::RandRange(1, 100);// Dropnum이 스위치 문 내에서 선언하니 error C2361: initialization of 'DropNum' is skipped by 'default' label오류 발생 임시로 Dropnum선언을 스위치 밖으로 빼냄-양덕훈
 	//드랍 아이템 설정
 	switch (num)
 	{
@@ -147,7 +148,7 @@ void AEnemy1AIController::Died(int64 num)
         {
             KillCountCall(World);
         }
-        int DropNum = FMath::RandRange(1, 100);
+        
         if (DropNum <= 1) //1% 확률로 무기 드랍
         {
             World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);

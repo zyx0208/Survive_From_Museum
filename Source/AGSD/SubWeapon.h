@@ -44,6 +44,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
     UDataTable* WeaponDataTableRef;//참조할 테이블
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+    FVector MuzzleOffset;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+    FVector MuzzleLocation;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
     TSubclassOf<class AProjectile_Beta> ProjectileClass;
 
@@ -56,11 +62,11 @@ public:
 
     //무기 발사
     UFUNCTION()
-    void Fire();
+    virtual void Fire();
 
     UFUNCTION()
-    void StartFiring();
+    virtual void StartFiring();
 
     UFUNCTION()
-    void CreateProjectile();
+    virtual void CreateProjectile();
 };
