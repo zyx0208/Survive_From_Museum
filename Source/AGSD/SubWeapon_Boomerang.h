@@ -26,4 +26,8 @@ public:
     virtual void CreateProjectile() override;
 
     virtual void Fire() override;
+
+    FRotator RotationSpeed;
+
+    FRotator CurrentRotation;
 };

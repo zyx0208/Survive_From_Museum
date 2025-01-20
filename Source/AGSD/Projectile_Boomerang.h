@@ -21,8 +21,13 @@ public:
 
     float Radius;
     float CurrentAngle;
-    float RotationSpeed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ACharacter* TargetCharacter;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FRotator RotationSpeed;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FRotator CurrentRotation;
 };
