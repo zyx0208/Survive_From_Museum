@@ -41,13 +41,27 @@ public:
 
     // 텍스트 블록 변수
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* Option1_TextBlock;
+    class UTextBlock* Option1_Name;
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* Option2_TextBlock;
+    class UTextBlock* Option1_Effect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option1_Img;
+
 
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* Option3_TextBlock;
+    class UTextBlock* Option2_Name;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option2_Effect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option2_Img;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option3_Name;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option3_Effect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option3_Img;
 
     // 인덱스와 텍스트 데이터를 관리할 배열
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LevelUp")

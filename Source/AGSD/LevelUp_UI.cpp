@@ -4,7 +4,7 @@
 #include "LevelUp_UI.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-
+#include "Components/Image.h"
 #include "AGSDCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -111,19 +111,34 @@ void ULevelUp_UI::UpdateOptionTexts()
 {
     if (SelectedAccessories.Num() >= 3)
     {
-        if (Option1_TextBlock)
+        if (Option1_Name)
         {
-            Option1_TextBlock->SetText(FText::FromString(SelectedAccessories[0].AccessoryName));
+            Option1_Name->SetText(FText::FromString(SelectedAccessories[0].AccessoryName));
+            Option1_Effect->SetText(FText::FromString(SelectedAccessories[0].AccessoryEffect));
+            if (SelectedAccessories[0].AccessoryIcon)
+            {
+                Option1_Img->SetBrushFromTexture(SelectedAccessories[0].AccessoryIcon);
+            }
         }
 
-        if (Option2_TextBlock)
+        if (Option2_Name)
         {
-            Option2_TextBlock->SetText(FText::FromString(SelectedAccessories[1].AccessoryName));
+            Option2_Name->SetText(FText::FromString(SelectedAccessories[1].AccessoryName));
+            Option2_Effect->SetText(FText::FromString(SelectedAccessories[1].AccessoryEffect));
+            if (SelectedAccessories[1].AccessoryIcon)
+            {
+                Option2_Img->SetBrushFromTexture(SelectedAccessories[1].AccessoryIcon);
+            }
         }
 
-        if (Option3_TextBlock)
+        if (Option3_Name)
         {
-            Option3_TextBlock->SetText(FText::FromString(SelectedAccessories[2].AccessoryName));
+            Option3_Name->SetText(FText::FromString(SelectedAccessories[2].AccessoryName));
+            Option3_Effect->SetText(FText::FromString(SelectedAccessories[2].AccessoryEffect));
+            if (SelectedAccessories[2].AccessoryIcon)
+            {
+                Option3_Img->SetBrushFromTexture(SelectedAccessories[2].AccessoryIcon);
+            }
         }
     }
 }
