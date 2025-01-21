@@ -286,6 +286,9 @@ void AAGSDCharacter::Tick(float DeltaTime)
             // 방향과 힘 적용
             FVector Direction = GetActorLocation() - XPOrb->GetActorLocation();
             Direction.Normalize();
+            // 속도 증가 (시간 경과에 따라 MagnetStrength 증가)
+            MagnetStrength += MagnetAcceleration * DeltaTime;
+
             FVector Force = Direction * MagnetStrength * DeltaTime ;
             XPOrb->AddActorWorldOffset(Force, true);
         }
@@ -539,8 +542,6 @@ void AAGSDCharacter::ApplyAccessoryEffect(const FAccessoryData& Accessory)
             Attack += AttackIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Current Attack: %.1f"), AttackIncrease, Attack);
         }
-
-
         else if (Effect.Contains(TEXT("최대체력")))
         {
             //최대체력 증가 처리
@@ -563,6 +564,10 @@ void AAGSDCharacter::ApplyAccessoryEffect(const FAccessoryData& Accessory)
             FString ValueString = Effect.RightChop(5); //방어력 이후의 값 추출
             float DefenseIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT(""))); // 문자열을 실수로 변환
             Defense *= (1 + DefenseIncrease / 100.0f);
+        }
+        else if (Effect.Contains(TEXT("대쉬 쿨타임")))
+        {
+            DashCooldown -= 1.0f;
         }
     }
 }

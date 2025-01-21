@@ -175,7 +175,9 @@ public:
     class USphereComponent* MagnetSphere;
     //자석 범위 변수
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
-    float MagnetStrength = 200.0f;
+    float MagnetStrength = 250.0f; //초기 자석 값
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
+    float MagnetAcceleration = 50.0f; // 기본 가속도 값
 
     //대쉬 관련 변수
     // 쿨타임 관련 변수
