@@ -12,7 +12,7 @@ ASubWeapon::ASubWeapon()
 	PrimaryActorTick.bCanEverTick = true;
 
     //무기 데이터 테이블 찾기
-    static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/DataTable/SubWeaponDataTable.SubWeaponDataTable'"));
+    static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/SubWeaponDataTable.SubWeaponDataTable'"));
     if (WeaponDataTableFinder.Succeeded())
     {
         WeaponDataTableRef = WeaponDataTableFinder.Object;

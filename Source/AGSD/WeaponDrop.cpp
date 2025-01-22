@@ -10,7 +10,7 @@ AWeaponDrop::AWeaponDrop()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/DataTable/WeaponDataTableBeta.WeaponDataTableBeta'"));
+    static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'"));
     if (WeaponDataTableFinder.Succeeded())
     {
         WeaponDataTableRef = WeaponDataTableFinder.Object;

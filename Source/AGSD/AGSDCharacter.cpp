@@ -119,7 +119,7 @@ AAGSDCharacter::AAGSDCharacter()
 
 	WeaponID = "1";
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/DataTable/WeaponDataTableBeta.WeaponDataTableBeta'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'"));
 	if (WeaponDataTableFinder.Succeeded())
 	{
 		WeaponDataTableRef = WeaponDataTableFinder.Object;
