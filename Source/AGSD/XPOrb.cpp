@@ -84,15 +84,14 @@ void AXPOrb::AdjustScaleBasedOnXP()
 void AXPOrb::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    if (bIsConsumed) return; // 이미 흡수된 상태라면 무시
     // 캐릭터와 충돌했는지 확인
     AAGSDCharacter* Character = Cast<AAGSDCharacter>(OtherActor);
     if (Character)
     {
-        // 캐릭터에 XP 추가
-        Character->AddXP(XPValue);
-
-        // 구슬을 파괴 (원한다면)
-        Destroy();
+        bIsConsumed = true; // 흡수 상태 설정
+        // 캐릭터에 등록하여 끌어당기기 상태로 설정
+        Character->AddToMagnetField(this);
     }
 }
 

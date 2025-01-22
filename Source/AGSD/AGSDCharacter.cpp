@@ -277,19 +277,36 @@ void AAGSDCharacter::Tick(float DeltaTime)
         Clear();
     }
     */
-    for (AActor* Actor : OverlappingActors)
+    for (int32 i = MagnetField.Num() - 1; i >= 0; i--) // 역순으로 루프
     {
-        // XPOrb_BP인지 확인
-        AXPOrb* XPOrb = Cast<AXPOrb>(Actor);
-        if (XPOrb)
+        AXPOrb* XPOrb = MagnetField[i];
+        if (!XPOrb)
         {
-            // 방향과 힘 적용
-            FVector Direction = GetActorLocation() - XPOrb->GetActorLocation();
-            Direction.Normalize();
-            // 속도 증가 (시간 경과에 따라 MagnetStrength 증가)
-            MagnetStrength += MagnetAcceleration * DeltaTime;
+            MagnetField.RemoveAt(i); // 배열에서 제거
+            continue;
+        }
 
-            FVector Force = Direction * MagnetStrength * DeltaTime ;
+        FVector Direction = GetActorLocation() - XPOrb->GetActorLocation();
+        float Distance = Direction.Size();
+        Direction.Normalize();
+
+        const float AbsorbDistance = 100.0f; // 흡수 거리
+        if (Distance <= AbsorbDistance)
+        {
+            // XP 흡수 처리
+            AddXP(XPOrb->XPValue);
+
+            // XPOrb 제거
+            XPOrb->Destroy();
+
+            // MagnetField에서 제거
+            MagnetField.RemoveAt(i);
+        }
+        else
+        {
+            // 끌어당기기
+            MagnetStrength += MagnetAcceleration * DeltaTime;
+            FVector Force = Direction * MagnetStrength * DeltaTime;
             XPOrb->AddActorWorldOffset(Force, true);
         }
     }
@@ -615,6 +632,21 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 		LevelUpWidget->RemoveFromViewport();
 		LevelUpWidget = nullptr;
 	}
+}
+void AAGSDCharacter::AddToMagnetField(AXPOrb* XPOrb)
+{
+    if (XPOrb && !MagnetField.Contains(XPOrb))
+    {
+        MagnetField.Add(XPOrb);
+    }
+}
+
+void AAGSDCharacter::RemoveFromMagnetField(AXPOrb* XPOrb)
+{
+    if (XPOrb)
+    {
+        MagnetField.Remove(XPOrb);
+    }
 }
 
 void AAGSDCharacter::Fire()

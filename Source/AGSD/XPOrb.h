@@ -19,30 +19,31 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// ±¸½½ÀÇ Ãæµ¹À» °¨ÁöÇÏ´Â ÄÄÆ÷³ÍÆ®
+	// êµ¬ìŠ¬ì˜ ì¶©ëŒì„ ê°ì§€í•˜ëŠ” ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class USphereComponent* SphereComponent;
 
-	// ±¸Ã¼ ¿ÀºêÁ§Æ® (XPOrb)
+	// êµ¬ì²´ ì˜¤ë¸Œì íŠ¸ (XPOrb)
 	UPROPERTY(VisibleAnywhere, Category = "Visual")
 	class UStaticMeshComponent* OrbMesh;
 
-	// Ãæµ¹ ÀÌº¥Æ® ÇÔ¼ö
+	// ì¶©ëŒ ì´ë²¤íŠ¸ í•¨ìˆ˜
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// °æÇèÄ¡·® ¼³Á¤ ÇÔ¼ö
+	// ê²½í—˜ì¹˜ëŸ‰ ì„¤ì • í•¨ìˆ˜
 	void SetRandomXP();
-	// Å©±â Á¶Àı ÇÔ¼ö
+	// í¬ê¸° ì¡°ì ˆ í•¨ìˆ˜
 	void AdjustScaleBasedOnXP();
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XP", meta = (AllowPrivateAccess = "true"))
+    int32 XPValue;
 
 private:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XP", meta = (AllowPrivateAccess = "true"))
-	int32 XPValue;
+    bool bIsConsumed = false; // ì´ë¯¸ í¡ìˆ˜ë˜ì—ˆëŠ”ì§€ í™•ì¸
 
 };

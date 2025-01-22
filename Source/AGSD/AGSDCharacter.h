@@ -13,7 +13,7 @@
 
 #include "Animation/AnimMontage.h"
 #include "Components/PoseableMeshComponent.h"
-
+#include "XPOrb.h"
 #include "SubWeapon.h"
 #include "WeaponDrop.h"
 #include "GameTimer.h"
@@ -178,6 +178,11 @@ public:
     float MagnetStrength = 250.0f; //초기 자석 값
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
     float MagnetAcceleration = 50.0f; // 기본 가속도 값
+    UPROPERTY()
+    TArray<AXPOrb*> MagnetField;
+
+    void AddToMagnetField(AXPOrb* XPOrb);
+    void RemoveFromMagnetField(AXPOrb* XPOrb);
 
     //대쉬 관련 변수
     // 쿨타임 관련 변수
