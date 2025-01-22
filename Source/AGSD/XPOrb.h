@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "XPOrb.generated.h"
 
 UCLASS()
@@ -26,6 +27,10 @@ protected:
 	// 구체 오브젝트 (XPOrb)
 	UPROPERTY(VisibleAnywhere, Category = "Visual")
 	class UStaticMeshComponent* OrbMesh;
+
+    UPROPERTY()
+    class UMaterialInstanceDynamic* MaterialInstance; // Dynamic Material Instance
+
 
 	// 충돌 이벤트 함수
 	UFUNCTION()

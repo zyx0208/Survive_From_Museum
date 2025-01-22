@@ -11,6 +11,10 @@ AXPOrb::AXPOrb()
 {
     // Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
+
+    // 초기화
+    bIsConsumed = false;
+
     // 구슬에 충돌 컴포넌트 추가
     SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
     SphereComponent->InitSphereRadius(50.0f);  // 충돌 범위 설정
@@ -25,14 +29,23 @@ AXPOrb::AXPOrb()
 
     // 경험치와 크기를 설정
     SetRandomXP();
-    AdjustScaleBasedOnXP();
 }
 
 // Called when the game starts or when spawned
 void AXPOrb::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+    // OrbMesh의 Dynamic Material Instance 생성
+    UMaterialInstanceDynamic* DynamicMaterial = OrbMesh->CreateDynamicMaterialInstance(0);
+    if (DynamicMaterial)
+    {
+        OrbMesh->SetMaterial(0, DynamicMaterial);
+        MaterialInstance = DynamicMaterial; // 멤버 변수에 저장
+    }
+
+    // XP 값에 따라 크기와 색상 설정
+    AdjustScaleBasedOnXP();
 }
 
 // Called every frame
@@ -57,39 +70,49 @@ void AXPOrb::SetRandomXP()
     {
         XPValue = 6; // 0.9f < RandomValue <= 1.0f
     }
+
 }
 
 void AXPOrb::AdjustScaleBasedOnXP()
 {
-    FVector NewScale;
+    FLinearColor NewColor;
 
-    // 경험치량에 따른 크기 조절
-    if (XPValue == 2)
+    switch (XPValue)
     {
-        NewScale = FVector(0.5f);
-    }
-    else if (XPValue == 4)
-    {
-        NewScale = FVector(1.0f);
-    }
-    else if (XPValue == 6)
-    {
-        NewScale = FVector(2.0f);
+    case 2:
+        NewColor = FLinearColor::Green;
+        break;
+    case 4:
+        NewColor = FLinearColor::Blue;
+        break;
+    case 6:
+        NewColor = FLinearColor::Red;
+        break;
+    default:
+        NewColor = FLinearColor::White;
+        break;
     }
 
-    // OrbMesh에만 크기 적용
-    OrbMesh->SetWorldScale3D(NewScale);
+    // 색상 변경 (Dynamic Material Instance가 유효한 경우)
+    if (MaterialInstance)
+    {
+        MaterialInstance->SetVectorParameterValue(TEXT("BaseColor"), NewColor);
+    }
 }
 
 void AXPOrb::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (bIsConsumed) return; // 이미 흡수된 상태라면 무시
-    // 캐릭터와 충돌했는지 확인
+    if (bIsConsumed) return;
+
     AAGSDCharacter* Character = Cast<AAGSDCharacter>(OtherActor);
     if (Character)
     {
-        bIsConsumed = true; // 흡수 상태 설정
+        bIsConsumed = true;
+
+        // 충돌 비활성화
+        SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
         // 캐릭터에 등록하여 끌어당기기 상태로 설정
         Character->AddToMagnetField(this);
     }
