@@ -137,33 +137,26 @@ void AEnemy1AIController::Attacked(float damage)
 void AEnemy1AIController::Died(int64 num)
 {
     UWorld* World = GetWorld();
-    int DropNum = FMath::RandRange(1, 100);// Dropnum이 스위치 문 내에서 선언하니 error C2361: initialization of 'DropNum' is skipped by 'default' label오류 발생 임시로 Dropnum선언을 스위치 밖으로 빼냄-양덕훈
+    int DropNum = FMath::RandRange(1, 100);
 	//드랍 아이템 설정
 	switch (num)
 	{
-    case 1: //일반 몬스터(공격타입 1, 3번) : [무기 : 1%] [경험치 : 초록(48%), 파랑(24%), 빨강(8%)] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
+    case 1: //일반 몬스터(공격타입 1, 3번) : [무기 : 1%] [경험치 : 80%] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
 	case 3: 
+        //킬 카운트
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
         if (World)
         {
             KillCountCall(World);
         }
-        
+        //드랍 설정
         if (DropNum <= 1) //1% 확률로 무기 드랍
         {
             World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
-        else if (DropNum <= 49) //48% 확률로 초록 경험치 드랍
+        else if (DropNum <= 81) //80% 확률로 경험치 드랍
         {
             World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
-        }
-        else if (DropNum <= 73) //24% 확률로 파랑 경험치 드랍
-        {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//파랑 경험치가 없어서 초록 경험치로 대체
-        }
-        else if (DropNum <= 81) //8% 확률로 빨강 경험치 드랍
-        {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//빨강 경험치가 없어서 초록 경험치로 대체
         }
         else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
         {
