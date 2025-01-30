@@ -32,6 +32,8 @@
 #include "Blueprint/UserWidget.h" 
 #include "Components/ProgressBar.h"
 
+#include "DashCooldown_UI.h"
+
 #include "WeaponDataTable.h"
 #include "WeaponDataTableBeta.h"
 #include "UObject/ConstructorHelpers.h"
@@ -183,6 +185,15 @@ void AAGSDCharacter::BeginPlay()
 			UpdateXPBar();
 		}
 	}
+    if (DashCooldownUIClass) //대쉬 아이콘 생성
+    {
+        DashCooldownWidget = CreateWidget<UDashCooldown_UI>(GetWorld(), DashCooldownUIClass);
+        if (DashCooldownWidget)
+        {
+            DashCooldownWidget->AddToViewport();
+            UpdateDashCooldownUI();
+        }
+    }
 
 	if (WeaponMeshComponent)//무기 손에 붙히기
 	{
@@ -410,6 +421,7 @@ void AAGSDCharacter::Dash()
         // 쿨타임 및 무적 설정
         bCanDash = false;           // 쿨타임 시작
         bIsInvincible = true;       // 무적 상태 설정
+        DashCooldownTimer = DashCooldown; // UI 업데이트를 위한 타이머 설정
 
         // 쿨타임 타이머 시작
         GetWorldTimerManager().SetTimer(
@@ -418,16 +430,40 @@ void AAGSDCharacter::Dash()
         // 무적 해제 타이머 시작
         GetWorldTimerManager().SetTimer(
             InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 0.5f, false);
+
+        // UI 업데이트 타이머 시작
+        GetWorldTimerManager().SetTimer(
+            DashCooldownUpdateTimerHandle, this, &AAGSDCharacter::UpdateDashCooldownUI, 0.1f, true);
 	}
 }
 void AAGSDCharacter::ResetDashCooldown()
 {
     bCanDash = true; // 대쉬 가능 상태로 변경
+    GetWorldTimerManager().ClearTimer(DashCooldownUpdateTimerHandle); // UI 업데이트 타이머 정지
+    UpdateDashCooldownUI(); // 마지막 업데이트 호출 (쿨타임 완료)
 }
 
 void AAGSDCharacter::ResetInvincibility()
 {
     bIsInvincible = false; // 무적 해제
+}
+//대쉬 쿨타임 갱신 함수
+void AAGSDCharacter::UpdateDashCooldownUI()
+{
+    if (!DashCooldownWidget)
+    {
+        UE_LOG(LogTemp, Error, TEXT("DashCooldownWidget is NULL! Check if UI was created in BeginPlay."));
+        return;
+    }
+    if (DashCooldownTimer > 0)
+    {
+        DashCooldownTimer -= 0.1f;
+        float CooldownPercentage = DashCooldownTimer / DashCooldown;
+
+        UE_LOG(LogTemp, Log, TEXT("Cooldown Percentage: %f"), CooldownPercentage);
+
+        DashCooldownWidget->UpdateDashCooldown(CooldownPercentage);
+    }
 }
 
 //체력바 갱신 함수

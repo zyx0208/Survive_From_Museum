@@ -186,9 +186,20 @@ public:
 
     //대쉬 관련 변수
     // 쿨타임 관련 변수
+    /** 대시 쿨타임 UI 업데이트 */
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateDashCooldownUI();
+    /** UI 위젯 */
+    UPROPERTY()
+    class UDashCooldown_UI* DashCooldownWidget;
+    /** UI 클래스 */
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UUserWidget> DashCooldownUIClass;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
     float DashCooldown = 3.0f;
-
+    /** 현재 남은 대시 쿨타임 */
+    float DashCooldownTimer;
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
     bool bCanDash = true;
 
@@ -204,6 +215,9 @@ public:
 
     // 무적 해제 타이머 핸들
     FTimerHandle InvincibilityTimerHandle;
+
+    // 쿨타임 UI 타이머 핸들러
+    FTimerHandle DashCooldownUpdateTimerHandle;
 
     // 무적 해제 함수
     UFUNCTION()
