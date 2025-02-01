@@ -1043,16 +1043,58 @@ void AAGSDCharacter::Attacked(float Damage)
     {
         return;
     }
-	CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
+    //체력계산
+    if ((int32)(Damage * ((100.0f - (float)Defense) / 100.0f)) < 0) //받는 데미지가 음수가 되버리면 0으로 계산
+    {
+        CurrentHealth -= 0;
+    }
+    else
+    {
+        CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
+    }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     if (CurrentHealth <= 0)
     {
+        UpdateHealthBar();
         OnDeath(); // 사망 처리
     }
     else
     {
         UpdateHealthBar();
     }
+}
+
+void AAGSDCharacter::SetHP(float value)
+{
+    //혹시라도 "체력 회복량 증가" 등의 아이템 추가가 된다면 여기에 수식 추가
+    //value *= ??;
+    
+    //체력계산
+    if (CurrentHealth + (int32)(value) <= MaxHealth)
+    {
+        CurrentHealth += (int32)(value);
+    }
+    else
+    {
+        CurrentHealth = MaxHealth;
+    }
+    UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
+    UpdateHealthBar();
+}
+
+void AAGSDCharacter::MagneticEffect(float time)
+{
+    UE_LOG(LogTemp, Display, TEXT("MagneticEffect Start."));
+    MagnetSphere->SetSphereRadius(20000.0f); //자석 범위 증가
+    //자석 효과 타이머 시작
+    GetWorldTimerManager().SetTimer(
+        MagneticEffectTimerHandle, this, &AAGSDCharacter::MagneticEffectOff, time, false);
+}
+
+void AAGSDCharacter::MagneticEffectOff()
+{
+    UE_LOG(LogTemp, Display, TEXT("MagneticEffect End."));
+    MagnetSphere->SetSphereRadius(200.0f); //자석 범위 원래대로
 }
 
 void AAGSDCharacter::OnDeath()

@@ -160,19 +160,19 @@ void AEnemy1AIController::Died(int64 num)
         }
         else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
         {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//HP 절반 회복이 없어서 초록 경험치로 대체
+            World->SpawnActor<AActor>(Enemy->Heal_half, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
         else if (DropNum <= 90) //3% 확률로 HP 전부 회복 드랍
         {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//HP 전부 회복이 없어서 초록 경험치로 대체
+            World->SpawnActor<AActor>(Enemy->Heal_full, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
         else if (DropNum <= 95) //5% 확률로 자석 드랍
         {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//자석이 없어서 초록 경험치로 대체
+            World->SpawnActor<AActor>(Enemy->Magnetic, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
         else//5% 확률로 폭탄 드랍
         {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);//폭탄이 없어서 초록 경험치로 대체
+            World->SpawnActor<AActor>(Enemy->Bomb, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
         }
 		break;
 	default://버그나 보스전 등으로 인해 강제로 삭제해야 하는 경우

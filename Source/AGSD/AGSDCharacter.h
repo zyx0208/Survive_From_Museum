@@ -169,6 +169,9 @@ public:
 	void AddXP(int32 XPAmount);
 	void LevelUp();
 	void Attacked(float Damage); //데미지를 받을때 발생하는 함수
+    void SetHP(float value); //해당 수치만큼 체력을 조정(현재 체력값에서 조정)
+    void MagneticEffect(float time); //time의 시간 만큼 자석 효과 활성화
+    void MagneticEffectOff(); //자석효과 종료 후 정상화시키는 함수
 
     //자석 범위
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
@@ -218,6 +221,8 @@ public:
 
     // 쿨타임 UI 타이머 핸들러
     FTimerHandle DashCooldownUpdateTimerHandle;
+
+    FTimerHandle MagneticEffectTimerHandle;
 
     // 무적 해제 함수
     UFUNCTION()
