@@ -4,6 +4,7 @@
 #include "Projectile_Beta.h"
 #include "Enemy1AIController.h"
 #include "GameFramework/Character.h"
+#include "SubWeapon.h"
 #include "AIController.h"
 
 // Sets default values
@@ -14,15 +15,6 @@ AProjectile_Beta::AProjectile_Beta()
 
     // 투사체 생성 위치 저장
     StartLocation = FVector::ZeroVector;
-
-    // 투사체 속도, 데미지, 사거리
-    ProjectileSpeed = 50.0f;
-    ProjectileDamage = 1.0f;
-    ProjectileRange = 1000.0f;
-
-    // 플레이어 능력치
-    PlayerAttack = 1.0f;
-    PlayerRange = 1.0f;
 
     if (!RootComponent)
     {
@@ -104,6 +96,17 @@ void AProjectile_Beta::FireInDirection(const FVector& ShootDirection)
 }
 void AProjectile_Beta::WeaponHitEffect()
 {
+}
+
+void AProjectile_Beta::UpdatePlayerStat()
+{
+    AActor* ParentActor = GetAttachParentActor();
+    if (ParentActor && ParentActor->IsA(ASubWeapon::StaticClass()))
+    {
+        ASubWeapon* Character = Cast<ASubWeapon>(ParentActor);
+        PlayerAttack = Character->PlayerAttack;
+        UE_LOG(LogTemp, Display, TEXT("UpdateProjectile"));
+    }
 }
 
 

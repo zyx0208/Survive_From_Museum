@@ -58,7 +58,7 @@ AAGSDCharacter::AAGSDCharacter()
 	Defense = 0;
     SpeedLevel = 500.f;
 
-    Attack = 1.0f; //초기 공격력 수정해도 상관없음
+    Attack = 20.0f; //초기 공격력 수정해도 상관없음
 
 
 	CharacterLevel = 1;        // 캐릭터 초기 레벨
@@ -67,8 +67,8 @@ AAGSDCharacter::AAGSDCharacter()
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
     XPRangeLevel = 1.0f;        //획득 자석 범위
 
-    AttackSpeedLevel = 1.0f;
-    AttackRangeLevel = 1.0f;
+    AttackSpeedLevel = 100.0f;
+    AttackRangeLevel = 10.0f;
 
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
@@ -790,6 +790,7 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
         USkeletalMeshComponent* MeshComp = GetMesh();
         if (MeshComp) {
             NewSubWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("SubWeaponSocket")));
+            NewSubWeapon->PlayerAttack = Attack;
             SubWeapons.Add(NewSubWeapon);
         }
     }

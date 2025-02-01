@@ -30,4 +30,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FRotator CurrentRotation;
+
+    virtual void UpdatePlayerStat() override;
 };

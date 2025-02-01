@@ -69,4 +69,13 @@ public:
 
     UFUNCTION()
     virtual void CreateProjectile();
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float PlayerAttack;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float PlayerRange;
+
+    UFUNCTION()
+    virtual void UpdatePlayerStat();
 };

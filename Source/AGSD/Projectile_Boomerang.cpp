@@ -4,6 +4,7 @@
 #include "Projectile_Boomerang.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
+#include "SubWeapon.h"
 AProjectile_Boomerang::AProjectile_Boomerang()
 {
     PrimaryActorTick.bCanEverTick = true;
@@ -26,6 +27,23 @@ AProjectile_Boomerang::AProjectile_Boomerang()
 void AProjectile_Boomerang::BeginPlay()
 {
     Super::BeginPlay();
+    // 투사체 속도, 데미지, 사거리
+}
+
+void AProjectile_Boomerang::UpdatePlayerStat()
+{
+    Super::UpdatePlayerStat();
+    AActor* ParentActor = GetAttachParentActor();
+    if (ParentActor && ParentActor->IsA(ASubWeapon::StaticClass()))
+    {
+        ASubWeapon* Character = Cast<ASubWeapon>(ParentActor);
+        if (CollisionComponent) {
+            FVector Scale = FVector(0.4 + Character->PlayerRange/10, 0.4 + Character->PlayerRange / 10, 0.4 + Character->PlayerRange / 10);
+            CollisionComponent->SetRelativeScale3D(Scale);
+        }
+    }
+    
+    
 }
 
 void AProjectile_Boomerang::WeaponHitEffect()

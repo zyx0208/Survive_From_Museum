@@ -2,17 +2,20 @@
 
 
 #include "SubWeapon_Boomerang.h"
+#include "AGSDCharacter.h"
 #include "WeaponDataTableBeta.h"
 
 ASubWeapon_Boomerang::ASubWeapon_Boomerang() {
     WeaponID = "1";
     RotationSpeed = FRotator(0.0f, 100.0f, 0.0f);
     CurrentRotation = FRotator(0.0f, 0.0f, 0.0f);
+    
 }
 
 void ASubWeapon_Boomerang::BeginPlay()
 {
     Super::BeginPlay();
+    CreateProjectile();
 }
 
 void ASubWeapon_Boomerang::Tick(float DeltaTime)
@@ -23,6 +26,11 @@ void ASubWeapon_Boomerang::Tick(float DeltaTime)
 }
 
 void ASubWeapon_Boomerang::StartFiring()
+{
+    GetWorldTimerManager().SetTimer(FireTimerHandle, this, &ASubWeapon_Boomerang::UpdatePlayerStat, 0.5, false);
+}
+
+void ASubWeapon_Boomerang::CreateProjectile()
 {
     // 발사
     if (ProjectileClass)
@@ -70,7 +78,7 @@ void ASubWeapon_Boomerang::StartFiring()
                         FVector LaunchDirection = AdjustedRotation.Vector();
                         Projectile->FireInDirection(LaunchDirection);
                     }
-
+                    Projectile->PlayerAttack = PlayerAttack;
                 }
             }
         }
@@ -79,10 +87,6 @@ void ASubWeapon_Boomerang::StartFiring()
     else {
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Not Found"));
     }
-}
-
-void ASubWeapon_Boomerang::CreateProjectile()
-{
     
 }
 
@@ -90,4 +94,19 @@ void ASubWeapon_Boomerang::Fire()
 {
     Super::Fire();
 }
+
+void ASubWeapon_Boomerang::UpdatePlayerStat()
+{
+    Super::UpdatePlayerStat();
+    AActor* ParentActor = GetAttachParentActor();
+    if (ParentActor && ParentActor->IsA(AAGSDCharacter::StaticClass()))
+    {
+        AAGSDCharacter* Character = Cast<AAGSDCharacter>(ParentActor);
+        RotationSpeed = FRotator(0, 100.0f + Character->AttackSpeedLevel*2, 0);
+        UE_LOG(LogTemp, Display, TEXT("UpdateSubWeapon"));
+    }
+    
+}
+
+
 

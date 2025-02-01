@@ -30,4 +30,8 @@ public:
     FRotator RotationSpeed;
 
     FRotator CurrentRotation;
+
+    bool OnProjectile = false;
+
+    virtual void UpdatePlayerStat() override;
 };

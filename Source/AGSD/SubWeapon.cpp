@@ -3,6 +3,7 @@
 
 #include "SubWeapon.h"
 #include "WeaponDataTableBeta.h"
+#include "AGSDCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 // Sets default values
@@ -105,6 +106,7 @@ void ASubWeapon::CreateProjectile()
                 FRotator AdjustedRotation = FRotator(SpawnRotation.Pitch, AdjustedYaw, SpawnRotation.Roll);
                 if (Projectile)
                 {
+                    Projectile->PlayerAttack = PlayerAttack;
                     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
                     if (WeaponData)
                     {
@@ -112,7 +114,6 @@ void ASubWeapon::CreateProjectile()
                         FVector LaunchDirection = AdjustedRotation.Vector();
                         Projectile->FireInDirection(LaunchDirection);
                     }
-
                 }
             }
         }
@@ -123,3 +124,25 @@ void ASubWeapon::CreateProjectile()
     }
 }
 
+void ASubWeapon::UpdatePlayerStat()
+{
+    AActor* ParentActor = GetAttachParentActor();
+    if (ParentActor && ParentActor->IsA(AAGSDCharacter::StaticClass()))
+    {
+        AAGSDCharacter* Character = Cast<AAGSDCharacter>(ParentActor);
+        PlayerAttack = Character->Attack;
+        PlayerRange = Character->AttackRangeLevel;
+        UE_LOG(LogTemp, Display, TEXT("UpdateSubWeapon"));
+    }
+
+    TArray<AActor*> AttachedActors;
+    GetAttachedActors(AttachedActors);
+    for (AActor* Child : AttachedActors)
+    {
+        if (Child->IsA(AProjectile_Beta::StaticClass())) // 특정 클래스인지 확인
+        {
+            AProjectile_Beta* ChildProjectile = Cast<AProjectile_Beta>(Child);
+            ChildProjectile->UpdatePlayerStat();
+        }
+    }
+}
