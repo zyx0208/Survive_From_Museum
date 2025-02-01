@@ -622,6 +622,12 @@ void AAGSDCharacter::ApplyAccessoryEffect(const FAccessoryData& Accessory)
         {
             DashCooldown -= 1.0f;
         }
+        else if (Effect.Contains(TEXT("보조무기")))
+        {
+            //FAccessoryData* AccessoryData = AccessoryDataTable->FindRow<FAccessoryData>(AccessoryID, TEXT("Accessory Lookup));
+            // SubWeaponSelector = AccessoryData->SubWeaponSelector;
+            // SpawnSubWeapon(SubWeaponSelector);
+        }
     }
 }
 void AAGSDCharacter::ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects)

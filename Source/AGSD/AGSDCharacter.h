@@ -8,6 +8,7 @@
 #include "Projectile_A.h"
 #include "Projectile_Beta.h"
 #include "WeaponDataTable.h"
+#include "AccessoryData.h"
 
 #include "Blueprint/UserWidget.h"
 
@@ -296,6 +297,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UDataTable* WeaponDataTableRef;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+    UDataTable* AccessoryDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<AProjectile_Beta> CurrentProjectile;

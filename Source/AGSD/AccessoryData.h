@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Engine/Texture2D.h" // UTexture2D를 위해 필요
+#include "SubWeapon.h"
 #include "AccessoryData.generated.h"
 
 // 등급 Enum 정의
@@ -53,4 +54,7 @@ struct FAccessoryData : public FTableRowBase
     // 아이콘 이미지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     UTexture2D* AccessoryIcon;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    TSubclassOf<ASubWeapon> SubWeaponSelector;
 };
