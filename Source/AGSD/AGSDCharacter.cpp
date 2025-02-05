@@ -28,6 +28,7 @@
 #include "Misc/StringUtility.h" // 문자열 유틸리티를 사용하기 위한 헤더 포함
 #include "Engine/DataTable.h"
 #include "AccessoryData.h" // 장신구 데이터 구조체 헤더
+#include "AGSDCharacter_LevelUP.h"
 
 #include "Blueprint/UserWidget.h" 
 #include "Components/ProgressBar.h"
@@ -118,7 +119,7 @@ AAGSDCharacter::AAGSDCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-
+    
 	WeaponID = "1";
 
 	static ConstructorHelpers::FObjectFinder<UDataTable> WeaponDataTableFinder(TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'"));
@@ -141,6 +142,9 @@ AAGSDCharacter::AAGSDCharacter()
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 10.0f;
+
+    // 기본 생성자에서 초기화 (nullptr로 설정)
+    LevelUpHandler = nullptr;
 }
 
 void AAGSDCharacter::BeginPlay()
@@ -231,6 +235,9 @@ void AAGSDCharacter::BeginPlay()
     if (AnimInstance) {
         UE_LOG(LogTemp, Warning, TEXT("No Anim"));
     }
+
+    // 레벨업 처리 핸들러 생성
+    LevelUpHandler = NewObject<AAGSDCharacter_LevelUP>(this);
 }
 
 void AAGSDCharacter::Tick(float DeltaTime)
@@ -536,114 +543,15 @@ void AAGSDCharacter::ShowLevelUpUI()
 		}
 	}
 }
-//레벨업시 옵션
-void AAGSDCharacter::ApplyLevelUpOption(const FAccessoryData& SelectedAccessory)
+
+void AAGSDCharacter::ApplyLevelUpOption(const struct FAccessoryData& SelectedAccessory)
 {
-    // 유효성 확인
-    if (SelectedAccessory.AccessoryName.IsEmpty() || SelectedAccessory.AccessoryEffect.IsEmpty())
+    if (LevelUpHandler)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Invalid Accessory Data."));
-        return;
-    }
-    // 선택된 장신구의 효과를 적용하는 로직 구현
-    UE_LOG(LogTemp, Log, TEXT("Selected Accessory: %s"), *SelectedAccessory.AccessoryName);
-    ApplyAccessoryEffect(SelectedAccessory);
-	// 게임 재개
-	ResumeGameAfterLevelUp();
-}
-//레벨업 옵션 처리 함수(문자열 파싱)
-void AAGSDCharacter::ApplyAccessoryEffect(const FAccessoryData& Accessory)
-{
-    // AccessoryEffect 유효성 확인
-    if (Accessory.AccessoryEffect.IsEmpty())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("AccessoryEffect is empty."));
-        return;
-    }
-
-    TArray<FString> ParsedEffects;
-    ParseAccessoryEffect(Accessory.AccessoryEffect, ParsedEffects);
-
-    for (const FString& Effect : ParsedEffects)
-    {
-        if (Effect.Contains(TEXT("공격력")))
-        {
-            // 원본 문자열 로그 출력
-            //UE_LOG(LogTemp, Log, TEXT("Effect Raw String: '%s'"), *Effect);
-            //UE_LOG(LogTemp, Log, TEXT("Effect Length: %d"), Effect.Len());
-
-            // "공격력 " 이후의 값을 추출
-            FString ValueString = Effect.Mid(5).TrimStartAndEnd(); // 5번째 인덱스부터 추출
-            if (ValueString.IsEmpty())
-            {
-                UE_LOG(LogTemp, Warning, TEXT("ValueString is empty after Mid."));
-                return;
-            }
-
-            // 추출된 값 로그 출력
-            //UE_LOG(LogTemp, Log, TEXT("Extracted Value: '%s'"), *ValueString);
-
-            // 문자열을 실수로 변환
-            float AttackIncrease = FCString::Atof(*ValueString);
-            if (AttackIncrease == 0.0f)
-            {
-                UE_LOG(LogTemp, Warning, TEXT("Failed to convert ValueString to float: '%s'"), *ValueString);
-                return;
-            }
-
-            // 공격력 증가
-            Attack += AttackIncrease;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Current Attack: %.1f"), AttackIncrease, Attack);
-        }
-        else if (Effect.Contains(TEXT("최대체력")))
-        {
-            //최대체력 증가 처리
-            FString ValueString = Effect.RightChop(4); // "체력 " 이후의 값 추출
-            int32 HealthIncrease = FCString::Atoi(*ValueString); // 문자열을 정수로 변환
-            MaxHealth += HealthIncrease;
-            CurrentHealth += HealthIncrease;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Health %d / %d"), HealthIncrease, CurrentHealth, MaxHealth);
-        }
-        else if (Effect.Contains(TEXT("이동속도")))
-        {
-            // 이동 속도 증가 처리
-            FString ValueString = Effect.RightChop(6); // "이동속도 " 이후의 값 추출
-            float SpeedIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT(""))); // 문자열을 실수로 변환
-            SpeedLevel *= (1 + SpeedIncrease / 100.0f); // %를 반영하여 이동 속도 증가
-        }
-        else if (Effect.Contains(TEXT("방어력")))
-        {
-            //방어력 증감 처리
-            FString ValueString = Effect.RightChop(5); //방어력 이후의 값 추출
-            float DefenseIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT(""))); // 문자열을 실수로 변환
-            Defense *= (1 + DefenseIncrease / 100.0f);
-        }
-        else if (Effect.Contains(TEXT("대쉬 쿨타임")))
-        {
-            DashCooldown -= 1.0f;
-        }
-        else if (Effect.Contains(TEXT("보조무기")))
-        {
-            //FAccessoryData* AccessoryData = AccessoryDataTable->FindRow<FAccessoryData>(AccessoryID, TEXT("Accessory Lookup));
-            // SubWeaponSelector = AccessoryData->SubWeaponSelector;
-            // SpawnSubWeapon(SubWeaponSelector);
-        }
+        LevelUpHandler->ApplyLevelUpOption(SelectedAccessory);
     }
 }
-void AAGSDCharacter::ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects)
-{
-    // '/'로 먼저 나누기
-    TArray<FString> SplittedBySlash;
-    EffectString.ParseIntoArray(SplittedBySlash, TEXT("/"), true);
 
-    for (const FString& SubEffect : SplittedBySlash)
-    {
-        if (!SubEffect.IsEmpty())
-        {
-            OutEffects.Add(SubEffect);
-        }
-    }
-}
 //레벨업시 게임정지
 void AAGSDCharacter::PauseGameForLevelUp()
 {

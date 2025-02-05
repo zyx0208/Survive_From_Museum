@@ -18,6 +18,7 @@
 #include "SubWeapon.h"
 #include "WeaponDrop.h"
 #include "GameTimer.h"
+//#include "AGSDCharacter_LevelUP.h"
 
 #include "AGSDCharacter.generated.h"
 
@@ -26,6 +27,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class AAGSDCharacter_LevelUP;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -112,7 +114,9 @@ protected:
     UPROPERTY()
     UUserWidget* RestartWidget;
 
-    
+    // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
+    UPROPERTY()
+    AAGSDCharacter_LevelUP* LevelUpHandler;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -150,13 +154,13 @@ public:
 	void UpdateXPBar(); //경험치바 갱신함수
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
-	void ApplyLevelUpOption(const FAccessoryData& SelectedAccessory);
+	void ApplyLevelUpOption(const struct FAccessoryData& SelectedAccessory);
 
-    UFUNCTION(BlueprintCallable, Category = "LevelUp")
-    void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);
+    //UFUNCTION(BlueprintCallable, Category = "LevelUp")
+    //void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);
 
-    UFUNCTION(BlueprintCallable, Category = "LevelUp")
-    void ApplyAccessoryEffect(const FAccessoryData& Accessory);
+    //UFUNCTION(BlueprintCallable, Category = "LevelUp")
+    //void ApplyAccessoryEffect(const struct FAccessoryData& Accessory);
 
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
