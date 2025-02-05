@@ -154,7 +154,7 @@ public:
 	void UpdateXPBar(); //경험치바 갱신함수
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
-	void ApplyLevelUpOption(const struct FAccessoryData& SelectedAccessory);
+	void ApplyLevelUpOption(AAGSDCharacter* Character, const FAccessoryData& SelectedAccessory);
 
     //UFUNCTION(BlueprintCallable, Category = "LevelUp")
     //void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);

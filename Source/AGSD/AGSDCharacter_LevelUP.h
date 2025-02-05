@@ -14,11 +14,11 @@ class AGSD_API AAGSDCharacter_LevelUP : public AAGSDCharacter
 	GENERATED_BODY()
 public:
     /** 레벨업 시 선택한 옵션을 적용 */
-    void ApplyLevelUpOption(const struct FAccessoryData& SelectedAccessory);
+    void ApplyLevelUpOption(AAGSDCharacter* Character, const FAccessoryData& SelectedAccessory);
 
 protected:
     /** 선택된 장신구의 효과를 적용 */
-    void ApplyAccessoryEffect(const struct FAccessoryData& Accessory);
+    void ApplyAccessoryEffect(AAGSDCharacter* Character, const  FAccessoryData& Accessory);
 
     /** 장신구 효과 문자열을 파싱하여 분류 */
     void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);

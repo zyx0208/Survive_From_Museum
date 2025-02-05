@@ -147,7 +147,7 @@ void ULevelUp_UI::OnOption1Clicked()
 {
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		PlayerCharacter->ApplyLevelUpOption(SelectedAccessories[0]);
+		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[0]);
 	}
 }
 
@@ -155,7 +155,7 @@ void ULevelUp_UI::OnOption2Clicked()
 {
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		PlayerCharacter->ApplyLevelUpOption(SelectedAccessories[1]);
+		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);
 	}
 }
 
@@ -163,6 +163,6 @@ void ULevelUp_UI::OnOption3Clicked()
 {
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		PlayerCharacter->ApplyLevelUpOption(SelectedAccessories[2]);
+		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[2]);
 	}
 }

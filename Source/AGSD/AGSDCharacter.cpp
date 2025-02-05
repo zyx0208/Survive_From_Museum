@@ -66,7 +66,7 @@ AAGSDCharacter::AAGSDCharacter()
 	CurrentXP = 0;             // 초기 경험치
 	XPToNextLevel = 8;       // 첫 번째 레벨 업까지 필요한 경험치
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
-    XPRangeLevel = 1.0f;        //획득 자석 범위
+    XPRangeLevel = 200.0f;        //획득 자석 범위
 
     AttackSpeedLevel = 100.0f;
     AttackRangeLevel = 10.0f;
@@ -114,7 +114,7 @@ AAGSDCharacter::AAGSDCharacter()
     // 자석 범위 콜리전 컴포넌트 생성
     MagnetSphere = CreateDefaultSubobject<USphereComponent>(TEXT("MagnetSphere"));
     MagnetSphere->SetupAttachment(RootComponent);
-    MagnetSphere->SetSphereRadius(200.0f); // 기본 반경
+    MagnetSphere->SetSphereRadius(XPRangeLevel); // 기본 반경
     MagnetSphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
@@ -501,8 +501,8 @@ void AAGSDCharacter::UpdateXPBar()
 
 void AAGSDCharacter::AddXP(int32 XPAmount)
 {
-	
-	CurrentXP += XPAmount * BounsXPLevel; // 주어진 XP를 현재 경험치에 더함
+    XPAmount *= BounsXPLevel;
+	CurrentXP += XPAmount ; // 주어진 XP를 현재 경험치에 더함
 	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
 	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
@@ -544,11 +544,11 @@ void AAGSDCharacter::ShowLevelUpUI()
 	}
 }
 
-void AAGSDCharacter::ApplyLevelUpOption(const struct FAccessoryData& SelectedAccessory)
+void AAGSDCharacter::ApplyLevelUpOption(AAGSDCharacter* Character, const FAccessoryData& SelectedAccessory)
 {
     if (LevelUpHandler)
     {
-        LevelUpHandler->ApplyLevelUpOption(SelectedAccessory);
+        LevelUpHandler->ApplyLevelUpOption(this, SelectedAccessory);
     }
 }
 
@@ -577,11 +577,16 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 	}
 
 	// UI 제거
-	if (LevelUpWidget)
-	{
-		LevelUpWidget->RemoveFromViewport();
-		LevelUpWidget = nullptr;
-	}
+    if (IsValid(LevelUpWidget))
+    {
+        LevelUpWidget->RemoveFromViewport();
+        LevelUpWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("LevelUpWidget removed successfully."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("LevelUpWidget is already null or invalid."));
+    }
 }
 void AAGSDCharacter::AddToMagnetField(AXPOrb* XPOrb)
 {
