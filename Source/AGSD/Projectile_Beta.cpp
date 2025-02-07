@@ -156,7 +156,7 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
                 AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
                 if (HitEnemyController)
                 {
-                    HitEnemyController->Attacked(ProjectileDamage+PlayerAttack);
+                    HitEnemyController->Attacked(ProjectileDamage+PlayerAttack, 1);
                 }
             }
             WeaponHitEffect();

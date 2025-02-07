@@ -16,11 +16,24 @@ class AGSD_API AEnemy1AIController : public AAIController
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	virtual void Attacked(float damage);//플레이어의 공격을 맞았을 경우
+	virtual void Attacked(float damage);//플레이어의 공격을 맞았을 경우(무적시간X)
+    virtual void Attacked(float damage, int chanel);//플레이어의 공격을 맞았을 경우(동일 채널 내 무적 시간 존재)
 	virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
 
     void KillCountCall(UWorld* World);
+
+    FTimerHandle Chanel1TimerHandle;//무적 관리를 위한 함수1
+    void Chanel1TimerEnd();//무적 해제를 위한 함수1
+    FTimerHandle Chanel2TimerHandle;//무적 관리를 위한 함수2
+    void Chanel2TimerEnd();//무적 해제를 위한 함수2
+    FTimerHandle Chanel3TimerHandle;//무적 관리를 위한 함수3
+    void Chanel3TimerEnd();//무적 해제를 위한 함수3
+    FTimerHandle Chanel4TimerHandle;//무적 관리를 위한 함수4
+    void Chanel4TimerEnd();//무적 해제를 위한 함수4
+    FTimerHandle Chanel5TimerHandle;//무적 관리를 위한 함수5
+    void Chanel5TimerEnd();//무적 해제를 위한 함수5
+
 
 private:
     AEnemy1Class* Enemy; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
@@ -37,4 +50,5 @@ private:
 	float ChenkIsolated_Timer = 0.0f;//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수3
 	float DashCoolTime_Temp = 0;//대쉬 쿨타임을 계산하기 위한 변수
 	bool IsDashing = false;//대쉬중인가를 나타내는 변수
+    
 };

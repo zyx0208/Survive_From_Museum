@@ -18,6 +18,8 @@
 #include "AGSDCharacter.h"
 #include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
 #include "Enemy1Class.h"
+#include "TimerManager.h"
+
 
 void AEnemy1AIController::BeginPlay()
 {
@@ -132,6 +134,83 @@ void AEnemy1AIController::Attacked(float damage)
 	{
 		Died(Enemy->AttackType);
 	}
+}
+
+void AEnemy1AIController::Attacked(float damage, int chanel)
+{
+    switch (chanel)
+    {
+    case 1 :
+        if (!GetWorldTimerManager().IsTimerActive(Chanel1TimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
+            Enemy->CurrentHP -= damage;
+        }
+        break;
+    case 2:
+        if (!GetWorldTimerManager().IsTimerActive(Chanel2TimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(Chanel2TimerHandle, this, &AEnemy1AIController::Chanel2TimerEnd, 0.1f, false);
+            Enemy->CurrentHP -= damage;
+        }
+        break;
+    case 3:
+        if (!GetWorldTimerManager().IsTimerActive(Chanel3TimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(Chanel3TimerHandle, this, &AEnemy1AIController::Chanel3TimerEnd, 0.1f, false);
+            Enemy->CurrentHP -= damage;
+        }
+        break;
+    case 4:
+        if (!GetWorldTimerManager().IsTimerActive(Chanel4TimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(Chanel4TimerHandle, this, &AEnemy1AIController::Chanel4TimerEnd, 0.1f, false);
+            Enemy->CurrentHP -= damage;
+        }
+        break;
+    case 5:
+        if (!GetWorldTimerManager().IsTimerActive(Chanel5TimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(Chanel5TimerHandle, this, &AEnemy1AIController::Chanel5TimerEnd, 0.1f, false);
+            Enemy->CurrentHP -= damage;
+        }
+        break;
+    default:
+        Enemy->CurrentHP -= damage;
+        break;
+    }
+    
+    UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d(Chanel %d)"), Enemy->CurrentHP, chanel);
+    //체력이 0이하일 경우 죽음
+    if (Enemy->CurrentHP <= 0.0f)
+    {
+        Died(Enemy->AttackType);
+    }
+}
+
+void AEnemy1AIController::Chanel1TimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(Chanel1TimerHandle);
+}
+
+void AEnemy1AIController::Chanel2TimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(Chanel2TimerHandle);
+}
+
+void AEnemy1AIController::Chanel3TimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(Chanel3TimerHandle);
+}
+
+void AEnemy1AIController::Chanel4TimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(Chanel4TimerHandle);
+}
+
+void AEnemy1AIController::Chanel5TimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(Chanel5TimerHandle);
 }
 
 void AEnemy1AIController::Died(int64 num)
