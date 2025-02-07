@@ -25,6 +25,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TArray<TSubclassOf<AActor>> Enemys; //몬스터의 정보를 담는 배열
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")int Stage = 0; //스테이지 숫자 입력(1 ~ ...)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Boss = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> BossTextUI = NULL;
     ACharacter* PlayerCharacter; //플레이어 위치 및 방향 정보를 담는 액터 배열
 	//안쪽 범위 밖 부분, 바깥쪽 범위의 안 부분에서 적이 등장(도넛 모양)
 	float InnerCircleRange = 0.0f;

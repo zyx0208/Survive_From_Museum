@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"//레벨에 등장하는 액터의 방향이나 이동을 조절하기 위한 함수를 가진 헤더파일
 #include "Enemy1Class.h"
 #include "Enemy1AIController.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -63,6 +64,10 @@ void AEnemySpawner::Tick(float DeltaTime)
                     //보스 몹 소환 및 플레이어 이동
                     GetWorld()->SpawnActor<AActor>(Boss, FVector(-4800.0f, 28850.0f, 400.0f), FRotator::ZeroRotator);
                     PlayerCharacter->SetActorLocation(FVector(-6150.0f, 28850.0f, 400.0f));
+                    if (BossTextUI)
+                    {
+                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                    }
                 }
                 SpawnNum = -3;//일반 몹 생성안하도록 설정
             }
