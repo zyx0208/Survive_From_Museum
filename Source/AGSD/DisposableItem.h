@@ -16,6 +16,7 @@ public:
 	ADisposableItem();
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")int Item = 0; //아이템 숫자 [1: 폭탄] [2: HP 절반회복] [3: HP 풀 회복] [4: 자석]
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")float BombRange = 0.0f; //폭탄 범위 설정
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")TSubclassOf<AActor> PickEffect = NULL;
 
     // 충돌을 감지할 콜리전 컴포넌트
     UPROPERTY(VisibleAnywhere)

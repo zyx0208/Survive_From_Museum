@@ -89,6 +89,7 @@ void ADisposableItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, A
             {
                 UE_LOG(LogTemp, Display, TEXT("Set Item Number."));
             }
+            GetWorld()->SpawnActor<AActor>(PickEffect, GetActorLocation(), FRotator::ZeroRotator);
             Destroy();
         }
     }
