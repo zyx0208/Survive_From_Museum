@@ -9,6 +9,7 @@ ASubWeapon_Boomerang::ASubWeapon_Boomerang() {
     WeaponID = "1";
     RotationSpeed = FRotator(0.0f, 100.0f, 0.0f);
     CurrentRotation = FRotator(0.0f, 0.0f, 0.0f);
+    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
     
 }
 

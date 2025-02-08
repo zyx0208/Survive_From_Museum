@@ -112,6 +112,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         else if (Effect.Contains(TEXT("보조무기")))
         {
             // 보조 무기 추가 처리
+            Character->SpawnSubWeapon(Accessory.SubWeaponSelector);
         }
         else
         {

@@ -23,6 +23,7 @@ ASubWeapon::ASubWeapon()
     if (!WeaponMeshComponent) {
         WeaponMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMeshComponent"));
         WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        RootComponent = WeaponMeshComponent;
         /*static ConstructorHelpers::FObjectFinder<UStaticMesh>WeaponMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
         if (WeaponMesh.Succeeded())
         {

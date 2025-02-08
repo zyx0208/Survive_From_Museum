@@ -70,7 +70,7 @@ AAGSDCharacter::AAGSDCharacter()
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
     AttackSpeedLevel = 1.0f;
-    AttackRangeLevel = 100.0f;
+    AttackRangeLevel = 1.0f;
 
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
