@@ -68,8 +68,8 @@ AAGSDCharacter::AAGSDCharacter()
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
-    AttackSpeedLevel = 100.0f;
-    AttackRangeLevel = 10.0f;
+    AttackSpeedLevel = 1.0f;
+    AttackRangeLevel = 100.0f;
 
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화

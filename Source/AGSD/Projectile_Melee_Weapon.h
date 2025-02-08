@@ -16,4 +16,5 @@ class AGSD_API AProjectile_Melee_Weapon : public AProjectile_Beta
 public:
 	AProjectile_Melee_Weapon();
 	virtual void WeaponHitEffect() override;
+    virtual void Tick(float DeltaTime) override;
 };
