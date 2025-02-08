@@ -477,7 +477,12 @@ void AAGSDCharacter::UpdateDashCooldownUI()
 }
 
 void AAGSDCharacter::Interaction()
-{}
+{
+    if (OverlapDropWeapon) 
+    {
+        GetWeapon();
+    }
+}
 
 //체력바 갱신 함수
 void AAGSDCharacter::UpdateHealthBar()
