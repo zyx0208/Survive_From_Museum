@@ -40,6 +40,7 @@
 #include "UObject/ConstructorHelpers.h"
 
 #include "WeaponDrop.h"
+#include "StorageBox.h"
 
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
@@ -778,6 +779,15 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
                 OverlapID = *OverlapWeaponDrop->WeaponID;
             }
         }
+        // 충돌한 오브젝트가 Box임을 확인
+        if (OtherActor && OtherActor->IsA<AStorageBox>())
+        {
+            OverlapBox = true;
+            if (OverlapBox)
+            {
+                UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
+            }
+        }
     }
 }
 
@@ -789,6 +799,11 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
         if (OtherActor && OtherActor->IsA<AWeaponDrop>())
         {
             OverlapDropWeapon = false;
+        }
+        // 충돌한 오브젝트가 Box임을 확인
+        if (OtherActor && OtherActor->IsA<AStorageBox>())
+        {
+            OverlapBox = false;
         }
     }
 }

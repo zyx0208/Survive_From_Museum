@@ -369,6 +369,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool OverlapDropWeapon = false;
 
+    //현재 상자와 오버랩 되었는지 확인
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool OverlapBox = false;
+
     //디버그
     UFUNCTION()
     void Debug();
