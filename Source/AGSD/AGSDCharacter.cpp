@@ -350,6 +350,9 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 		// Dashing
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Dash);
+
+        // InteractionAction
+        EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Interaction);
 		
 		// Firing
 		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAGSDCharacter::StartFiring);
@@ -472,6 +475,9 @@ void AAGSDCharacter::UpdateDashCooldownUI()
         DashCooldownWidget->UpdateDashCooldown(CooldownPercentage);
     }
 }
+
+void AAGSDCharacter::Interaction()
+{}
 
 //체력바 갱신 함수
 void AAGSDCharacter::UpdateHealthBar()

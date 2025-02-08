@@ -64,6 +64,10 @@ class AAGSDCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* DashAction;
 
+    /** Interaction Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* InteractionAction;
+
 public:
 	AAGSDCharacter();
 	virtual void Tick(float DeltaTime) override;
@@ -82,6 +86,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void Dash();
+
+    void Interaction();
 		
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	UCharacterMovementComponent* CharacterMovementComponent;
