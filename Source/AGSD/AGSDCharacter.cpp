@@ -483,6 +483,11 @@ void AAGSDCharacter::Interaction()
     {
         GetWeapon();
     }
+    else if (OverlapBox)
+    {
+        ShowStorageBoxUI();
+        UE_LOG(LogTemp, Log, TEXT("Box here"));
+    }
 }
 
 //체력바 갱신 함수
@@ -594,6 +599,14 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         LevelUpWidget->RemoveFromViewport();
         LevelUpWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("LevelUpWidget removed successfully."));
+    }
+    else if (IsValid(StorageBoxWidget))
+    {
+        StorageBoxWidget->RemoveFromViewport();
+        DashCooldownWidget->AddToViewport();
+        HealthBarWidget->AddToViewport();
+        StorageBoxWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("StorageBoxWidget removed successfully."));
     }
     else
     {
@@ -1094,3 +1107,17 @@ void AAGSDCharacter::Clear()
     UE_LOG(LogTemp, Warning, TEXT("Level Clear"));
 }
 
+void AAGSDCharacter::ShowStorageBoxUI()
+{
+    if (StorageBoxWidgetClass)
+    {
+        StorageBoxWidget = CreateWidget<UUserWidget>(GetWorld(), StorageBoxWidgetClass);
+        if (StorageBoxWidget)
+        {
+            StorageBoxWidget->AddToViewport();
+            DashCooldownWidget->RemoveFromViewport();
+            HealthBarWidget->RemoveFromViewport();
+            PauseGameForLevelUp();
+        }
+    }
+}

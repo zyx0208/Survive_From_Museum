@@ -120,6 +120,12 @@ protected:
     UPROPERTY()
     UUserWidget* RestartWidget;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> StorageBoxWidgetClass;
+
+    UPROPERTY()
+    UUserWidget* StorageBoxWidget;
+
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
     UPROPERTY()
     AAGSDCharacter_LevelUP* LevelUpHandler;
@@ -369,9 +375,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool OverlapDropWeapon = false;
 
+    //창고 관련 함수 및 변수
     //현재 상자와 오버랩 되었는지 확인
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool OverlapBox = false;
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void ShowStorageBoxUI();
+
+    
 
     //디버그
     UFUNCTION()
