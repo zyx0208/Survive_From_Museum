@@ -215,6 +215,14 @@ void AEnemy1AIController::Chanel5TimerEnd()
 
 void AEnemy1AIController::Died(int64 num)
 {
+    //이미 죽은 상태라면 더 이상 죽음 판정이 안생김
+    if (Temp_Dead)
+    {
+        return;
+    }
+    Temp_Dead = true;
+
+    //월드 정보 불러오기 및 난수 생성
     UWorld* World = GetWorld();
     int DropNum = FMath::RandRange(1, 100);
 	//드랍 아이템 설정
@@ -262,7 +270,10 @@ void AEnemy1AIController::Died(int64 num)
     {
         Cast<AAGSDCharacter>(PlayerCharacter)->Clear();
     }
-    Enemy->IsDead = true;
+    else
+    {
+        Enemy->IsDead = true;
+    }
 }
 
 void AEnemy1AIController::KillCountCall(UWorld* World)
@@ -306,6 +317,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		IsFisrt = false;
 		AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;//공격속도 초기화
         Enemy->CurrentHP = Enemy->MaxHP;
+        Temp_Dead = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
