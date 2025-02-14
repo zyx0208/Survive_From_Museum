@@ -8,6 +8,8 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Actor.h"
 #include "Components/InputComponent.h"
+#include "ManagingGame.h"
+#include "Engine/GameInstance.h"
 
 
 // Sets default values
@@ -29,30 +31,44 @@ void ANPC1Class::BeginPlay()
 void ANPC1Class::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+    //처음 실행 과정
     if (IsFirst)
     {
         PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         IsFirst = false;
-        Progress = 1;
+        GameInstance = Cast<UManagingGame>(GetGameInstance());
     }
+
+    //대화 진행도 설정
+    if (GameInstance)
+    {
+        Progress = GameInstance->Temp_TalkingProgress;
+    }
+    else
+    {
+        Progress = 0;
+    }
+
+    //대화 출력
     if (PlayerCharacter)
     {
         if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetActorLocation()) <= 500.0f) && (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::F)))//대화가능 거리 및 상호작용 키[인터렉션으로 교체 예정]
         {
+            UE_LOG(LogTemp, Warning, TEXT("Progress : %d"), Progress);
             switch (Progress)
             {
-            case 1:
+            case 0:
                 if (Text1)
                 {
                     CreateWidget<UUserWidget>(GetWorld(), Text1)->AddToViewport();
-                    Progress++;
+                    GameInstance->Temp_TalkingProgress++;
                     break;
                 }
-            case 2:
+            case 1:
                 if (Text2)
                 {
                     CreateWidget<UUserWidget>(GetWorld(), Text2)->AddToViewport();
-                    Progress++;
+                    GameInstance->Temp_TalkingProgress++;
                     break;
                 }
             default:

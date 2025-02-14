@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "ManagingGame.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "NPC1Class.generated.h"
+
 
 UCLASS()
 class AGSD_API ANPC1Class : public ACharacter
@@ -28,8 +30,9 @@ public:
     int64 Progress;//어떤 대화창을 출력할지를 위한 변수
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+    UManagingGame* GameInstance;
 private:
     ACharacter* PlayerCharacter;
     bool IsFirst = true;
+    
 };
