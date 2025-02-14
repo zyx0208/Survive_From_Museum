@@ -410,7 +410,7 @@ public:
     UAnimMontage* CurrentMontage;
 
     int RepeatCount;
-    int CurrentCount;
+    int CurrentCount = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UAnimInstance* AnimInstance;

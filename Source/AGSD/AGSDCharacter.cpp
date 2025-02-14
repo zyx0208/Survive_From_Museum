@@ -69,7 +69,7 @@ AAGSDCharacter::AAGSDCharacter()
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
-    AttackSpeedLevel = 1.0f;
+    AttackSpeedLevel = 0.5f;
     AttackRangeLevel = 1.0f;
 
 
@@ -656,7 +656,6 @@ void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage, int RepeatNumber)
     // 변수 초기화
     CurrentMontage = Montage;
     RepeatCount = RepeatNumber;
-    CurrentCount = 0;
 
     // Delegate 설정
     FOnMontageEnded MontageEndedDelegate;
@@ -669,23 +668,28 @@ void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage, int RepeatNumber)
 
 void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-    if (Montage != CurrentMontage || bInterrupted)
+    if (Montage != CurrentMontage)
     {
         UE_LOG(LogTemp, Warning, TEXT("Montage was interrupted or not the expected montage."));
         return;
     }
 
-    CurrentCount++;
-
     if (CurrentCount < RepeatCount)
     {
-        // 반복 재생
+        CurrentCount++;
+        UE_LOG(LogTemp, Display, TEXT("%d 번째 발사"), CurrentCount);
+        PlayFireMontage(Montage, RepeatCount);
+        /* 반복 재생
+        CurrentCount++;
         AnimInstance->Montage_Play(Montage, 1.0f * RepeatFire * AttackSpeedLevel);
+        UE_LOG(LogTemp, Display, TEXT("%d 번째 발사"), CurrentCount);
+        OnMontageEnded(Montage, false);*/
     }
     else
     {
         // 반복 종료
-        UE_LOG(LogTemp, Log, TEXT("Montage playback completed %d times."), RepeatCount);
+        CurrentCount = 0;
+        UE_LOG(LogTemp, Display, TEXT("Montage playback completed %d times."), RepeatCount);
     }
 }
 
@@ -759,8 +763,6 @@ void AAGSDCharacter::WeaponTake()
     else {
         WeaponParticle = nullptr;
     }
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));
 }
 void AAGSDCharacter::Debug()
 {
