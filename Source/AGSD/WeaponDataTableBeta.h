@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Projectile_Beta.h"
+#include "Engine/Texture2D.h"
 #include "Animation/AnimMontage.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -58,4 +59,8 @@ public:
     //무기 공격 유형
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool WeaponType;
+
+    // 아이콘 이미지
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UTexture2D* WeaponIcon;
 };
