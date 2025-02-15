@@ -69,7 +69,7 @@ AAGSDCharacter::AAGSDCharacter()
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
-    AttackSpeedLevel = 0.5f;
+    AttackSpeedLevel = 1.0f;
     AttackRangeLevel = 1.0f;
 
 
