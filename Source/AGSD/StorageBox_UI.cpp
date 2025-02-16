@@ -114,6 +114,10 @@ void UStorageBox_UI::CloseStorageBox()
 {
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
+        PlayerCharacter->WeaponArray[0] = HighlightedButtons[0];
+        PlayerCharacter->WeaponArray[1] = HighlightedButtons[1];
+        PlayerCharacter->WeaponSwap();
+        PlayerCharacter->WeaponTake();
         PlayerCharacter->ResumeGameAfterLevelUp();
     }
 }
