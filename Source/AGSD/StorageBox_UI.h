@@ -36,27 +36,73 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTableBeta;
 
-    /** 이미지 슬롯 */
-    void DisplayWeaponImage(int32 SlotIndex, UTexture2D* WeaponIcon);
-
     UPROPERTY(meta = (BindWidget))
     UImage* ImageSlot1;
-
     UPROPERTY(meta = (BindWidget))
     UImage* ImageSlot2;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot3;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot4;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot5;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot6;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot7;
+    UPROPERTY(meta = (BindWidget))
+    UImage* ImageSlot8;
 
-    /** 버튼 슬롯 */
     UPROPERTY(meta = (BindWidget))
     UButton* ImageSlot1Button;
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    void OnImageSlot1Clicked();
-
     UPROPERTY(meta = (BindWidget))
     UButton* ImageSlot2Button;
-    UFUNCTION(BlueprintCallable, Category = "UI")
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot3Button;
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot4Button;
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot5Button;
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot6Button;
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot7Button;
+    UPROPERTY(meta = (BindWidget))
+    UButton* ImageSlot8Button;
+
+    /** 무기 아이콘을 UI에 표시 */
+    void DisplayWeaponImage(int32 SlotIndex, UTexture2D* WeaponIcon);
+
+private:
+    /** 버튼 클릭 이벤트 핸들러 */
+    UFUNCTION()
+    void OnImageSlot1Clicked();
+
+    UFUNCTION()
     void OnImageSlot2Clicked();
 
+    UFUNCTION()
+    void OnImageSlot3Clicked();
 
+    UFUNCTION()
+    void OnImageSlot4Clicked();
 
-    
+    UFUNCTION()
+    void OnImageSlot5Clicked();
+
+    UFUNCTION()
+    void OnImageSlot6Clicked();
+
+    UFUNCTION()
+    void OnImageSlot7Clicked();
+
+    UFUNCTION()
+    void OnImageSlot8Clicked();
+
+    /** 버튼 클릭 이벤트 */
+    UFUNCTION()
+    void OnImageSlotClicked(int32 ButtonIndex);
+
+    TArray<int32> HighlightedButtons;
+
 };
