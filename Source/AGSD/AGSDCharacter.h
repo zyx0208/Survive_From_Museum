@@ -230,6 +230,15 @@ public:
     UFUNCTION()
     void ResetDashCooldown();
 
+    /** 원래 충돌 상태를 저장할 변수 */
+    ECollisionResponse OriginalMonsterCollision;
+    /** 몬스터 충돌 무시 설정 */
+    void IgnoreMonsterCollision();
+    /** 몬스터 충돌 복구 */
+    void RestoreMonsterCollision();
+    // 몬스터 충돌 타이머 핸들
+    FTimerHandle CollisionRestoreTimerHandle;
+
     // 쿨타임 타이머 핸들
     FTimerHandle DashCooldownTimerHandle;
 

@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AGSDCharacter.h"
+#include "AGSD.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -329,6 +330,11 @@ void AAGSDCharacter::Tick(float DeltaTime)
             XPOrb->AddActorWorldOffset(Force, true);
         }
     }
+
+    //충돌 디버깅
+    //ECollisionResponse CurrentResponse = GetCapsuleComponent()->GetCollisionResponseToChannel(ECC_Pawn);
+    //UE_LOG(LogTemp, Warning, TEXT("Current Collision Response to ECC_Pawn: %d"), (int32)CurrentResponse);
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -427,12 +433,21 @@ void AAGSDCharacter::Dash()
 		}
 		FVector DashVector = DashDirection * 1500.f; //대쉬 거리
 
-		// 캐릭터를 대쉬 벡터만큼 이동
-		LaunchCharacter(DashVector, true, true);
+        // 캐릭터를 대쉬 벡터만큼 이동
+        LaunchCharacter(DashVector, true, true);
+
+        // 몬스터 충돌 무시 설정
+        IgnoreMonsterCollision();
+		       
+
         // 쿨타임 및 무적 설정
         bCanDash = false;           // 쿨타임 시작
         bIsInvincible = true;       // 무적 상태 설정
         DashCooldownTimer = DashCooldown; // UI 업데이트를 위한 타이머 설정
+
+        // 대시 종료 후 충돌 복구 타이머 추가
+        GetWorldTimerManager().SetTimer(
+            CollisionRestoreTimerHandle, this, &AAGSDCharacter::RestoreMonsterCollision, 1.0f, false);
 
         // 쿨타임 타이머 시작
         GetWorldTimerManager().SetTimer(
@@ -440,7 +455,7 @@ void AAGSDCharacter::Dash()
 
         // 무적 해제 타이머 시작
         GetWorldTimerManager().SetTimer(
-            InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 0.5f, false);
+            InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 1.0f, false);
 
         // UI 업데이트 타이머 시작
         GetWorldTimerManager().SetTimer(
@@ -453,6 +468,47 @@ void AAGSDCharacter::ResetDashCooldown()
     GetWorldTimerManager().ClearTimer(DashCooldownUpdateTimerHandle); // UI 업데이트 타이머 정지
     UpdateDashCooldownUI(); // 마지막 업데이트 호출 (쿨타임 완료)
 }
+void AAGSDCharacter::IgnoreMonsterCollision()
+{
+
+    // 기존 충돌 상태 저장
+    OriginalMonsterCollision = GetCapsuleComponent()->GetCollisionResponseToChannel(ECC_Enemy);
+
+    // 몬스터(Enemy)와 충돌 무시
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Ignore);
+
+    // `CharacterMovementComponent`도 충돌 무시 추가
+    GetCharacterMovement()->SetAvoidanceEnabled(false);
+
+    // Mesh도 충돌 무시 (추가)
+    GetMesh()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Ignore);
+
+    // 충돌 자체를 비활성화하여 완전히 무시 (추가)
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+    // 변경 적용을 강제 업데이트
+    GetCapsuleComponent()->UpdateOverlaps();
+
+}
+
+
+void AAGSDCharacter::RestoreMonsterCollision()
+{
+    // 기존 충돌 상태로 복원
+    GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Enemy, OriginalMonsterCollision);
+
+    // `CharacterMovementComponent`도 원래대로 복원
+    GetCharacterMovement()->SetAvoidanceEnabled(true);
+
+    // Mesh도 원래 상태 복원
+    GetMesh()->SetCollisionResponseToChannel(ECC_Enemy, ECR_Block);
+
+    // 물리 충돌 다시 활성화
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+    // 변경 적용을 강제 업데이트
+    GetCapsuleComponent()->UpdateOverlaps();
+}
 
 void AAGSDCharacter::ResetInvincibility()
 {
@@ -463,7 +519,7 @@ void AAGSDCharacter::UpdateDashCooldownUI()
 {
     if (!DashCooldownWidget)
     {
-        UE_LOG(LogTemp, Error, TEXT("DashCooldownWidget is NULL! Check if UI was created in BeginPlay."));
+        //UE_LOG(LogTemp, Error, TEXT("DashCooldownWidget is NULL! Check if UI was created in BeginPlay."));
         return;
     }
     if (DashCooldownTimer > 0)
@@ -471,7 +527,7 @@ void AAGSDCharacter::UpdateDashCooldownUI()
         DashCooldownTimer -= 0.1f;
         float CooldownPercentage = DashCooldownTimer / DashCooldown;
 
-        UE_LOG(LogTemp, Log, TEXT("Cooldown Percentage: %f"), CooldownPercentage);
+       // UE_LOG(LogTemp, Log, TEXT("Cooldown Percentage: %f"), CooldownPercentage);
 
         DashCooldownWidget->UpdateDashCooldown(CooldownPercentage);
     }
@@ -486,7 +542,7 @@ void AAGSDCharacter::Interaction()
     else if (OverlapBox)
     {
         ShowStorageBoxUI();
-        UE_LOG(LogTemp, Log, TEXT("Box here"));
+        //UE_LOG(LogTemp, Log, TEXT("Box here"));
     }
 }
 
