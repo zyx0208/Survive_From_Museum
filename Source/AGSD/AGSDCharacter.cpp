@@ -664,6 +664,13 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         StorageBoxWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("StorageBoxWidget removed successfully."));
     }
+
+    if (IsValid(WeaponExchangeWidget)) {
+        LevelUpWidget->RemoveFromViewport();
+        LevelUpWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("WeaponExchangeWidget removed successfully."));
+    }
+
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("LevelUpWidget is already null or invalid."));
@@ -746,6 +753,17 @@ void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
         // 반복 종료
         CurrentCount = 0;
         UE_LOG(LogTemp, Display, TEXT("Montage playback completed %d times."), RepeatCount);
+    }
+}
+
+void AAGSDCharacter::ShowWeaponExchangeUI()
+{
+    if (WeaponExchangeWidgetClass) {
+        WeaponExchangeWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponExchangeWidgetClass);
+        if (WeaponExchangeWidget) {
+            WeaponExchangeWidget->AddToViewport();
+            PauseGameForLevelUp();
+        }
     }
 }
 
@@ -1179,3 +1197,4 @@ void AAGSDCharacter::ShowStorageBoxUI()
         }
     }
 }
+

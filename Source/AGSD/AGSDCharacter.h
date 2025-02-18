@@ -124,6 +124,12 @@ protected:
     TSubclassOf<UUserWidget> StorageBoxWidgetClass;
 
     UPROPERTY()
+    UUserWidget* WeaponExchangeWidget;
+    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> WeaponExchangeWidgetClass;
+
+    UPROPERTY()
     UUserWidget* StorageBoxWidget;
 
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
@@ -423,5 +429,10 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UAnimInstance* AnimInstance;
+
+    //무기 획득시 교체 확인
+    UFUNCTION()
+    void ShowWeaponExchangeUI();
+
 };
 
