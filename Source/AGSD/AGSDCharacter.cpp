@@ -367,7 +367,9 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		PlayerInputComponent->BindAction("WeaponSwap", IE_Pressed, this, &AAGSDCharacter::WeaponSwap);
 
         // 드랍된 무기와 현재 무기 교체
-        PlayerInputComponent->BindAction("GetWeapon", IE_Pressed, this, &AAGSDCharacter::GetWeapon);
+        //PlayerInputComponent->BindAction("GetWeapon", IE_Pressed, this, &AAGSDCharacter::GetWeapon);
+        // 무기교체
+        //PlayerInputComponent->BindAction("WeaponExchange", IE_Pressed, this, &AAGSDCharacter::);
         //디버그용 버튼
         PlayerInputComponent->BindAction("Debug", IE_Pressed, this, &AAGSDCharacter::Debug);
 	}
@@ -537,7 +539,7 @@ void AAGSDCharacter::Interaction()
 {
     if (OverlapDropWeapon) 
     {
-        GetWeapon();
+        ShowWeaponExchangeUI();
     }
     else if (OverlapBox)
     {
@@ -759,6 +761,7 @@ void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 void AAGSDCharacter::ShowWeaponExchangeUI()
 {
     if (WeaponExchangeWidgetClass) {
+        UE_LOG(LogTemp, Display, TEXT("ShowWeaponExchange"));
         WeaponExchangeWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponExchangeWidgetClass);
         if (WeaponExchangeWidget) {
             WeaponExchangeWidget->AddToViewport();
