@@ -83,22 +83,62 @@ void UWeaponExchange_UI::CloseWeaponExchange()
 
 void UWeaponExchange_UI::OnImageSlot1Clicked()
 {
+    if (HighlightedButtons.Contains(0)) {
+        return;
+    }
+
+    OnImageSlotClicked(0);
 }
 
 void UWeaponExchange_UI::OnImageSlot2Clicked()
 {
+    if (HighlightedButtons.Contains(1)) {
+        return;
+    }
+
+    OnImageSlotClicked(1);
 }
 
 void UWeaponExchange_UI::OnImageSlotClicked(int32 ButtonIndex)
 {
+    HighlightedButtons.Reset();
+    HighlightedButtons.Add(ButtonIndex);
+
+    FLinearColor NewColor = ImageSlot1Button->GetBackgroundColor();
+    NewColor.A = 1.0f;
+    ImageSlot1Button->SetBackgroundColor(NewColor);
+    ImageSlot2Button->SetBackgroundColor(NewColor);
+
+    if (HighlightedButtons.Contains(0)){
+        NewColor.A = 0.0f;
+        ImageSlot1Button->SetBackgroundColor(NewColor);
+    }
+    if (HighlightedButtons.Contains(1)) {
+        NewColor.A = 0.0f;
+        ImageSlot2Button->SetBackgroundColor(NewColor);
+    }
 }
 
 void UWeaponExchange_UI::OnAgreeButtonClicked()
 {
+    if (HighlightedButtons.Num() == 0) {
+        return;
+    }
+
+    //HighlightedButtons[0]
+
+    if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
+    {
+        FString Overlap = PlayerCharacter->OverlapID;
+        PlayerCharacter->WeaponArray[HighlightedButtons[0]] = FCString::Atoi(*Overlap);
+        CloseWeaponExchange();
+        PlayerCharacter->WeaponTake();
+    }
     UE_LOG(LogTemp, Display, TEXT("AgreeButtonClicked"));
 }
 
 void UWeaponExchange_UI::OnDisagreeButtonClicked()
 {
+    CloseWeaponExchange();
     UE_LOG(LogTemp, Display, TEXT("DisAgreeButtonClicked"));
 }

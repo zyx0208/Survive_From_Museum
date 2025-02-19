@@ -667,9 +667,9 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         UE_LOG(LogTemp, Log, TEXT("StorageBoxWidget removed successfully."));
     }
 
-    if (IsValid(WeaponExchangeWidget)) {
-        LevelUpWidget->RemoveFromViewport();
-        LevelUpWidget = nullptr;
+    else if (IsValid(WeaponExchangeWidget)) {
+        WeaponExchangeWidget->RemoveFromViewport();
+        WeaponExchangeWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("WeaponExchangeWidget removed successfully."));
     }
 
