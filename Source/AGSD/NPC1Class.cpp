@@ -10,6 +10,7 @@
 #include "Components/InputComponent.h"
 #include "ManagingGame.h"
 #include "Engine/GameInstance.h"
+#include "AGSDGameInstance.h"
 
 
 // Sets default values
@@ -36,7 +37,7 @@ void ANPC1Class::Tick(float DeltaTime)
     {
         PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         IsFirst = false;
-        GameInstance = Cast<UManagingGame>(GetGameInstance());
+        GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
     }
 
     //대화 진행도 설정
@@ -54,7 +55,9 @@ void ANPC1Class::Tick(float DeltaTime)
     {
         if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetActorLocation()) <= 500.0f) && (GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::F)))//대화가능 거리 및 상호작용 키[인터렉션으로 교체 예정]
         {
+            //ShowTextUI();
             UE_LOG(LogTemp, Warning, TEXT("Progress : %d"), Progress);
+
             switch (Progress)
             {
             case 0:
@@ -78,7 +81,6 @@ void ANPC1Class::Tick(float DeltaTime)
                 }
                 break;
             }
-
         }
     }
     else
@@ -93,3 +95,31 @@ void ANPC1Class::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void ANPC1Class::ShowTextUI()
+{
+    UE_LOG(LogTemp, Warning, TEXT("Progress : %d"), Progress);
+    
+    switch (Progress)
+    {
+    case 0:
+        if (Text1)
+        {
+            CreateWidget<UUserWidget>(GetWorld(), Text1)->AddToViewport();
+            GameInstance->Temp_TalkingProgress++;
+            break;
+        }
+    case 1:
+        if (Text2)
+        {
+            CreateWidget<UUserWidget>(GetWorld(), Text2)->AddToViewport();
+            GameInstance->Temp_TalkingProgress++;
+            break;
+        }
+    default:
+        if (TextLast)
+        {
+            CreateWidget<UUserWidget>(GetWorld(), TextLast)->AddToViewport();
+        }
+        break;
+    }
+}
