@@ -9,6 +9,7 @@
 #include "Projectile_Beta.h"
 #include "WeaponDataTable.h"
 #include "AccessoryData.h"
+#include "NPC1Class.h"
 
 #include "Blueprint/UserWidget.h"
 
@@ -18,6 +19,7 @@
 #include "SubWeapon.h"
 #include "WeaponDrop.h"
 #include "GameTimer.h"
+
 //#include "AGSDCharacter_LevelUP.h"
 
 #include "AGSDCharacter.generated.h"

@@ -45,6 +45,7 @@
 
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
+#include "NPC1Class.h"
 
 
 
@@ -545,6 +546,21 @@ void AAGSDCharacter::Interaction()
     {
         ShowStorageBoxUI();
         //UE_LOG(LogTemp, Log, TEXT("Box here"));
+    }
+    else
+    {
+        TArray<AActor*> FoundNPC;
+        UGameplayStatics::GetAllActorsOfClass(GetWorld(), ANPC1Class::StaticClass(), FoundNPC);
+
+        for (AActor* Actor : FoundNPC)
+        {
+            ANPC1Class* NPC = Cast<ANPC1Class>(Actor);
+            if (NPC && FVector::Dist(GetActorLocation(), NPC->GetActorLocation()) <= 500.0f)
+            {
+                NPC->ShowTextUI();
+                break;
+            }
+        }
     }
 }
 

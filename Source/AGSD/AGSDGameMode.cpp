@@ -4,6 +4,7 @@
 #include "AGSDCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "ManagingGame.h"
+#include "AGSDGameInstance.h"
 
 AAGSDGameMode::AAGSDGameMode()
 {
@@ -24,7 +25,7 @@ void AAGSDGameMode::BeginPlay()
     Super::BeginPlay(); // 부모 클래스의 BeginPlay 호출
 
     // 게임 인스턴스를 안전하게 캐스팅
-    UManagingGame* GameInstance = Cast<UManagingGame>(GetGameInstance());
+    UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
 
     if (GameInstance)
     {
@@ -41,7 +42,7 @@ void AAGSDGameMode::BeginPlay()
 
 void AAGSDGameMode::GameExit()
 {
-    UManagingGame* GameInstance = Cast<UManagingGame>(GetGameInstance());
+    UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
     if (GameInstance)
     {
         GameInstance->SaveGameData();
