@@ -170,7 +170,10 @@ void ULevelUp_UI::OnOption1Clicked()
 {
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[0]);
+		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[0]);     
+        FName RowName = SelectedAccessories[0].RowName;
+        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
+        AccessoryPtr->bIsAcquired = true;
 	}
 }
 
@@ -178,7 +181,10 @@ void ULevelUp_UI::OnOption2Clicked()
 {
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
-		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);
+		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);    
+        FName RowName = SelectedAccessories[1].RowName;
+        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
+        AccessoryPtr->bIsAcquired = true;
 	}
 }
 
@@ -187,5 +193,9 @@ void ULevelUp_UI::OnOption3Clicked()
 	if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
 	{
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[2]);
+        FName RowName = SelectedAccessories[2].RowName;
+        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
+        AccessoryPtr->bIsAcquired = true;
 	}
 }
+

@@ -25,6 +25,10 @@ struct FAccessoryData : public FTableRowBase
 
     // 장신구 이름
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    FName RowName;
+
+    // 장신구 이름
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     FString AccessoryName;
 
     // 효과

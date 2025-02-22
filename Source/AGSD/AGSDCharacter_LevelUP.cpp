@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Engine/DataTable.h"
+#include "UObject/NoExportTypes.h"
+#include "AccessoryData.h" 
 #include "Kismet/KismetStringLibrary.h"
 
 void AAGSDCharacter_LevelUP::ApplyLevelUpOption(AAGSDCharacter* Character, const FAccessoryData& SelectedAccessory)
@@ -36,7 +38,6 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
 
     TArray<FString> ParsedEffects;
     ParseAccessoryEffect(Accessory.AccessoryEffect, ParsedEffects);
-    //Accessory.bIsAcquired = true;
 
     for (const FString& Effect : ParsedEffects)
     {
