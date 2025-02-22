@@ -11,7 +11,7 @@ AProjectile_Beta_Blue::AProjectile_Beta_Blue()
     ProjectileRange = 500.0f;
 }
 
-void AProjectile_Beta_Blue::WeaponHitEffect()
+void AProjectile_Beta_Blue::WeaponHitEffect(AActor* OtherActor)
 {
 	// 추가적인 기능을 구현
 	UE_LOG(LogTemp, Warning, TEXT("BlueHit"));

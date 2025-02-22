@@ -11,7 +11,7 @@ AProjectile_Beta_Red::AProjectile_Beta_Red()
     ProjectileRange = 2000.0f;
 }
 
-void AProjectile_Beta_Red::WeaponHitEffect()
+void AProjectile_Beta_Red::WeaponHitEffect(AActor* OtherActor)
 {
     // 추가적인 기능을 구현
     GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("RedHit")));

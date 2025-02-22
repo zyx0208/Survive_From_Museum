@@ -94,7 +94,7 @@ void AProjectile_Beta::FireInDirection(const FVector& ShootDirection)
     ProjectileMovementComponent->InitialSpeed = ProjectileMovementComponent->InitialSpeed * ProjectileSpeed;
     ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }
-void AProjectile_Beta::WeaponHitEffect()
+void AProjectile_Beta::WeaponHitEffect(AActor* OtherActor)
 {
 }
 
@@ -159,7 +159,7 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
                     HitEnemyController->Attacked(ProjectileDamage+PlayerAttack, 1);
                 }
             }
-            WeaponHitEffect();
+            WeaponHitEffect(OtherActor);
         }
     }
 }

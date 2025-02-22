@@ -14,9 +14,9 @@ class AGSD_API AProjectile_Beta_Red : public AProjectile_Beta
 {
 	GENERATED_BODY()
 public:
-	// »ı¼ºÀÚ
+	// ìƒì„±ì
 	AProjectile_Beta_Red();
 
 public:
-	virtual void WeaponHitEffect() override;
+	virtual void WeaponHitEffect(AActor* OtherActor) override;
 };

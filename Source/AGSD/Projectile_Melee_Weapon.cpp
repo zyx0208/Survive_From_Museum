@@ -13,7 +13,7 @@ AProjectile_Melee_Weapon::AProjectile_Melee_Weapon()
 	ProjectileRange = 100.0f;
 }
 
-void AProjectile_Melee_Weapon::WeaponHitEffect()
+void AProjectile_Melee_Weapon::WeaponHitEffect(AActor* OtherActor)
 {
 	// 추가적인 기능을 구현
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("MeleeHit")));

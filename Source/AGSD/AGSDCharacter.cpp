@@ -62,7 +62,7 @@ AAGSDCharacter::AAGSDCharacter()
 	Defense = 0;
     SpeedLevel = 500.f;
 
-    Attack = 20.0f; //초기 공격력 수정해도 상관없음
+    Attack = 0.0f; //초기 공격력 수정해도 상관없음
 
 
 	CharacterLevel = 1;        // 캐릭터 초기 레벨

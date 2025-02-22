@@ -46,7 +46,7 @@ void AProjectile_Boomerang::UpdatePlayerStat()
     
 }
 
-void AProjectile_Boomerang::WeaponHitEffect()
+void AProjectile_Boomerang::WeaponHitEffect(AActor* OtherActor)
 {
 }
 

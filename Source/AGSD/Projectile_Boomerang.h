@@ -15,7 +15,7 @@ class AGSD_API AProjectile_Boomerang : public AProjectile_Beta
 	GENERATED_BODY()
 public:
     AProjectile_Boomerang();
-    virtual void WeaponHitEffect() override;
+    virtual void WeaponHitEffect(AActor* OtherActor) override;
     virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 

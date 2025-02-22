@@ -14,6 +14,6 @@ class AGSD_API AProjectile_Jelda : public AProjectile_Beta
 {
 	GENERATED_BODY()
     AProjectile_Jelda();
-    virtual void WeaponHitEffect() override;
+    virtual void WeaponHitEffect(AActor* OtherActor) override;
     virtual void Tick(float DeltaTime) override;
 };

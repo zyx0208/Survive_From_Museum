@@ -76,5 +76,5 @@ public:
 
 	// 무기 적중시 효과
 	UFUNCTION()
-	virtual void WeaponHitEffect();
+	virtual void WeaponHitEffect(AActor* OhterActor);
 };

@@ -12,7 +12,7 @@ AProjectile_Jelda::AProjectile_Jelda()
 
 }
 
-void AProjectile_Jelda::WeaponHitEffect()
+void AProjectile_Jelda::WeaponHitEffect(AActor* OtherActor)
 {
 }
 void AProjectile_Jelda::Tick(float DeltaTime)
