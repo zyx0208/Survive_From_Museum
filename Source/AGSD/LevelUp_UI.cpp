@@ -45,39 +45,62 @@ void ULevelUp_UI::SelectRandomAccessories()
     for (FName RowName : RowNames)
     {
         FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT(""));
+       
         if (Accessory)
         {
-            switch (Accessory->Rarity)
+            if (Accessory->bIsRepetition || (!Accessory->bIsRepetition && !Accessory->bIsAcquired))
             {
-            case EAccessoryRarity::Common:
-                CommonItems.Add(Accessory);
-                break;
-            case EAccessoryRarity::Rare:
-                RareItems.Add(Accessory);
-                break;
-            case EAccessoryRarity::Legendary:
-                LegendaryItems.Add(Accessory);
-                break;
+                switch (Accessory->Rarity)
+                {
+                case EAccessoryRarity::Common:
+                    CommonItems.Add(Accessory);
+                    break;
+                case EAccessoryRarity::Rare:
+                    RareItems.Add(Accessory);
+                    break;
+                case EAccessoryRarity::Legendary:
+                    LegendaryItems.Add(Accessory);
+                    break;
+                }
             }
         }
     }
 
-    // 각 칸의 등급 확률에 따라 등급 선택
-    auto GetRarityByProbability = []() -> EAccessoryRarity
+    // 사용 가능한 아이템이 있는지 확인
+    bool bHasCommon = CommonItems.Num() > 0;
+    bool bHasRare = RareItems.Num() > 0;
+    bool bHasLegendary = LegendaryItems.Num() > 0;
+    if (!bHasCommon && !bHasRare && !bHasLegendary)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("No accessories found in the data table!"));
+        return;
+    }
+
+    // 각 칸의 등급 확률에 따라 등급 선택 (해당 등급에 아이템이 없으면 다른 등급 선택)
+    auto GetValidRarity = [&](EAccessoryRarity PreferredRarity) -> EAccessoryRarity
+        {
+            if (PreferredRarity == EAccessoryRarity::Legendary && !bHasLegendary)
+            {
+                PreferredRarity = bHasRare ? EAccessoryRarity::Rare : EAccessoryRarity::Common;
+            }
+            if (PreferredRarity == EAccessoryRarity::Rare && !bHasRare)
+            {
+                PreferredRarity = bHasCommon ? EAccessoryRarity::Common : EAccessoryRarity::Legendary;
+            }
+            if (PreferredRarity == EAccessoryRarity::Common && !bHasCommon)
+            {
+                PreferredRarity = bHasRare ? EAccessoryRarity::Rare : EAccessoryRarity::Legendary;
+            }
+            return PreferredRarity;
+        };
+
+    // 등급을 결정하는 함수
+    auto GetRarityByProbability = [&]() -> EAccessoryRarity
         {
             float RandomValue = FMath::FRand() * 100.0f;
-            if (RandomValue < 60.0f)
-            {
-                return EAccessoryRarity::Common; // 60%
-            }
-            else if (RandomValue < 90.0f)
-            {
-                return EAccessoryRarity::Rare; // 30%
-            }
-            else
-            {
-                return EAccessoryRarity::Legendary; // 10%
-            }
+            if (RandomValue < 60.0f) return GetValidRarity(EAccessoryRarity::Common);
+            else if (RandomValue < 90.0f) return GetValidRarity(EAccessoryRarity::Rare);
+            else return GetValidRarity(EAccessoryRarity::Legendary);
         };
 
     // 각 칸의 등급을 결정하고 해당 등급에서 랜덤으로 장신구 선택

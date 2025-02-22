@@ -51,6 +51,10 @@ struct FAccessoryData : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     bool bIsAcquired = false;
 
+    // 중복 가능 여부
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    bool bIsRepetition = false;
+
     // 아이콘 이미지
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     UTexture2D* AccessoryIcon;

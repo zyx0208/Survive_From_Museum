@@ -36,6 +36,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
 
     TArray<FString> ParsedEffects;
     ParseAccessoryEffect(Accessory.AccessoryEffect, ParsedEffects);
+    //Accessory.bIsAcquired = true;
 
     for (const FString& Effect : ParsedEffects)
     {
