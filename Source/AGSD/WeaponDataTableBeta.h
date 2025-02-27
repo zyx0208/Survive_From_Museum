@@ -28,6 +28,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Sname;
 
+    // 획득 여부
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bIsAcquired = false;
+
 	//무기 발사 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Frate;
