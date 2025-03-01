@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "AGSDGameInstance.h"
 
 #include "Particles/ParticleSystemComponent.h"//이펙트 만들기
 #include "Kismet/GameplayStatics.h"

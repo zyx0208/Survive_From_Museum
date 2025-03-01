@@ -31,6 +31,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void CloseStorageBox();
 
+    // 비활성 버튼 아이콘 이미지
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+    UTexture2D* RockIcon;
+
 
     /** 무기 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

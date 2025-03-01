@@ -22,4 +22,7 @@ public:
     //로비 NPC의 대화정보(초기값 : 0)
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int32 TalkingProgress;
+    //무기 데이터테이블 정보(초기값: 야구공, 테니스 라켓 획득)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="SaveData")
+    UDataTable* SavingWeaponData;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Engine/DataTable.h"
 #include "AGSDGameInstance.generated.h"
 
 /**
@@ -35,4 +36,7 @@ public:
     int64 Temp_StageProgress;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 Temp_TalkingProgress;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    UDataTable* Temp_SavingWeaponData;
 };

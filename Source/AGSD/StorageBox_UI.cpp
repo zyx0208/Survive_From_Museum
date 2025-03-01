@@ -12,6 +12,9 @@ void UStorageBox_UI::NativeConstruct()
 {
     Super::NativeConstruct();
 
+    TArray<UButton*> ImageSlotButtons = { ImageSlot1Button, ImageSlot2Button, ImageSlot3Button, ImageSlot4Button,
+                                          ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button };
+
     if (CloseStorageBoxButton)
     {
         CloseStorageBoxButton->OnClicked.AddDynamic(this, &UStorageBox_UI::CloseStorageBox);
@@ -60,7 +63,13 @@ void UStorageBox_UI::NativeConstruct()
         for (int32 i = 0; i < MaxSlots; i++)
         {
             FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[i], ContextString, true);
-            if (WeaponData && WeaponData->WeaponIcon)
+            // bIsAcquired 값이 false면 해당 버튼을 숨김
+            if (!WeaponData->bIsAcquired && ImageSlotButtons.IsValidIndex(i))
+            {
+                ImageSlotButtons[i]->SetVisibility(ESlateVisibility::Hidden);
+                DisplayWeaponImage(i + 1, RockIcon);
+            }
+            else if (WeaponData->WeaponIcon) // 무기 아이콘 표시
             {
                 DisplayWeaponImage(i + 1, WeaponData->WeaponIcon);
             }
@@ -114,8 +123,24 @@ void UStorageBox_UI::CloseStorageBox()
 {
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
-        PlayerCharacter->WeaponArray[0] = HighlightedButtons[0];
-        PlayerCharacter->WeaponArray[1] = HighlightedButtons[1];
+        if (HighlightedButtons.Num() == 0)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("CloseStorageBox: No buttons selected. Keeping current weapons."));
+        }
+        else
+        {
+            // 최소 하나라도 선택된 경우 변경 적용
+            if (HighlightedButtons.IsValidIndex(0))
+            {
+                PlayerCharacter->WeaponArray[0] = HighlightedButtons[0];
+            }
+            if (HighlightedButtons.IsValidIndex(1))
+            {
+                PlayerCharacter->WeaponArray[1] = HighlightedButtons[1];
+            }
+
+            UE_LOG(LogTemp, Log, TEXT("CloseStorageBox: Weapon selection applied."));
+        }
         PlayerCharacter->WeaponSwap();
         PlayerCharacter->WeaponTake();
         PlayerCharacter->ResumeGameAfterLevelUp();

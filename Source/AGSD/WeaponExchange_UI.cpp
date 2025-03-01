@@ -129,8 +129,31 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
 
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
-        FString Overlap = PlayerCharacter->OverlapID;
-        PlayerCharacter->WeaponArray[HighlightedButtons[0]] = FCString::Atoi(*Overlap);
+        int32 OverlapID = FCString::Atoi(*PlayerCharacter->OverlapID);
+        static const FString ContextString(TEXT("OnAgreeButtonClicked"));
+        if (!PlayerCharacter->WeaponDataTableRef) return;
+
+        TArray<FName> RowNames = PlayerCharacter->WeaponDataTableRef->GetRowNames();
+        for (FName RowName : RowNames)
+        {
+            // 무기 데이터 가져오기
+            FWeaponDataTableBetaStruct* WeaponData = PlayerCharacter->WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+
+            if (WeaponData && WeaponData->IID == OverlapID) // IID 값 비교
+            {
+                // 현재 bIsAcquired 값 확인
+                if (!WeaponData->bIsAcquired) // false인 경우
+                {
+                    WeaponData->bIsAcquired = true; // true로 변경
+
+                    // 데이터 테이블 저장 (Unreal은 런타임에서 DataTable을 직접 수정할 수 없으므로, 이를 변수에 반영)
+                    UE_LOG(LogTemp, Display, TEXT("Weapon %d acquired and saved."), OverlapID);
+                }
+                break;
+            }
+        }
+
+        PlayerCharacter->WeaponArray[HighlightedButtons[0]] = OverlapID;
         CloseWeaponExchange();
         PlayerCharacter->WeaponTake();
     }
