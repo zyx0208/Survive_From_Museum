@@ -155,7 +155,8 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
 
         PlayerCharacter->WeaponArray[HighlightedButtons[0]] = OverlapID;
         CloseWeaponExchange();
-        PlayerCharacter->WeaponTake();
+        PlayerCharacter->WeaponSwap();
+        PlayerCharacter->WeaponSwap();
     }
     UE_LOG(LogTemp, Display, TEXT("AgreeButtonClicked"));
 }

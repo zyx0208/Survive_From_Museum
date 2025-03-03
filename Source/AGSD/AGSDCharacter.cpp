@@ -970,7 +970,8 @@ void AAGSDCharacter::GetWeapon()
             WeaponID = FString::FromInt(WeaponArray[1]);
         }
         OverlapWeaponDrop->DestroySelf();
-        WeaponTake();
+        WeaponSwap();
+        WeaponSwap();
     }
     else {
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Not Ovelap WeaponDrop")));
