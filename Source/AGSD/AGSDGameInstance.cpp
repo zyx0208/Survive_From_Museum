@@ -6,6 +6,8 @@
 #include "GameFramework/GameUserSettings.h"
 #include "SavingGame.h"
 #include "Engine/GameInstance.h"
+#include "WeaponDataTableBeta.h"
+#include "AGSDCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 void UAGSDGameInstance::Init()
@@ -29,7 +31,6 @@ void UAGSDGameInstance::SaveGameData()
     // 데이터를 저장
     SaveGameInstance->StageProgress = Temp_StageProgress;
     SaveGameInstance->TalkingProgress = Temp_TalkingProgress;
-    SaveGameInstance->SavingWeaponData = Temp_SavingWeaponData;
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -57,7 +58,6 @@ void UAGSDGameInstance::LoadGameData()
     {
         Temp_StageProgress = LoadedGame->StageProgress;
         Temp_TalkingProgress = LoadedGame->TalkingProgress;
-        Temp_SavingWeaponData = LoadedGame->SavingWeaponData;
 
         // 예시: 불러온 데이터를 출력 (디버그용)
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %d"), Temp_StageProgress);
@@ -81,6 +81,7 @@ void UAGSDGameInstance::ResetGameData()
     // 임시 변수 초기화
     Temp_StageProgress = 0;
     Temp_TalkingProgress = 0;
+    ResetWeaponDataTable(); 
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -93,4 +94,34 @@ void UAGSDGameInstance::ResetGameData()
     UE_LOG(LogTemp, Warning, TEXT("Reset Complete."));
     UE_LOG(LogTemp, Warning, TEXT("Temp_StageProgress : %d"), Temp_StageProgress);
     UE_LOG(LogTemp, Warning, TEXT("Temp_TalkingProgress : %d"), Temp_TalkingProgress);
+}
+
+void UAGSDGameInstance::ResetWeaponDataTable()
+{
+    if (!WeaponDataTable)
+    {
+        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL"));
+        return;
+    }
+    
+    static const FString ContextString(TEXT("ResetWeaponData"));
+    TArray<FName> RowNames = WeaponDataTable->GetRowNames();
+
+    for (FName RowName : RowNames)
+    {
+        FWeaponDataTableBetaStruct* Weapon = WeaponDataTable->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+        if (Weapon)
+        {
+            if (Weapon->Sname == TEXT("Racket") || Weapon->Sname == TEXT("BaseBall"))
+            {
+                UE_LOG(LogTemp, Log, TEXT("ResetWeaponData: Skipped %s (Weapon: %s)"), *RowName.ToString(), *Weapon->Sname);
+                continue;
+            }
+            //데이터 초기화
+            Weapon->bIsAcquired = false;
+
+            UE_LOG(LogTemp, Log, TEXT("ResetWeaponData: Reset %s"), *RowName.ToString());
+        }
+    }
+    
 }

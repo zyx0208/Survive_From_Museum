@@ -31,12 +31,16 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SaveGame")
     void ResetGameData();
 
+    UFUNCTION(BlueprintCallable, Category = "SaveGame")
+    void ResetWeaponDataTable();
+
     //SavingGame.h에 있는 변수들(저장하기 전까진 임시 변수에 보관)
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 Temp_StageProgress;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 Temp_TalkingProgress;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
-    UDataTable* Temp_SavingWeaponData;
+protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UDataTable* WeaponDataTable;
 };

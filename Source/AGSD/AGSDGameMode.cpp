@@ -23,14 +23,15 @@ AAGSDGameMode::AAGSDGameMode()
 void AAGSDGameMode::BeginPlay()
 {
     Super::BeginPlay(); // 부모 클래스의 BeginPlay 호출
-
+    UE_LOG(LogTemp, Log, TEXT("GameMode BeginPlay Called!"));
     // 게임 인스턴스를 안전하게 캐스팅
     UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
+    ResetAccessoryData();
 
     if (GameInstance)
     {
         // 게임 인스턴스에서 데이터를 로드하는 함수 호출
-        GameInstance->LoadGameData();
+        GameInstance->LoadGameData();        
         UE_LOG(LogTemp, Warning, TEXT("Data Load Complete."));
 
     }
@@ -55,4 +56,28 @@ void AAGSDGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
     // 게임 종료 시 데이터 저장
     AAGSDGameMode::GameExit();
+}
+
+void AAGSDGameMode::ResetAccessoryData()
+{
+    if (!AccessoryDataTable)
+    {
+        UE_LOG(LogTemp, Error, TEXT("ResetAccessoryData: AccessoryDataTable is NULL"));
+        return;
+    }
+    
+    static const FString ContextString(TEXT("ResetAccessoryData"));
+    TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
+
+    for (FName RowName : RowNames)
+    {
+        FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, ContextString, true);
+        if (Accessory)
+        {
+            //데이터 초기화
+            Accessory->bIsAcquired = false;
+
+            UE_LOG(LogTemp, Log, TEXT("ResetAccessoryData: Reset %s"), *RowName.ToString());
+        }
+    }    
 }
