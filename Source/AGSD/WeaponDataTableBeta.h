@@ -67,4 +67,8 @@ public:
     // 아이콘 이미지
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UTexture2D* WeaponIcon;
+
+    //무기에 따른 애니메이션
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSubclassOf<UAnimInstance> WeaponAnimType;
 };

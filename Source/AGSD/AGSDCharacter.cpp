@@ -851,6 +851,9 @@ void AAGSDCharacter::WeaponTake()
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
+    WeaponAnimType = WeaponData->WeaponAnimType;
+    UAnimInstance* CurrentAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+    CurrentAnimInstance->LinkAnimClassLayers(WeaponAnimType);
     if (WeaponData->WeaponParticle != nullptr) {
         WeaponParticle = WeaponData->WeaponParticle;
     }
