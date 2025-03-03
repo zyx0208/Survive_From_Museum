@@ -18,6 +18,12 @@ public:
     /** UI 업데이트 함수 */
     UFUNCTION(BlueprintCallable, Category = "Cooldown")
     void UpdateDashCooldown(float CooldownPercentage);
+    void UpdateWeaponIcon();
+    void UpdateSwapWeapon();
+
+    /** 무기 데이터 테이블 */
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UDataTable* WeaponDataTableBeta;
 
 protected:
     /** 위젯 바인딩 */
@@ -25,5 +31,13 @@ protected:
     class UImage* DashIcon;
 
     UPROPERTY(meta = (BindWidget))
+    class UImage* MainWeaponIcon;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* SubWeaponIcon;
+
+    UPROPERTY(meta = (BindWidget))
     class UProgressBar* DashCooldownBar;
+
+private:
+    bool mainicon = false;
 };

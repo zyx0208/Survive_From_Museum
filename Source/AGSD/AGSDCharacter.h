@@ -315,6 +315,10 @@ public:
 	//무기 교체
 	UFUNCTION()
 	void WeaponSwap();
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateWeaponIcon();
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateSwapWeaponIcon();
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	USkeletalMeshComponent* FPSMesh;

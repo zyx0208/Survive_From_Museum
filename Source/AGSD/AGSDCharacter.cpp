@@ -201,6 +201,7 @@ void AAGSDCharacter::BeginPlay()
         {
             DashCooldownWidget->AddToViewport();
             UpdateDashCooldownUI();
+            UpdateWeaponIcon();
         }
     }
 
@@ -807,12 +808,14 @@ void AAGSDCharacter::WeaponSwap() {
 	if (CurrentWeaponSlot) {
         WeaponID = FString::FromInt(WeaponArray[1]);
         WeaponTake();
+        UpdateSwapWeaponIcon();
         CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
 	else
 	{
         WeaponID = FString::FromInt(WeaponArray[0]);
         WeaponTake();
+        UpdateSwapWeaponIcon();
         CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
     /*
@@ -826,6 +829,19 @@ void AAGSDCharacter::WeaponSwap() {
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));*/
 }
+//무기 아이콘 갱신 함수
+void AAGSDCharacter::UpdateWeaponIcon()
+{
+    if (!DashCooldownWidget) return;
+    DashCooldownWidget->UpdateWeaponIcon();
+}
+void AAGSDCharacter::UpdateSwapWeaponIcon()
+{
+    if (!DashCooldownWidget) return;
+    DashCooldownWidget->UpdateSwapWeapon();
+}
+
+
 void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
 {
     if(WeaponParticle) {
