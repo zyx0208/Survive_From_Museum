@@ -34,6 +34,7 @@
 
 #include "Blueprint/UserWidget.h" 
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
 #include "DashCooldown_UI.h"
 
@@ -584,15 +585,26 @@ void AAGSDCharacter::UpdateHealthBar()
 }
 void AAGSDCharacter::UpdateXPBar()
 {
-	if (HealthBarWidget)
-	{
-		float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
-		UProgressBar* XPProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("XPBar")));
-		if (XPProgressBar)
-		{
-			XPProgressBar->SetPercent(XPPercentage);
-		}
-	}
+    if (!HealthBarWidget) return;
+
+    // XP Progress Bar 가져오기
+    UProgressBar* XPProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("XPBar")));
+
+    // 레벨 표시 TextBlock 가져오기
+    UTextBlock* LevelText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("LevelText")));
+
+    // XP 바 업데이트
+    if (XPProgressBar)
+    {
+        float XPPercentage = (XPToNextLevel > 0) ? static_cast<float>(CurrentXP) / XPToNextLevel : 0.0f;
+        XPProgressBar->SetPercent(XPPercentage);
+    }
+
+    // 레벨 텍스트 업데이트
+    if (LevelText)
+    {
+        LevelText->SetText(FText::FromString(FString::Printf(TEXT("%d"), CharacterLevel)));
+    }
 }
 
 void AAGSDCharacter::AddXP(int32 XPAmount)
