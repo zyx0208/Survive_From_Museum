@@ -39,5 +39,5 @@ protected:
     class UProgressBar* DashCooldownBar;
 
 private:
-    bool mainicon = false;
+    bool mainicon = true;
 };
