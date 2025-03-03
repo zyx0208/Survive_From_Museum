@@ -284,6 +284,10 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			//라인트레이스 위치와 방향 저장
 			TraceHitLocation = HitResult.Location;
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
+            FRotator NewActorRotation = GetActorRotation();
+            NewActorRotation.Yaw = TraceHitDirection.Rotation().Yaw;
+            SetActorRotation(NewActorRotation);
+            //PlayerController->SetControlRotation(NewActorRotation);
 			// 로그로 충돌된 위치 출력 (디버깅 용도)
 			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
 			
@@ -851,6 +855,9 @@ void AAGSDCharacter::WeaponTake()
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
+    WeaponAnimType = WeaponData->WeaponAnimType;
+    UAnimInstance* CurrentAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+    CurrentAnimInstance->LinkAnimClassLayers(WeaponAnimType);
     if (WeaponData->WeaponParticle != nullptr) {
         WeaponParticle = WeaponData->WeaponParticle;
     }
