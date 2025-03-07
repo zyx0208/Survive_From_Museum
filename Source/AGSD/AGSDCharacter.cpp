@@ -577,10 +577,14 @@ void AAGSDCharacter::UpdateHealthBar()
 	if (HealthBarWidget)
 	{
 		float HealthPercentage = static_cast<float>(CurrentHealth) / static_cast<float>(MaxHealth);
+        float BarrierPercentage = static_cast<float>(Barrier) / static_cast<float>(MaxHealth);
+
 		UProgressBar* HealthProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("HealthBar")));
-		if (HealthProgressBar)
+        UProgressBar* BarrierProgressBar = Cast<UProgressBar>(HealthBarWidget->GetWidgetFromName(TEXT("BarrierBar")));
+		if (HealthProgressBar && BarrierProgressBar)
 		{
 			HealthProgressBar->SetPercent(HealthPercentage);
+            BarrierProgressBar->SetPercent(BarrierPercentage);
 		}
 	}
 }
@@ -1129,14 +1133,27 @@ void AAGSDCharacter::Attacked(float Damage)
     {
         return;
     }
+    int32 fixed_Damge = (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
     //체력계산
-    if ((int32)(Damage * ((100.0f - (float)Defense) / 100.0f)) < 0) //받는 데미지가 음수가 되버리면 0으로 계산
+    if (fixed_Damge > 0) //받는 데미지가 음수가 되버리면 0으로 계산
     {
-        CurrentHealth -= 0;
+        if (Barrier > 0 && fixed_Damge > Barrier)
+        {
+            CurrentHealth -= fixed_Damge - Barrier;
+            Barrier = 0;
+        }
+        else if (Barrier > 0 && fixed_Damge < Barrier)
+        {
+            Barrier -= fixed_Damge;
+        }
+        else
+        {
+            CurrentHealth -= fixed_Damge;
+        }
     }
     else
     {
-        CurrentHealth -= (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
+        CurrentHealth -= 0;
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     if (CurrentHealth <= 0)

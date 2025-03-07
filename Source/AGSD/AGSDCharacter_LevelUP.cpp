@@ -72,11 +72,13 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             Character->MaxHealth += HealthIncrease;
             Character->CurrentHealth += HealthIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Health %d / %d"), HealthIncrease, Character->CurrentHealth, Character->MaxHealth);
+            Character->UpdateHealthBar();
         }
         else if (Effect.Contains(TEXT("임시보호막")))
         {
-            Character->CurrentHealth += 10;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: 10 Health %d / %d"), Character->CurrentHealth, Character->MaxHealth);
+            Character->Barrier += 10;
+            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d"), Character->Barrier);
+            Character->UpdateHealthBar();
         }
         else if (Effect.Contains(TEXT("이동속도")))
         {
