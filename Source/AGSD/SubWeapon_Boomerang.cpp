@@ -16,6 +16,7 @@ ASubWeapon_Boomerang::ASubWeapon_Boomerang() {
 void ASubWeapon_Boomerang::BeginPlay()
 {
     Super::BeginPlay();
+
     CreateProjectile();
 }
 

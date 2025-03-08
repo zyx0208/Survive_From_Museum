@@ -144,6 +144,12 @@ AAGSDCharacter::AAGSDCharacter()
 		}
 	}
 
+    //서브웨폰 고정용 컴포넌트 생성
+    SubWeaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SubWeaponPoint"));
+    if (SubWeaponAttachPoint) {
+        SubWeaponAttachPoint->SetupAttachment(RootComponent);
+    }
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 10.0f;
@@ -860,9 +866,8 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
     ASubWeapon* NewSubWeapon = GetWorld()->SpawnActor<ASubWeapon>(SubWeapon, SpawnLocation, SpawnRotation);
     if (NewSubWeapon)
     {
-        USkeletalMeshComponent* MeshComp = GetMesh();
-        if (MeshComp) {
-            NewSubWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("SubWeaponSocket")));
+        if (SubWeaponAttachPoint) {
+            NewSubWeapon->AttachToComponent(SubWeaponAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
             NewSubWeapon->PlayerAttack = Attack;
             SubWeapons.Add(NewSubWeapon);
         }

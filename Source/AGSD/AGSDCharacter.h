@@ -313,6 +313,10 @@ public:
     //무기 유형에 따른 애니메이션
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TSubclassOf<UAnimInstance> WeaponAnimType;
+
+    //무기 소켓
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    USceneComponent* SubWeaponAttachPoint;
 	//무기 교체
 	UFUNCTION()
 	void WeaponSwap();
