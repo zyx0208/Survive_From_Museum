@@ -128,7 +128,7 @@ void AEnemy1AIController::Attacked(float damage)
 {
     Enemy->CurrentHP -= damage;
 	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
-
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
 	//체력이 0이하일 경우 죽음
 	if (Enemy->CurrentHP <= 0.0f)
 	{
@@ -179,7 +179,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         Enemy->CurrentHP -= damage;
         break;
     }
-    
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d(Chanel %d)"), Enemy->CurrentHP, chanel);
     //체력이 0이하일 경우 죽음
     if (Enemy->CurrentHP <= 0.0f)

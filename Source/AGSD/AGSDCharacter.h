@@ -10,6 +10,8 @@
 #include "WeaponDataTable.h"
 #include "AccessoryData.h"
 #include "NPC1Class.h"
+#include "Sound/SoundWave.h"
+#include "Components/AudioComponent.h"
 
 #include "Blueprint/UserWidget.h"
 
@@ -79,6 +81,12 @@ public:
 	FVector TraceHitLocation;  // 라인트레이스 충돌 위치
 	FVector TraceHitDirection; // 라인트레이스 충돌 방향
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+    USoundWave* WalkingSound;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+    USoundWave* DashSound;
+    UAudioComponent* WalkingAudioComponent;
+    UAudioComponent* DashAudioComponent;
 protected:
 
 	/** Called for movement input */
@@ -91,6 +99,9 @@ protected:
 
     void Interaction();
 		
+    void PlayWalkingSound();
+    bool IsWalking;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	UCharacterMovementComponent* CharacterMovementComponent;
 

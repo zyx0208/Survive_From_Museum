@@ -12,6 +12,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "AGSDGameInstance.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundWave.h"
 
 #include "Particles/ParticleSystemComponent.h"//이펙트 만들기
 #include "Kismet/GameplayStatics.h"
@@ -75,9 +77,10 @@ AAGSDCharacter::AAGSDCharacter()
 
     AttackSpeedLevel = 1.0f;
     AttackRangeLevel = 1.0f;
-
+    IsWalking = false;
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
+
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -144,9 +147,15 @@ AAGSDCharacter::AAGSDCharacter()
 		}
 	}
 
+    WalkingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("WalkingAudioComponent"));
+    WalkingAudioComponent->SetupAttachment(RootComponent);
+
+    DashAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudioComponent"));
+    DashAudioComponent->SetupAttachment(RootComponent);
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
-	SpreadAngle = 10.0f;
+	SpreadAngle = 50.0f;
 
     // 기본 생성자에서 초기화 (nullptr로 설정)
     LevelUpHandler = nullptr;
@@ -257,6 +266,9 @@ void AAGSDCharacter::Tick(float DeltaTime)
     // 자석 기능 처리
     TArray<AActor*> OverlappingActors;
     MagnetSphere->GetOverlappingActors(OverlappingActors);
+
+    //걷는 소리 출력 처리
+    PlayWalkingSound();
 
 	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
 	{
@@ -432,6 +444,13 @@ void AAGSDCharacter::Dash()
 
 	if (CharacterMovementComponent && Controller)
 	{
+        // 대쉬 사운드 재생
+        if (DashSound)
+        {
+            // AudioComponent에 사운드를 설정하고 재생
+            DashAudioComponent->SetSound(DashSound);
+            DashAudioComponent->Play();
+        }
 		// 현재 이동 방향으로 대시하도록 설정
 		FVector CurrentVelocity = GetVelocity();
 		FVector DashDirection = CurrentVelocity.GetSafeNormal();
@@ -1266,3 +1285,48 @@ void AAGSDCharacter::ShowStorageBoxUI()
     }
 }
 
+void AAGSDCharacter::PlayWalkingSound()
+{
+    // 캐릭터의 현재 속도 체크
+    FVector Velocity = GetVelocity();
+    float Speed = Velocity.Size();
+
+    // 걷기 속도 기준 (최소 속도보다 빠르면 걷는 중)
+    float WalkingSpeedThreshold = 10.0f;
+
+    if (Speed > WalkingSpeedThreshold)
+    {
+        // 이동 중이면 걷는 소리 재생
+        if (!IsWalking)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Walking"));
+            IsWalking = true;
+            if (WalkingAudioComponent && WalkingSound)
+            {
+                WalkingAudioComponent->SetSound(WalkingSound);
+                WalkingAudioComponent->Play();
+            }
+            if (!WalkingAudioComponent)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("WalkingAudioComponent"));
+            }
+            if (!WalkingSound)
+            {
+                UE_LOG(LogTemp, Warning, TEXT("WalkingSound"));
+            }
+        }
+    }
+    else
+    {
+        // 이동하지 않으면 걷는 소리 중지
+        if (IsWalking)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Not Walking"));
+            IsWalking = false;
+            if (WalkingAudioComponent && WalkingSound)
+            {
+                WalkingAudioComponent->Stop();
+            }
+        }
+    }
+}
