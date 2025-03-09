@@ -41,6 +41,9 @@ void ULevelUp_UI::SelectRandomAccessories()
     TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
     TArray<FAccessoryData*> CommonItems, RareItems, LegendaryItems;
 
+    FString CurrentMapName = GetWorld()->GetMapName();
+    CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+
     // 데이터 테이블에서 항목 분류
     for (FName RowName : RowNames)
     {
@@ -48,7 +51,12 @@ void ULevelUp_UI::SelectRandomAccessories()
        
         if (Accessory)
         {
-            if (Accessory->bIsRepetition || (!Accessory->bIsRepetition && !Accessory->bIsAcquired))
+            if ((Accessory->Theme == "Jelda" && CurrentMapName != "stage2") || 
+                (Accessory->Theme == "Mario" && CurrentMapName != "stage3"))
+            {
+                continue; // 조건이 맞지 않으면 스킵
+            }
+            else if (Accessory->bIsRepetition || (!Accessory->bIsRepetition && !Accessory->bIsAcquired))
             {
                 switch (Accessory->Rarity)
                 {
