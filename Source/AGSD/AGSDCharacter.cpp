@@ -153,6 +153,9 @@ AAGSDCharacter::AAGSDCharacter()
     DashAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudioComponent"));
     DashAudioComponent->SetupAttachment(RootComponent);
 
+    SubWeaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SubWeaponAttachPoint"));
+    SubWeaponAttachPoint->SetupAttachment(RootComponent);
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 50.0f;
@@ -879,9 +882,8 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
     ASubWeapon* NewSubWeapon = GetWorld()->SpawnActor<ASubWeapon>(SubWeapon, SpawnLocation, SpawnRotation);
     if (NewSubWeapon)
     {
-        USkeletalMeshComponent* MeshComp = GetMesh();
-        if (MeshComp) {
-            NewSubWeapon->AttachToComponent(MeshComp, FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("SubWeaponSocket")));
+        if (SubWeaponAttachPoint) {
+            NewSubWeapon->AttachToComponent(SubWeaponAttachPoint, FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("SubWeaponSocket")));
             NewSubWeapon->PlayerAttack = Attack;
             SubWeapons.Add(NewSubWeapon);
         }
