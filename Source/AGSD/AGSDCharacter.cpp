@@ -219,7 +219,7 @@ void AAGSDCharacter::BeginPlay()
 
 	if (WeaponMeshComponent)//무기 손에 붙히기
 	{
-		WeaponMeshComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "WeaponSocket");
+		WeaponMeshComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, "WeaponSocket");
 	}
 
     if (WeaponArray.Num()>1) {
