@@ -39,7 +39,10 @@ public:
     int64 Temp_StageProgress;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 Temp_TalkingProgress;
-
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    float Temp_BGMVolume;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    float Temp_SFXVolume;
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTable;

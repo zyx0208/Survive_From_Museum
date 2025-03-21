@@ -31,6 +31,8 @@ void UAGSDGameInstance::SaveGameData()
     // 데이터를 저장
     SaveGameInstance->StageProgress = Temp_StageProgress;
     SaveGameInstance->TalkingProgress = Temp_TalkingProgress;
+    SaveGameInstance->BGMVolume = Temp_BGMVolume;
+    SaveGameInstance->SFXVolume = Temp_SFXVolume;
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -58,10 +60,14 @@ void UAGSDGameInstance::LoadGameData()
     {
         Temp_StageProgress = LoadedGame->StageProgress;
         Temp_TalkingProgress = LoadedGame->TalkingProgress;
+        Temp_BGMVolume = LoadedGame->BGMVolume;
+        Temp_SFXVolume = LoadedGame->SFXVolume;
 
         // 예시: 불러온 데이터를 출력 (디버그용)
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %d"), Temp_StageProgress);
         UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %d"), Temp_TalkingProgress);
+        UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %f"), Temp_BGMVolume);
+        UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %f"), Temp_SFXVolume);
     }
     else
     {
