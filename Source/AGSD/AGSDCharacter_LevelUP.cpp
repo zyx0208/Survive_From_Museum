@@ -47,7 +47,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             float AttackIncrease = FCString::Atof(*ValueString);
             if (AttackIncrease != 0.0f)
             {
-                Character->Attack += AttackIncrease;
+                ((Character->Attack + AttackIncrease) <= 1.0f) ? Character->Attack = 1.0f : Character->Attack += AttackIncrease;
                 UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Current Attack: %.1f"), AttackIncrease, Character->Attack);
             }
         }
@@ -69,8 +69,10 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             int32 HealthIncrease = FCString::Atoi(*ValueString);
-            Character->MaxHealth += HealthIncrease;
-            Character->CurrentHealth += HealthIncrease;
+            
+            ((Character->CurrentHealth + HealthIncrease) <= 1) ? Character->CurrentHealth = 1 : Character->CurrentHealth += HealthIncrease;
+            ((Character->MaxHealth + HealthIncrease) <= 1) ? Character->MaxHealth = 1 : Character->MaxHealth += HealthIncrease;
+            
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Health %d / %d"), HealthIncrease, Character->CurrentHealth, Character->MaxHealth);
             Character->UpdateHealthBar();
         }
@@ -92,12 +94,12 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             int32 DefenseIncrease = FCString::Atoi(*ValueString.Replace(TEXT("%"), TEXT("")));
-            Character->Defense += DefenseIncrease;
+            (Character->Defense + DefenseIncrease <= 1) ? Character->Defense = 1 : Character->Defense += DefenseIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Defense %d"), DefenseIncrease, Character->Defense);
         }
         else if (Effect.Contains(TEXT("대쉬 쿨타임")))
         {
-            Character->DashCooldown -= 1.0f;
+            (Character->DashCooldown <= 3.0f) ? Character->DashCooldown = 3.0f : Character->DashCooldown -= 1.0f;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: 1sec DashCooldown %.1f"), Character->DashCooldown);
         }
         else if (Effect.Contains(TEXT("경험치 획득량")))
