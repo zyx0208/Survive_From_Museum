@@ -22,4 +22,6 @@ protected:
 
     /** 장신구 효과 문자열을 파싱하여 분류 */
     void ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects);
+
+    void RandmoStatApply(AAGSDCharacter* Character, int randomstat);
 };

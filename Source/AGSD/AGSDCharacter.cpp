@@ -1025,8 +1025,6 @@ void AAGSDCharacter::CreateProjectile()
     if (!WeaponType) {
         if (ProjectileClass)
         {
-
-
             // 총구 위치
             MuzzleOffset.Set(0.1f, 0.0f, 0.0f);
 
@@ -1037,7 +1035,8 @@ void AAGSDCharacter::CreateProjectile()
 
             // 총구위치 설정
             MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            MuzzleLocation.Z = 90;
+            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); 
+
             //MuzzleLocation.Normalize();
 
             MuzzleRotation.Pitch += 0.0f;
@@ -1099,7 +1098,8 @@ void AAGSDCharacter::CreateProjectile()
 
             // 총구위치 설정
             MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            MuzzleLocation.Z = 90;
+            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); 
+
 
             MuzzleRotation.Pitch += 0.0f;
 
@@ -1177,10 +1177,37 @@ void AAGSDCharacter::Attacked(float Damage)
         CurrentHealth -= 0;
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
-    if (CurrentHealth <= 0)
+    if (CurrentHealth <= 0) //캐릭터 사망 및 부활
     {
-        UpdateHealthBar();
-        OnDeath(); // 사망 처리
+        TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
+        for (FName RowName : RowNames)
+        {
+            FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT(""));
+            if (Accessory)
+            {
+                if (Accessory->AccessoryName == "모래시계" && Accessory->bIsAcquired)
+                {
+                    if (IsResurrection) //부활
+                    {
+                        IsResurrection = false;
+                        CurrentHealth = 10;
+                        bIsInvincible = true;       // 무적 상태 설정
+                        // 무적 해제 타이머 시작
+                        GetWorldTimerManager().SetTimer(
+                            InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 1.0f, false);
+                        UE_LOG(LogTemp, Display, TEXT("Character Resurrection"));
+                        UpdateHealthBar();
+                        break;
+                    }
+                    else
+                    {
+                        UpdateHealthBar();
+                        OnDeath(); // 사망 처리
+                        break;
+                    }
+                }
+            }
+        }        
     }
     else
     {
