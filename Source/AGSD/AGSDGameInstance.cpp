@@ -81,11 +81,11 @@ void UAGSDGameInstance::ResetGameData()
     USavingGame* SaveGameInstance = NewObject<USavingGame>();
 
     // 데이터를 초기값으로 저장
-    SaveGameInstance->StageProgress = 0;
+    SaveGameInstance->StageProgress = -1;
     SaveGameInstance->TalkingProgress = 0;
 
     // 임시 변수 초기화
-    Temp_StageProgress = 0;
+    Temp_StageProgress = -1;
     Temp_TalkingProgress = 0;
     ResetWeaponDataTable(); 
 
