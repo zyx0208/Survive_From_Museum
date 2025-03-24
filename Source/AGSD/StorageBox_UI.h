@@ -56,6 +56,10 @@ public:
     UImage* ImageSlot7;
     UPROPERTY(meta = (BindWidget))
     UImage* ImageSlot8;
+    UPROPERTY(meta = (BindWidget))
+    UImage* SelectedImageSlot1;
+    UPROPERTY(meta = (BindWidget))
+    UImage* SelectedImageSlot2;
 
     UPROPERTY(meta = (BindWidget))
     UButton* ImageSlot1Button;
@@ -108,5 +112,8 @@ private:
     void OnImageSlotClicked(int32 ButtonIndex);
 
     TArray<int32> HighlightedButtons;
+
+    int32 SelectedSlotIndex1 = -1;
+    int32 SelectedSlotIndex2 = -1;
 
 };
