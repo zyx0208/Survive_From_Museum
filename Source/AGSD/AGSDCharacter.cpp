@@ -1178,36 +1178,23 @@ void AAGSDCharacter::Attacked(float Damage)
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     if (CurrentHealth <= 0) //캐릭터 사망 및 부활
-    {
-        TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
-        for (FName RowName : RowNames)
+    {        
+        if (IsResurrection) //부활
         {
-            FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT(""));
-            if (Accessory)
-            {
-                if (Accessory->AccessoryName == "모래시계" && Accessory->bIsAcquired)
-                {
-                    if (IsResurrection) //부활
-                    {
-                        IsResurrection = false;
-                        CurrentHealth = 10;
-                        bIsInvincible = true;       // 무적 상태 설정
-                        // 무적 해제 타이머 시작
-                        GetWorldTimerManager().SetTimer(
-                            InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 1.0f, false);
-                        UE_LOG(LogTemp, Display, TEXT("Character Resurrection"));
-                        UpdateHealthBar();
-                        break;
-                    }
-                    else
-                    {
-                        UpdateHealthBar();
-                        OnDeath(); // 사망 처리
-                        break;
-                    }
-                }
-            }
-        }        
+            IsResurrection = false;
+            CurrentHealth = 10;
+            bIsInvincible = true;       // 무적 상태 설정
+            // 무적 해제 타이머 시작
+            GetWorldTimerManager().SetTimer(
+                InvincibilityTimerHandle, this, &AAGSDCharacter::ResetInvincibility, 1.0f, false);
+            UE_LOG(LogTemp, Display, TEXT("Character Resurrection"));
+            UpdateHealthBar();                   
+        }            
+        else
+        {
+            UpdateHealthBar();
+            OnDeath(); // 사망 처리               
+        }                
     }
     else
     {
