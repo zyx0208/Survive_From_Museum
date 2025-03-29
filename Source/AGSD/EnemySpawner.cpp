@@ -41,7 +41,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)
+            if (TotalTime >= 300.0f)
             {
                 if (!BossRound)
                 {
