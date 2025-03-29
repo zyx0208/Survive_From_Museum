@@ -443,10 +443,10 @@ public:
 
     //몽타주 재생
     UFUNCTION()
-    void PlayFireMontage(UAnimMontage* Montage, int ReapeatNumber);
+    void PlayFireMontage(UAnimMontage* Montage);
 
-    UFUNCTION()
-    void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+    //UFUNCTION()
+    //void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
     UAnimMontage* CurrentMontage;
 

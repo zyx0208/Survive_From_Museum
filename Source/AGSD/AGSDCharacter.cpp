@@ -756,6 +756,7 @@ void AAGSDCharacter::RemoveFromMagnetField(AXPOrb* XPOrb)
 
 void AAGSDCharacter::Fire()
 {
+    
 	//공격속도 제한
 	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
 		return;
@@ -769,28 +770,28 @@ void AAGSDCharacter::Fire()
             UE_LOG(LogTemp, Log, TEXT("NO Anim"));
             return;
         }
-        PlayFireMontage(FireMontage, RepeatFire);
+        
+        PlayFireMontage(FireMontage);
 	}
 	
 }
 
-void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage, int RepeatNumber)
+void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage)
 {
-    if (!Montage || RepeatNumber <= 0) return;
+    if (!Montage) return;
 
     // 변수 초기화
     CurrentMontage = Montage;
-    RepeatCount = RepeatNumber;
-
     // Delegate 설정
-    FOnMontageEnded MontageEndedDelegate;
-    MontageEndedDelegate.BindUObject(this, &AAGSDCharacter::OnMontageEnded);
+    //FOnMontageEnded MontageEndedDelegate;
+    //MontageEndedDelegate.BindUObject(this, &AAGSDCharacter::OnMontageEnded);
 
     // 몽타주 재생 및 Delegate 바인딩
     AnimInstance->Montage_Play(Montage,1.0f*RepeatFire*AttackSpeedLevel);
-    AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, Montage);
+    //AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, Montage);
 }
 
+/*
 void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
     if (Montage != CurrentMontage)
@@ -808,7 +809,7 @@ void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
         CurrentCount++;
         AnimInstance->Montage_Play(Montage, 1.0f * RepeatFire * AttackSpeedLevel);
         UE_LOG(LogTemp, Display, TEXT("%d 번째 발사"), CurrentCount);
-        OnMontageEnded(Montage, false);*/
+        OnMontageEnded(Montage, false);
     }
     else
     {
@@ -817,6 +818,7 @@ void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
         UE_LOG(LogTemp, Display, TEXT("Montage playback completed %d times."), RepeatCount);
     }
 }
+*/
 
 void AAGSDCharacter::ShowWeaponExchangeUI()
 {
