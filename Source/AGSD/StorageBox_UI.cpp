@@ -197,32 +197,64 @@ void UStorageBox_UI::OnImageSlot8Clicked()
 
 void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
 {
-    UButton* ImageSlotButtons[8] = {
-        ImageSlot1Button, ImageSlot2Button, ImageSlot3Button, ImageSlot4Button, ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button
+    UImage* ImageSlots[8] = {
+        ImageSlot1, ImageSlot2, ImageSlot3, ImageSlot4,
+        ImageSlot5, ImageSlot6, ImageSlot7, ImageSlot8
     };
 
-    if (!ImageSlotButtons[ButtonIndex]) return;
+    if (!ImageSlots[ButtonIndex]) return;
+
+    // 클릭된 이미지의 텍스처 가져오기
+    UTexture2D* SelectedTexture = Cast<UTexture2D>(ImageSlots[ButtonIndex]->Brush.GetResourceObject());
+    if (!SelectedTexture) return;
 
     if (HighlightedButtons.Contains(ButtonIndex))
     {
+        // 선택 해제
         HighlightedButtons.Remove(ButtonIndex);
+
+        if (SelectedSlotIndex1 == ButtonIndex)
+        {
+            SelectedImageSlot1->SetBrushFromTexture(nullptr);
+            SelectedSlotIndex1 = -1;
+        }
+        else if (SelectedSlotIndex2 == ButtonIndex)
+        {
+            SelectedImageSlot2->SetBrushFromTexture(nullptr);
+            SelectedSlotIndex2 = -1;
+        }
     }
     else
     {
+        // 두 개 이상 선택 불가 처리
         if (HighlightedButtons.Num() >= 2)
         {
+            int32 OldestIndex = HighlightedButtons[0];
             HighlightedButtons.RemoveAt(0);
-        }
-        HighlightedButtons.Add(ButtonIndex);
-    }
 
-    for (int32 i = 0; i < 8; i++)
-    {
-        if (ImageSlotButtons[i])
+            if (SelectedSlotIndex1 == OldestIndex)
+            {
+                SelectedImageSlot1->SetBrushFromTexture(nullptr);
+                SelectedSlotIndex1 = -1;
+            }
+            else if (SelectedSlotIndex2 == OldestIndex)
+            {
+                SelectedImageSlot2->SetBrushFromTexture(nullptr);
+                SelectedSlotIndex2 = -1;
+            }
+        }
+
+        HighlightedButtons.Add(ButtonIndex);
+
+        if (SelectedSlotIndex1 == -1)
         {
-            FLinearColor NewColor = ImageSlotButtons[i]->GetBackgroundColor();
-            NewColor.A = HighlightedButtons.Contains(i) ? 0.3f : 0.0f;
-            ImageSlotButtons[i]->SetBackgroundColor(NewColor);
+            SelectedImageSlot1->SetBrushFromTexture(SelectedTexture);
+            SelectedSlotIndex1 = ButtonIndex;
+        }
+        else if (SelectedSlotIndex2 == -1)
+        {
+            SelectedImageSlot2->SetBrushFromTexture(SelectedTexture);
+            SelectedSlotIndex2 = ButtonIndex;
         }
     }
 }

@@ -63,11 +63,12 @@ void ANPC1Class::ShowTextUI()
     
     switch (Progress)
     {
+    case -1:
     case 0:
         if (Text1)
         {
             CreateWidget<UUserWidget>(GetWorld(), Text1)->AddToViewport();
-            GameInstance->Temp_TalkingProgress++;
+            GameInstance->Temp_TalkingProgress = 1;
             break;
         }
     case 1:
