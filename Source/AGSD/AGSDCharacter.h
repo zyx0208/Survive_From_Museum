@@ -128,10 +128,16 @@ protected:
 	UUserWidget* LevelUpWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> RestartUIClass;
+    TSubclassOf<UUserWidget> ClearUIClass;
 
     UPROPERTY()
-    UUserWidget* RestartWidget;
+    UUserWidget* ClearWidget;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> GameoverUIClass;
+
+    UPROPERTY()
+    UUserWidget* GameoverWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> StorageBoxWidgetClass;

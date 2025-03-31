@@ -1250,12 +1250,12 @@ void AAGSDCharacter::OnDeath()
     }
 
     // Restart UI 생성
-    if (RestartUIClass)
+    if (GameoverUIClass)
     {
-        RestartWidget = CreateWidget<UUserWidget>(GetWorld(), RestartUIClass);
-        if (RestartWidget)
+        GameoverWidget = CreateWidget<UUserWidget>(GetWorld(), GameoverUIClass);
+        if (GameoverWidget)
         {
-            RestartWidget->AddToViewport();
+            GameoverWidget->AddToViewport();
         }
     }
 
@@ -1275,12 +1275,12 @@ void AAGSDCharacter::Clear()
         PlayerController->bShowMouseCursor = true;
     }
     // Restart UI 생성
-    if (RestartUIClass)
+    if (ClearUIClass)
     {
-        RestartWidget = CreateWidget<UUserWidget>(GetWorld(), RestartUIClass);
-        if (RestartWidget)
+        ClearWidget = CreateWidget<UUserWidget>(GetWorld(), ClearUIClass);
+        if (ClearWidget)
         {
-            RestartWidget->AddToViewport();
+            ClearWidget->AddToViewport();
         }
     }
 
