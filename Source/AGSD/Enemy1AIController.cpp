@@ -213,6 +213,18 @@ void AEnemy1AIController::Chanel5TimerEnd()
     GetWorldTimerManager().ClearTimer(Chanel5TimerHandle);
 }
 
+void AEnemy1AIController::Stun(float duration)
+{
+    GetWorldTimerManager().SetTimer(StunTimer, this, &AEnemy1AIController::StunTimerEnd, duration, false);
+    IsStun = true;
+}
+
+void AEnemy1AIController::StunTimerEnd()
+{
+    IsStun = false;
+}
+
+
 void AEnemy1AIController::Died(int64 num)
 {
     //이미 죽은 상태라면 더 이상 죽음 판정이 안생김
@@ -318,6 +330,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;//공격속도 초기화
         Enemy->CurrentHP = Enemy->MaxHP;
         Temp_Dead = false;
+        IsStun = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
@@ -339,7 +352,11 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
 	{
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
+        if (IsStun)
+        {
+            StopMovement();
+        }
+		else if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
 		{
 			//적 추적
 			GetCharacter()->GetCharacterMovement()->MaxWalkSpeed = Enemy->MoveSpeed;

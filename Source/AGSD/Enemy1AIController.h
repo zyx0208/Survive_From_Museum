@@ -34,6 +34,11 @@ public:
     FTimerHandle Chanel5TimerHandle;//무적 관리를 위한 함수5
     void Chanel5TimerEnd();//무적 해제를 위한 함수5
 
+    UFUNCTION(BlueprintCallable, Category = "Test")
+    void Stun(float duration);//스턴 상태를 나타내기 위한 함수
+    FTimerHandle StunTimer;//기절 시간을 관리하기 위한 타이머
+    void StunTimerEnd();//기절 해제를 관리하기 위한 함수
+    bool IsStun;//기절 상태인지를 나타내는 변수
 
 private:
     AEnemy1Class* Enemy; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
