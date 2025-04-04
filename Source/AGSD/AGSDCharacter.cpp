@@ -158,7 +158,7 @@ AAGSDCharacter::AAGSDCharacter()
 
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
-	SpreadAngle = 50.0f;
+	SpreadAngle = 25.0f;
 
     // 기본 생성자에서 초기화 (nullptr로 설정)
     LevelUpHandler = nullptr;
@@ -1112,7 +1112,7 @@ void AAGSDCharacter::CreateProjectile()
                 FActorSpawnParameters SpawnParams;
                 SpawnParams.Owner = this;
                 SpawnParams.Instigator = GetInstigator();
-                float LeftRight = 15.0f;
+                float LeftRight = 5.0f;
                 //탄환숫자만큼 발사반복
                 for (int i = 0; i < Numberofprojectile; i++) {
                     if (i % 2 == 1) {
@@ -1121,7 +1121,7 @@ void AAGSDCharacter::CreateProjectile()
                     }
                     else if (i!=0 && i % 2 == 0) {
                         MuzzleOffset.Y = 1 * LeftRight;
-                        LeftRight += 15.0f;
+                        LeftRight += 5.0f;
                     }
                     MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
                     AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
