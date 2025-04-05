@@ -18,6 +18,7 @@ public:
     /** UI 업데이트 함수 */
     UFUNCTION(BlueprintCallable, Category = "Cooldown")
     void UpdateDashCooldown(float CooldownPercentage);
+    void UpdateAttackCooldown(float CooldownPercentage);
     void UpdateWeaponIcon();
     void UpdateSwapWeapon();
 
@@ -37,6 +38,8 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     class UProgressBar* DashCooldownBar;
+    UPROPERTY(meta=(BindWidget))
+    class UProgressBar* AttackCooldownBar;
 
 private:
     bool mainicon = true;

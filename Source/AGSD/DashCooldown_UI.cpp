@@ -58,3 +58,11 @@ void UDashCooldown_UI::UpdateDashCooldown(float CooldownPercentage)
     }
 }
 
+void UDashCooldown_UI::UpdateAttackCooldown(float CooldownPercentage)
+{
+    if (AttackCooldownBar)
+    {
+        AttackCooldownBar->SetPercent(CooldownPercentage);
+    }
+}
+

@@ -762,7 +762,21 @@ void AAGSDCharacter::Fire()
 		return;
 	}
 	else {
-		GetWorldTimerManager().SetTimer(FireRateTimerHandle, FTimerDelegate(), FireRate/AttackSpeedLevel, false);
+        float CooldownTime = FireRate / AttackSpeedLevel;
+        // 공격 시 ProgressBar를 100%로 초기화합니다.
+        if (DashCooldownWidget)  // DashCooldownUI는 UDashCooldown_UI의 인스턴스라고 가정합니다.
+        {
+            DashCooldownWidget->UpdateAttackCooldown(1.0f);
+        }
+        // 메인 쿨다운 타이머 설정 (쿨다운이 끝나면 OnCooldownFinished 함수 호출)
+        GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &AAGSDCharacter::OnAttackCooldownFinished, CooldownTime, false);
+
+        // 쿨다운 시작 시간과 전체 쿨다운 시간 저장
+        AttackCooldownStartTime = GetWorld()->GetTimeSeconds();
+        AttackTotalCooldownTime = CooldownTime;
+
+        // 진행 바 업데이트를 위한 반복 타이머 설정 (예: 0.05초 간격)
+        GetWorldTimerManager().SetTimer(AttackCooldownTimerHandle, this, &AAGSDCharacter::UpdateAttackCooldownProgress, 0.05f, true);
 	}
 	if (FireMontage && GetMesh())
 	{
@@ -772,8 +786,37 @@ void AAGSDCharacter::Fire()
         }
         
         PlayFireMontage(FireMontage);
-	}
-	
+	}	
+}
+void AAGSDCharacter::UpdateAttackCooldownProgress()
+{
+    // 현재 시간과 시작 시간의 차이를 계산하여 경과 시간을 구합니다.
+    float CurrentTime = GetWorld()->GetTimeSeconds();
+    float ElapsedTime = CurrentTime - AttackCooldownStartTime;
+
+    // 남은 시간을 계산하고 비율로 변환합니다.
+    float RemainingTime = AttackTotalCooldownTime - ElapsedTime;
+    float Percentage = FMath::Clamp(RemainingTime / AttackTotalCooldownTime, 0.0f, 1.0f);
+
+    // ProgressBar를 업데이트합니다.
+    if (DashCooldownWidget)
+    {
+        DashCooldownWidget->UpdateAttackCooldown(Percentage);
+    }
+
+    // 남은 시간이 0 이하이면 타이머를 중지하고 ProgressBar를 0%로 설정합니다.
+    if (RemainingTime <= 0.0f)
+    {
+        GetWorldTimerManager().ClearTimer(AttackCooldownTimerHandle);
+        if (DashCooldownWidget)
+        {
+            DashCooldownWidget->UpdateAttackCooldown(0.0f);
+        }
+    }
+}
+void AAGSDCharacter::OnAttackCooldownFinished()
+{
+    // 쿨다운 완료 시 추가로 실행할 로직이 있다면 여기에 작성합니다.
 }
 
 void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage)

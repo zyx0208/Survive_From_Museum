@@ -278,6 +278,8 @@ public:
 
     FTimerHandle MagneticEffectTimerHandle;
 
+    
+
     // 무적 해제 함수
     UFUNCTION()
     void ResetInvincibility();
@@ -308,6 +310,13 @@ public:
 	//무기 타이머
 	FTimerHandle FireTimerHandle;
 	FTimerHandle FireRateTimerHandle;
+    FTimerHandle AttackCooldownTimerHandle;
+
+    //무기 쿨타임 변수
+    float AttackCooldownStartTime;
+    float AttackTotalCooldownTime;
+    void UpdateAttackCooldownProgress();
+    void OnAttackCooldownFinished();
 
 	//무기 탄환 숫자
 	int Numberofprojectile;
