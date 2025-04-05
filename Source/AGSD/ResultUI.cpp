@@ -47,12 +47,16 @@ void UResultUI::PopulateAccessoryIcons()
             if (NewAccessoryImage)
             {
                 NewAccessoryImage->SetBrushFromTexture(Accessory->AccessoryIcon);
+                // 브러쉬의 이미지 사이즈를 수정하여 아이콘 크기를 변경합니다.
+                FSlateBrush Brush = NewAccessoryImage->Brush;
+                Brush.ImageSize = FVector2D(120.0f, 120.0f);
+                NewAccessoryImage->SetBrush(Brush);
+
                 NewAccessoryImage->SetVisibility(ESlateVisibility::Visible);
-                NewAccessoryImage->SetDesiredSizeOverride(FVector2D(332, 332)); // 아이콘 크기 설정
 
                 // WrapBox에 추가
                 AccessoryWrapBox->AddChildToWrapBox(NewAccessoryImage);
-                UE_LOG(LogTemp, Log, TEXT("액세서리 추가: %s"), *RowName.ToString());
+                //UE_LOG(LogTemp, Log, TEXT("액세서리 추가: %s"), *RowName.ToString());
             }
         }
     }
