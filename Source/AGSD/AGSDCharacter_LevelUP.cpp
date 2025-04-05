@@ -139,6 +139,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             UE_LOG(LogTemp, Log, TEXT("ERROR Effect"));
         }
     }
+    Character->UpdateStat();
 }
 
 void AAGSDCharacter_LevelUP::ParseAccessoryEffect(const FString& EffectString, TArray<FString>& OutEffects)

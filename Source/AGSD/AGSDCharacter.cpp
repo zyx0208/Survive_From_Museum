@@ -204,6 +204,7 @@ void AAGSDCharacter::BeginPlay()
 			HealthBarWidget->AddToViewport();
 			UpdateHealthBar();
 			UpdateXPBar();
+            UpdateStat();
 		}
 	}
     if (DashCooldownUIClass) //대쉬 아이콘 생성
@@ -632,6 +633,24 @@ void AAGSDCharacter::UpdateXPBar()
     {
         LevelText->SetText(FText::FromString(FString::Printf(TEXT("%d"), CharacterLevel)));
     }
+}
+void AAGSDCharacter::UpdateStat()
+{
+    if (!HealthBarWidget) return;
+
+    UTextBlock* AttackDamageText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("AttackDamage")));
+    UTextBlock* DefenseText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("Defense")));
+    UTextBlock* SpeedText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("Speed")));
+    UTextBlock* AttackSpeedText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("AttackSpeed")));
+    UTextBlock* AttackRangeText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("AttackRange")));
+
+    if (!AttackDamageText || !DefenseText || !SpeedText || !AttackSpeedText || !AttackRangeText) return;
+
+    AttackDamageText->SetText(FText::FromString(FString::Printf(TEXT("Damage: %.1f"), Attack)));
+    DefenseText->SetText(FText::FromString(FString::Printf(TEXT("Defense: %d"), Defense)));
+    SpeedText->SetText(FText::FromString(FString::Printf(TEXT("Speed: %.1f"), SpeedLevel)));
+    AttackSpeedText->SetText(FText::FromString(FString::Printf(TEXT("AttackSpeed: %.1f"), AttackSpeedLevel)));
+    AttackRangeText->SetText(FText::FromString(FString::Printf(TEXT("AttackRange: %.1f"), AttackRangeLevel)));
 }
 
 void AAGSDCharacter::AddXP(int32 XPAmount)

@@ -192,6 +192,8 @@ public:
 	void UpdateHealthBar(); //체력바 갱신함수
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void UpdateXPBar(); //경험치바 갱신함수
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateStat();
 
 	UFUNCTION(BlueprintCallable, Category = "LevelUp")
 	void ApplyLevelUpOption(AAGSDCharacter* Character, const FAccessoryData& SelectedAccessory);
