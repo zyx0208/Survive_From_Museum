@@ -118,6 +118,7 @@ void UAGSDGameInstance::ResetWeaponDataTable()
         FWeaponDataTableBetaStruct* Weapon = WeaponDataTable->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
         if (Weapon)
         {
+            Weapon->bIsReinforce = false;
             if (Weapon->Sname == TEXT("Racket") || Weapon->Sname == TEXT("BaseBall"))
             {
                 UE_LOG(LogTemp, Log, TEXT("ResetWeaponData: Skipped %s (Weapon: %s)"), *RowName.ToString(), *Weapon->Sname);

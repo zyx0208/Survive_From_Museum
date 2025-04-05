@@ -32,6 +32,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bIsAcquired = false;
 
+    // 강화 여부
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bIsReinforce = false;
+
 	//무기 발사 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Frate;

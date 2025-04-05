@@ -47,6 +47,8 @@ public:
     //현재 진행 중인 스테이지 정보를 불러오기 위한 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 NowStage;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    int64 ReinforceWeaponIndex;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
