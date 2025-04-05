@@ -15,6 +15,9 @@ void UStorageBox_UI::NativeConstruct()
     TArray<UButton*> ImageSlotButtons = { ImageSlot1Button, ImageSlot2Button, ImageSlot3Button, ImageSlot4Button,
                                           ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button };
 
+    WeaponIndexSetArray = { 3, 4, 8, 6, 9, 5, 7, 0 };
+    UpdateWeaponIndexSetArray();
+
     if (CloseStorageBoxButton)
     {
         CloseStorageBoxButton->OnClicked.AddDynamic(this, &UStorageBox_UI::CloseStorageBox);
@@ -58,11 +61,9 @@ void UStorageBox_UI::NativeConstruct()
         static const FString ContextString(TEXT("Weapon Data Context"));
         TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
 
-        int32 MaxSlots = FMath::Min(RowNames.Num(), 8); // 최대 8개 슬롯까지 처리
-
-        for (int32 i = 0; i < MaxSlots; i++)
+        for (int32 i = 0; i < 8; i++)
         {
-            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[i], ContextString, true);
+            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[WeaponIndexSetArray[i]], ContextString, true);
             // bIsAcquired 값이 false면 해당 버튼을 숨김
             if (!WeaponData->bIsAcquired && ImageSlotButtons.IsValidIndex(i))
             {
@@ -208,17 +209,17 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
     UTexture2D* SelectedTexture = Cast<UTexture2D>(ImageSlots[ButtonIndex]->Brush.GetResourceObject());
     if (!SelectedTexture) return;
 
-    if (HighlightedButtons.Contains(ButtonIndex))
+    if (HighlightedButtons.Contains(WeaponIndexSetArray[ButtonIndex]))
     {
         // 선택 해제
-        HighlightedButtons.Remove(ButtonIndex);
+        HighlightedButtons.Remove(WeaponIndexSetArray[ButtonIndex]);
 
-        if (SelectedSlotIndex1 == ButtonIndex)
+        if (SelectedSlotIndex1 == WeaponIndexSetArray[ButtonIndex])
         {
             SelectedImageSlot1->SetBrushFromTexture(nullptr);
             SelectedSlotIndex1 = -1;
         }
-        else if (SelectedSlotIndex2 == ButtonIndex)
+        else if (SelectedSlotIndex2 == WeaponIndexSetArray[ButtonIndex])
         {
             SelectedImageSlot2->SetBrushFromTexture(nullptr);
             SelectedSlotIndex2 = -1;
@@ -244,17 +245,45 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
             }
         }
 
-        HighlightedButtons.Add(ButtonIndex);
+        HighlightedButtons.Add(WeaponIndexSetArray[ButtonIndex]);
 
         if (SelectedSlotIndex1 == -1)
         {
             SelectedImageSlot1->SetBrushFromTexture(SelectedTexture);
-            SelectedSlotIndex1 = ButtonIndex;
+            SelectedSlotIndex1 = WeaponIndexSetArray[ButtonIndex];
         }
         else if (SelectedSlotIndex2 == -1)
         {
             SelectedImageSlot2->SetBrushFromTexture(SelectedTexture);
-            SelectedSlotIndex2 = ButtonIndex;
+            SelectedSlotIndex2 = WeaponIndexSetArray[ButtonIndex];
+        }
+    }
+}
+
+void UStorageBox_UI::UpdateWeaponIndexSetArray()
+{
+    // 데이터 테이블에서 무기 메쉬 가져오기
+    if (!WeaponDataTableBeta) return;
+    static const FString ContextString(TEXT("UpdateWeaponIndexSetArray"));
+    // 데이터 테이블의 모든 행 이름을 가져옵니다.
+    TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+    // WeaponIndexSetArray의 각 요소에 대해 확인
+    for (int32 i = 0; i < WeaponIndexSetArray.Num(); i++)
+    {
+        int32 CurrentIID = WeaponIndexSetArray[i];
+        // 데이터 테이블의 각 행을 순회하면서 IID가 일치하는지 확인합니다.
+        for (const FName& RowName : RowNames)
+        {
+            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+            if (WeaponData && WeaponData->IID == CurrentIID)
+            {
+                // bIsReinforce가 true인 경우 해당 인덱스를 10으로 변경합니다.
+                if (WeaponData->bIsReinforce)
+                {
+                    WeaponIndexSetArray[i] = UpgradeWeaponIndexSetArray[i];
+                    UE_LOG(LogTemp, Log, TEXT("WeaponIndexSetArray[%d] with IID %d is reinforced, updated to %d."), i, CurrentIID, UpgradeWeaponIndexSetArray[i]);
+                }
+            }
         }
     }
 }
