@@ -24,7 +24,10 @@ void AEnemyStatusEffect_Fire::TimePerEffect()
     AActor* ParentActor = GetOwner();
     if (ParentActor && ParentActor->IsA(AEnemy1AIController::StaticClass())) {
         AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
-        Enemy->Attacked(FireDamage);
+        if (IsValid(Enemy)) {
+            Enemy->Attacked(FireDamage);
+        }
+        
         UE_LOG(LogTemp, Display, TEXT("Fire Damage!"));
     }
 }

@@ -126,14 +126,16 @@ void AEnemy1AIController::AttackTypeD()
 
 void AEnemy1AIController::Attacked(float damage)
 {
-    Enemy->CurrentHP -= damage;
-	UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
-    GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
-	//체력이 0이하일 경우 죽음
-	if (Enemy->CurrentHP <= 0.0f)
-	{
-		Died(Enemy->AttackType);
-	}
+    if (IsValid(Enemy)) {
+        Enemy->CurrentHP -= damage;
+        UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        //체력이 0이하일 경우 죽음
+        if (Enemy->CurrentHP <= 0.0f)
+        {
+            Died(Enemy->AttackType);
+        }
+    }
 }
 
 void AEnemy1AIController::Attacked(float damage, int chanel)
