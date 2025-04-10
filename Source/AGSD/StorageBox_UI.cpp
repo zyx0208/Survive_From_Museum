@@ -15,7 +15,10 @@ void UStorageBox_UI::NativeConstruct()
     TArray<UButton*> ImageSlotButtons = { ImageSlot1Button, ImageSlot2Button, ImageSlot3Button, ImageSlot4Button,
                                           ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button };
 
-    WeaponIndexSetArray = { 3, 4, 8, 6, 9, 5, 7, 0 };
+    // #무기업그레이드
+    WeaponIndexSetArray = { 4, 5, 9, 7, 10, 6, 8, 1 }; //무기 기초 배열(IID값)
+    UpgradeWeaponIndexSetArray = { 0, 0, 11, 0, 0, 0, 0, 0 };   //무기 업그레이드시 IID값 변경 설정
+
     UpdateWeaponIndexSetArray();
 
     if (CloseStorageBoxButton)

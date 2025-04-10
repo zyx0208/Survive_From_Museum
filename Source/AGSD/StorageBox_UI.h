@@ -116,8 +116,8 @@ private:
     int32 SelectedSlotIndex1 = -1;
     int32 SelectedSlotIndex2 = -1;
 
-    TArray<int32> WeaponIndexSetArray = { 3, 4, 8, 6, 9, 5, 7, 0 };
-    TArray<int32> UpgradeWeaponIndexSetArray = { 0, 0, 10, 0, 0, 0, 0, 0 };
+    TArray<int32> WeaponIndexSetArray;
+    TArray<int32> UpgradeWeaponIndexSetArray;
     void UpdateWeaponIndexSetArray();
 
 };
