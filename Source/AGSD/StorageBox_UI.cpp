@@ -66,7 +66,7 @@ void UStorageBox_UI::NativeConstruct()
 
         for (int32 i = 0; i < 8; i++)
         {
-            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[WeaponIndexSetArray[i]], ContextString, true);
+            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[WeaponIndexSetArray[i]-1], ContextString, true);
             // bIsAcquired 값이 false면 해당 버튼을 숨김
             if (!WeaponData->bIsAcquired && ImageSlotButtons.IsValidIndex(i))
             {

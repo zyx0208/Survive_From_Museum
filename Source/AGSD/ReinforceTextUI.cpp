@@ -38,6 +38,7 @@ void UReinforceTextUI::ReinforceWeapon()
         FWeaponDataTableBetaStruct* WeaponRow = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
         if (WeaponRow && WeaponRow->IID == ReinforceWeaponIndex)
         {
+            WeaponRow->bIsAcquired = true;
             WeaponRow->bIsReinforce = true;
             UE_LOG(LogTemp, Warning, TEXT("Weapon %s is now reinforced"), *RowName.ToString());
             break;
