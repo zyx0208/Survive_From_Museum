@@ -12,6 +12,7 @@ AProjectile_Bow::AProjectile_Bow()
 
 void AProjectile_Bow::WeaponHitEffect(AActor* OtherActor)
 {
+    Destroy();
 }
 
 void AProjectile_Bow::BeginPlay()

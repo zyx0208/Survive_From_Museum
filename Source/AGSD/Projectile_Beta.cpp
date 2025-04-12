@@ -70,7 +70,8 @@ AProjectile_Beta::AProjectile_Beta()
 void AProjectile_Beta::BeginPlay()
 {
     Super::BeginPlay();
-    CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile_Beta::OnOverlapBegin);
+
+    ProjectileMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile_Beta::OnOverlapBegin);
 }
 
 // Called every frame

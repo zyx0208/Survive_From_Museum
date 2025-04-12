@@ -1099,7 +1099,8 @@ void AAGSDCharacter::CreateProjectile()
 
             // 총구위치 설정
             MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); 
+            //MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+            MuzzleLocation.Z = CharacterLocation.Z;
 
             //MuzzleLocation.Normalize();
 
