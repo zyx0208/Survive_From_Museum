@@ -62,8 +62,8 @@ void AEnemySpawner::Tick(float DeltaTime)
                         }
                     }
                     //보스 몹 소환 및 플레이어 이동
-                    GetWorld()->SpawnActor<AActor>(Boss, FVector(-4800.0f, 28850.0f, 400.0f), FRotator::ZeroRotator);
-                    PlayerCharacter->SetActorLocation(FVector(-6150.0f, 28850.0f, 400.0f));
+                    GetWorld()->SpawnActor<AActor>(Boss, BossSpawnPoint, FRotator::ZeroRotator);
+                    PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
                     if (BossTextUI)
                     {
                         CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
