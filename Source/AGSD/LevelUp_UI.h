@@ -26,7 +26,9 @@ protected:
     UPROPERTY(BlueprintReadWrite, Category = "LevelUp")
     TArray<FAccessoryData> SelectedAccessories;
 
+
     void SelectRandomAccessories();
+    void UpdateAccessoryVFX(int index, EAccessoryRarity rarity);
 
 public:
     // 버튼 위젯 변수
@@ -83,4 +85,20 @@ public:
 
     UFUNCTION()
     void OnOption3Clicked();
+
+
+    TArray<UImage*> AccessoryRareEffect;
+    TArray<UImage*> AccessoryLegendaryEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option1RareEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option2RareEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option3RareEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option1LegendaryEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option2LegendaryEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option3LegendaryEffect;
 };

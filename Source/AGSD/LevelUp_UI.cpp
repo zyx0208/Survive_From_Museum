@@ -26,6 +26,13 @@ void ULevelUp_UI::NativeConstruct()
 	{
 		Option3->OnClicked.AddDynamic(this, &ULevelUp_UI::OnOption3Clicked);
 	}
+    //Effect Image 설정
+    AccessoryRareEffect.Add(Option1RareEffect);
+    AccessoryRareEffect.Add(Option2RareEffect);
+    AccessoryRareEffect.Add(Option3RareEffect);
+    AccessoryLegendaryEffect.Add(Option1LegendaryEffect);
+    AccessoryLegendaryEffect.Add(Option2LegendaryEffect);
+    AccessoryLegendaryEffect.Add(Option3LegendaryEffect);
 
     // 랜덤 선택지 생성
     SelectRandomAccessories();
@@ -121,15 +128,17 @@ void ULevelUp_UI::SelectRandomAccessories()
         {
         case EAccessoryRarity::Common:
             ItemPool = &CommonItems;
+            UpdateAccessoryVFX(i, Rarity);
             break;
         case EAccessoryRarity::Rare:
             ItemPool = &RareItems;
+            UpdateAccessoryVFX(i, Rarity);
             break;
         case EAccessoryRarity::Legendary:
             ItemPool = &LegendaryItems;
+            UpdateAccessoryVFX(i, Rarity);
             break;
         }
-
         if (ItemPool && ItemPool->Num() > 0)
         {
             int32 RandomIndex = FMath::RandRange(0, ItemPool->Num() - 1);
@@ -145,7 +154,7 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option1_Name)
         {
             Option1_Name->SetText(FText::FromString(SelectedAccessories[0].AccessoryName));
-            Option1_Effect->SetText(FText::FromString(SelectedAccessories[0].AccessoryEffect));
+            Option1_Effect->SetText(FText::FromString(SelectedAccessories[0].AccessoryDescription));
             if (SelectedAccessories[0].AccessoryIcon)
             {
                 Option1_Img->SetBrushFromTexture(SelectedAccessories[0].AccessoryIcon);
@@ -155,7 +164,7 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option2_Name)
         {
             Option2_Name->SetText(FText::FromString(SelectedAccessories[1].AccessoryName));
-            Option2_Effect->SetText(FText::FromString(SelectedAccessories[1].AccessoryEffect));
+            Option2_Effect->SetText(FText::FromString(SelectedAccessories[1].AccessoryDescription));
             if (SelectedAccessories[1].AccessoryIcon)
             {
                 Option2_Img->SetBrushFromTexture(SelectedAccessories[1].AccessoryIcon);
@@ -165,7 +174,7 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option3_Name)
         {
             Option3_Name->SetText(FText::FromString(SelectedAccessories[2].AccessoryName));
-            Option3_Effect->SetText(FText::FromString(SelectedAccessories[2].AccessoryEffect));
+            Option3_Effect->SetText(FText::FromString(SelectedAccessories[2].AccessoryDescription));
             if (SelectedAccessories[2].AccessoryIcon)
             {
                 Option3_Img->SetBrushFromTexture(SelectedAccessories[2].AccessoryIcon);
@@ -205,5 +214,28 @@ void ULevelUp_UI::OnOption3Clicked()
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
         AccessoryPtr->bIsAcquired = true;
 	}
+}
+
+void ULevelUp_UI::UpdateAccessoryVFX(int index, EAccessoryRarity rarity)
+{
+    switch (rarity)
+    {
+    case EAccessoryRarity::Common:
+        AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        break;
+    case EAccessoryRarity::Rare:
+        AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Visible);
+        AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        break;
+    case EAccessoryRarity::Legendary:
+        AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Visible);
+        break;
+    default:
+        AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
+        break;
+    }
 }
 
