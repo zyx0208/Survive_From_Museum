@@ -56,4 +56,5 @@ private:
 	float DashCoolTime_Temp = 0;//대쉬 쿨타임을 계산하기 위한 변수
 	bool IsDashing = false;//대쉬중인가를 나타내는 변수
     bool Temp_Dead = false;//죽음판정을 빨리 계산하기 위한 변수
+    bool IsPlayingAnim; //몬스터 애니메이션 관련 변수
 };

@@ -19,7 +19,7 @@
 #include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
 #include "Enemy1Class.h"
 #include "TimerManager.h"
-
+#include "Animation/AnimInstance.h"
 
 void AEnemy1AIController::BeginPlay()
 {
@@ -333,6 +333,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         Enemy->CurrentHP = Enemy->MaxHP;
         Temp_Dead = false;
         IsStun = false;
+        IsPlayingAnim = true;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
@@ -354,9 +355,16 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
 	{
+        if (!IsStun and !IsPlayingAnim)
+        {
+            IsPlayingAnim = true;
+            GetCharacter()->GetMesh()->bPauseAnims = false;
+        }
         if (IsStun)
         {
+            IsPlayingAnim = false;
             StopMovement();
+            GetCharacter()->GetMesh()->bPauseAnims = true;
         }
 		else if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
 		{
