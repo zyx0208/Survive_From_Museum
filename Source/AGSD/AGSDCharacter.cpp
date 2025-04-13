@@ -111,7 +111,7 @@ AAGSDCharacter::AAGSDCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->bDoCollisionTest = false; // 카메라 붐 충돌 체크 비활성화 (필요 시 활성화 가능)
+	CameraBoom->bDoCollisionTest = true; // 카메라 붐 충돌 체크 비활성화 (필요 시 활성화 가능)
 	CameraBoom->bUsePawnControlRotation = true; // 캐릭터의 회전에 따라 카메라가 회전하지 않도록 설정
 
 	// Create a follow camera
