@@ -41,7 +41,7 @@ public:
     bool IsStun;//기절 상태인지를 나타내는 변수
 
 private:
-    AEnemy1Class* Enemy; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
+    AEnemy1Class* Enemy = nullptr; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
 	ACharacter* PlayerCharacter; //플레이어 위치 및 방향 정보를 담는 액터 배열
 	float AttackCooltime_temp = 0.0f; //공격속도 계산을 위한 임의의 변수
 	bool IsFisrt = true;//C++과 블루프린트에서 begin 함수보다 반드시 늦게 실행해야 하지만 한번만 실행해야 되는 함수를 사용하기 위해
