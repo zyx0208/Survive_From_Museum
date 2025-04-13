@@ -4,6 +4,7 @@
 #include "WeaponExchange_UI.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "Engine/DataTable.h"
 #include "WeaponDataTableBeta.h"
 #include "AGSDCharacter.h"
@@ -43,13 +44,14 @@ void UWeaponExchange_UI::NativeConstruct()
             RowName = FName(PlayerCharacter->OverlapID);
             WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
             UTexture2D* WeaponIconNewWeapon = WeaponData->WeaponIcon;
+            FString NewWeaponDescription = WeaponData->WeaponDescription;
 
-            DisplayWeaponImage(WeaponIcon1, WeaponIcon2, WeaponIconNewWeapon);
+            DisplayWeaponImage(WeaponIcon1, WeaponIcon2, WeaponIconNewWeapon, NewWeaponDescription);
         }
     }
 }
 
-void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon)
+void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription)
 {
     if (ImageSlot1) {
         ImageSlot1->SetBrushFromTexture(WeaponIcon1);
@@ -67,6 +69,7 @@ void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D*
 
     if (ImageSlotNewWeapon) {
         ImageSlotNewWeapon->SetBrushFromTexture(WeaponIconNewWeapon);
+        WeaponDescriptionTextBlock->SetText(FText::FromString(WeaponDescription));
     }
     else {
         UE_LOG(LogTemp, Warning, TEXT("not fountslot1"));

@@ -58,8 +58,8 @@ void ULevelUp_UI::SelectRandomAccessories()
        
         if (Accessory)
         {
-            if ((Accessory->Theme == "Jelda" && CurrentMapName != "stage2") || 
-                (Accessory->Theme == "Mario" && CurrentMapName != "stage3"))
+            if ((Accessory->Theme == "Jelda" && CurrentMapName != "Level2Stage") || 
+                (Accessory->Theme == "Mario" && CurrentMapName != "Level3Stage"))
             {
                 continue; // 조건이 맞지 않으면 스킵
             }
@@ -154,7 +154,8 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option1_Name)
         {
             Option1_Name->SetText(FText::FromString(SelectedAccessories[0].AccessoryName));
-            Option1_Effect->SetText(FText::FromString(SelectedAccessories[0].AccessoryDescription));
+            Option1_Effect->SetText(FText::FromString(SelectedAccessories[0].AccessoryEffect.Replace(TEXT("/"),TEXT("\n"))));
+            Option1_Description->SetText(FText::FromString(SelectedAccessories[0].AccessoryDescription));
             if (SelectedAccessories[0].AccessoryIcon)
             {
                 Option1_Img->SetBrushFromTexture(SelectedAccessories[0].AccessoryIcon);
@@ -164,7 +165,8 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option2_Name)
         {
             Option2_Name->SetText(FText::FromString(SelectedAccessories[1].AccessoryName));
-            Option2_Effect->SetText(FText::FromString(SelectedAccessories[1].AccessoryDescription));
+            Option2_Effect->SetText(FText::FromString(SelectedAccessories[1].AccessoryEffect.Replace(TEXT("/"), TEXT("\n"))));
+            Option2_Description->SetText(FText::FromString(SelectedAccessories[1].AccessoryDescription));
             if (SelectedAccessories[1].AccessoryIcon)
             {
                 Option2_Img->SetBrushFromTexture(SelectedAccessories[1].AccessoryIcon);
@@ -174,7 +176,8 @@ void ULevelUp_UI::UpdateOptionTexts()
         if (Option3_Name)
         {
             Option3_Name->SetText(FText::FromString(SelectedAccessories[2].AccessoryName));
-            Option3_Effect->SetText(FText::FromString(SelectedAccessories[2].AccessoryDescription));
+            Option3_Effect->SetText(FText::FromString(SelectedAccessories[2].AccessoryEffect.Replace(TEXT("/"), TEXT("\n"))));
+            Option3_Description->SetText(FText::FromString(SelectedAccessories[2].AccessoryDescription));
             if (SelectedAccessories[2].AccessoryIcon)
             {
                 Option3_Img->SetBrushFromTexture(SelectedAccessories[2].AccessoryIcon);

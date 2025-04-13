@@ -24,7 +24,7 @@ public:
     virtual void NativeConstruct() override;
 
     /** 무기 아이콘을 UI에 표시 */
-    void DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon);
+    void DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription);
 
     /** UI를 닫는 함수 */
     UFUNCTION(BlueprintCallable, Category = "UI")
@@ -52,6 +52,9 @@ public:
     UButton* ImageSlot2Button;
     UPROPERTY(meta = (BindWidget))
     UButton* ImageSlotNewWeaponButton;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponDescriptionTextBlock;
 
     /** 무기 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

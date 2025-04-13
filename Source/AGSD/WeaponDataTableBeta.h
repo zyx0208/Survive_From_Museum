@@ -75,4 +75,8 @@ public:
     //무기에 따른 애니메이션
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<UAnimInstance> WeaponAnimType;
+
+    //무기 설명
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString WeaponDescription;
 };

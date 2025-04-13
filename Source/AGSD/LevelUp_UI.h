@@ -47,6 +47,8 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* Option1_Effect;
+    UPROPERTY(meta=(BindWidget))
+    class UTextBlock* Option1_Description;
     UPROPERTY(meta = (BindWidget))
     class UImage* Option1_Img;
 
@@ -56,12 +58,16 @@ public:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* Option2_Effect;
     UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option2_Description;
+    UPROPERTY(meta = (BindWidget))
     class UImage* Option2_Img;
 
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* Option3_Name;
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* Option3_Effect;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* Option3_Description;
     UPROPERTY(meta = (BindWidget))
     class UImage* Option3_Img;
 
