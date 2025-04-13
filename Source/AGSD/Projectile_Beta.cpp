@@ -151,11 +151,11 @@ void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
         {
             // ACharacter로 캐스팅
             ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
-            if (HitEnemy)
+            if (IsValid(HitEnemy))
             {
                 //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
                 AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
-                if (HitEnemyController)
+                if (IsValid(HitEnemyController))
                 {
                     HitEnemyController->Attacked(ProjectileDamage+PlayerAttack, 1);
                 }
