@@ -126,6 +126,10 @@ void AEnemy1AIController::AttackTypeD()
 
 void AEnemy1AIController::Attacked(float damage)
 {
+    if (IsFisrt)
+    {
+        return;
+    }
     if (Enemy.IsValid()) {
         Enemy->CurrentHP -= damage;
         UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
@@ -140,6 +144,10 @@ void AEnemy1AIController::Attacked(float damage)
 
 void AEnemy1AIController::Attacked(float damage, int chanel)
 {
+    if (IsFisrt)
+    {
+        return;
+    }
     switch (chanel)
     {
     case 1 :
@@ -332,12 +340,12 @@ void AEnemy1AIController::Tick(float DeltaTime)
         Enemy->IsAttacking = false;
 		ChenkIsolated_1 = GetCharacter()->GetActorLocation();
 		ChenkIsolated_2 = GetCharacter()->GetActorLocation();
-		IsFisrt = false;
 		AttackCooltime_temp = Enemy->AttackCooltimeFirstDelay;//공격속도 초기화
         Enemy->CurrentHP = Enemy->MaxHP;
         Temp_Dead = false;
         IsStun = false;
         IsPlayingAnim = true;
+        IsFisrt = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
