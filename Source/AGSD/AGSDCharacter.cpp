@@ -274,6 +274,9 @@ void AAGSDCharacter::Tick(float DeltaTime)
     //걷는 소리 출력 처리
     PlayWalkingSound();
 
+    //카메라 위치 디버깅
+    UpdateCameraObstruction();
+
 	if (PlayerController && PlayerController->DeprojectMousePositionToWorld(MouseLocation, MouseDirection))
 	{
 		// 캐릭터의 위치를 가져옴
@@ -437,6 +440,44 @@ void AAGSDCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+void AAGSDCharacter::UpdateCameraObstruction()
+{
+    if (!CameraBoom || !FollowCamera) return;
+
+    FVector DesiredCameraLocation = FollowCamera->GetComponentLocation();
+    FVector TempCharacterLocation = GetActorLocation() + FVector(0.0f, 0.0f, 900.0f);
+    FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(CameraObstruction), true, this);
+
+    FHitResult HitResult;
+    float DeltaTime = GetWorld()->GetDeltaSeconds();
+    float InterpSpeed = 10.0f; // 보간 속도
+    bool bBlocked = GetWorld()->LineTraceSingleByChannel(
+        HitResult,
+        TempCharacterLocation,
+        DesiredCameraLocation,
+        ECC_Visibility,
+        TraceParams
+    );
+    //디버그 라인트레이스
+    DrawDebugLine(GetWorld(), TempCharacterLocation, DesiredCameraLocation, FColor::Blue, false, 0.1f, 0, 1.0f);
+
+    if (bBlocked)
+    {
+        float OffsetDistance = 10.0f;
+        FVector AdjustedLocation = HitResult.ImpactPoint + HitResult.ImpactNormal * OffsetDistance;
+
+        // 선택사항: 기존 카메라 위치와 새 위치를 부드럽게 보간
+        FVector NewCameraLocation = FMath::VInterpTo(FollowCamera->GetComponentLocation(), AdjustedLocation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+
+        FollowCamera->SetWorldLocation(NewCameraLocation);
+    }
+    else
+    {
+        FVector UnobstructedLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
+        FVector NewCameraLocation = FMath::VInterpTo(FollowCamera->GetComponentLocation(), UnobstructedLocation, DeltaTime, InterpSpeed);
+        FollowCamera->SetWorldLocation(NewCameraLocation);
+    }
 }
 
 void AAGSDCharacter::Dash()

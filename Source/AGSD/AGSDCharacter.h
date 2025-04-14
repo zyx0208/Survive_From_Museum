@@ -87,6 +87,9 @@ public:
     USoundWave* DashSound;
     UAudioComponent* WalkingAudioComponent;
     UAudioComponent* DashAudioComponent;
+
+    void UpdateCameraObstruction();
+
 protected:
 
 	/** Called for movement input */
