@@ -15,5 +15,5 @@ class AGSD_API AProjectile_Bow : public AProjectile_Beta
 	GENERATED_BODY()
     AProjectile_Bow();
     virtual void WeaponHitEffect(AActor* OtherActor) override;
-    virtual void BeginPlay() override;
+    virtual void Tick(float timedelta) override;
 };

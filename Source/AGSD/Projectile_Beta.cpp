@@ -143,7 +143,7 @@ void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 
 void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+    if (IsValid(OtherActor) && OtherActor != this && IsValid(OtherComp))
     {
         //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
         // 충돌한 오브젝트가 ACharacter 클래스인지 확인(적이 캐릭터 클래스이기 때문)

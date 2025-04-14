@@ -126,7 +126,7 @@ void AEnemy1AIController::AttackTypeD()
 
 void AEnemy1AIController::Attacked(float damage)
 {
-    if (IsValid(Enemy)) {
+    if (Enemy.IsValid()) {
         Enemy->CurrentHP -= damage;
         UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
@@ -182,8 +182,8 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         break;
     }
     //UE_LOG(LogTemp, Warning, TEXT("Test"));
-    
-    if (IsValid(Enemy) && IsValid(GetCharacter())) {
+    UE_LOG(LogTemp, Warning, TEXT("Enemy Addr = 0x%p"), Enemy);
+    if (Enemy.IsValid()) {
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     }
     UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d(Chanel %d)"), Enemy->CurrentHP, chanel);

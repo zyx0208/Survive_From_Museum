@@ -15,7 +15,7 @@ void AProjectile_Bow::WeaponHitEffect(AActor* OtherActor)
     Destroy();
 }
 
-void AProjectile_Bow::BeginPlay()
+void AProjectile_Bow::Tick(float timedelta)
 {
-    Super::BeginPlay();
 }
+
