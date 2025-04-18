@@ -124,6 +124,13 @@ void AEnemy1AIController::AttackTypeD()
 
 }
 
+void AEnemy1AIController::AttackTypeE()
+{
+    FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+}
+
 void AEnemy1AIController::Attacked(float damage)
 {
     if (IsFisrt)
@@ -462,6 +469,9 @@ void AEnemy1AIController::Tick(float DeltaTime)
                     break;
                 case 4:
                     AttackTypeD();
+                    break;
+                case 5:
+                    AttackTypeE();
                     break;
 				default://공격타입이 설정되지 않았을 경우
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));
