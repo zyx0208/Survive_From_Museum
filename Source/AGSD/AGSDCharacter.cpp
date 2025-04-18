@@ -970,6 +970,8 @@ void AAGSDCharacter::UpdateSwapWeaponIcon()
 
 void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
 {
+    FVector AddVector = FVector(100.0f, 0, 0);
+    Location = Location + AddVector;
     if(WeaponParticle) {
         UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponParticle, Location, Rotation, true);
     }
