@@ -2,6 +2,7 @@
 
 
 #include "EnemyStatusEffect_Fire.h"
+#include "Enemy1Class.h"
 #include "Enemy1AIController.h"
 
 AEnemyStatusEffect_Fire::AEnemyStatusEffect_Fire()
@@ -20,15 +21,19 @@ void AEnemyStatusEffect_Fire::Tick(float DeltaTime)
 
 void AEnemyStatusEffect_Fire::TimePerEffect()
 {
-    //AActor* ParentActor = GetAttachParentActor();
-    AActor* ParentActor = GetOwner();
-    if (ParentActor && ParentActor->IsA(AEnemy1AIController::StaticClass())) {
-        AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
-        if (IsValid(Enemy)) {
-            Enemy->Attacked(FireDamage);
+    AActor* ParentActor = GetAttachParentActor();
+    //AActor* ParentActor = GetOwner();
+    if (IsValid(ParentActor)) {
+        if (ParentActor->IsA(AEnemy1AIController::StaticClass())) {
+            AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
+            if (IsValid(Enemy)) {
+                Enemy->Attacked(FireDamage);
+            }
         }
-        
         UE_LOG(LogTemp, Display, TEXT("Fire Damage!"));
+    }
+    else {
+        Destroy();
     }
 }
 

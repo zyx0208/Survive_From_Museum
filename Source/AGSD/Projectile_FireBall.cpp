@@ -3,6 +3,7 @@
 
 #include "Projectile_FireBall.h"
 #include "Enemy1AIController.h"
+#include "EnemyStatusEffect_Fire.h"
 #include "EnemyStatusEffect.h"
 AProjectile_FireBall::AProjectile_FireBall()
 {
@@ -27,9 +28,9 @@ void AProjectile_FireBall::WeaponHitEffect(AActor* OtherActor)
             {
                 AEnemyStatusEffect* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Fire>(FireEffect);
                 if (TestEffect) {
-                    //TestEffect->AttachToActor(OtherActor, FAttachmentTransformRules::KeepWorldTransform);
-                    //TestEffect->AttachToComponent(OtherActor->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-                    TestEffect->SetOwner(HitEnemyController);
+                    TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepWorldTransform);
+                    //TestEffect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+                    //TestEffect->SetOwner(HitEnemyController);
                 }
             }
         }
