@@ -122,6 +122,94 @@ void AEnemySpawner::Tick(float DeltaTime)
         }
         break;
 
+    case 2:
+        if (PlayerCharacter)
+        {
+            TempTime += DeltaTime;
+            TotalTime += DeltaTime;
+
+            //보스라운드
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            {
+                if (!BossRound)
+                {
+                    BossRound = true;
+                    //모든 적 캐릭터 강제 삭제
+                    TArray<AActor*> AllEnemys;
+                    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+                    for (int i = 0; i < AllEnemys.Num(); i++)
+                    {
+                        AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+                        if (Enemy)
+                        {
+                            AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                            if (AIC)
+                            {
+                                AIC->Died(-1);
+                            }
+                        }
+                    }
+                    //보스 몹 소환 및 플레이어 이동
+                    GetWorld()->SpawnActor<AActor>(Boss, BossSpawnPoint, FRotator::ZeroRotator);
+                    PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
+                    if (BossTextUI)
+                    {
+                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                    }
+                }
+                SpawnNum = -3;//일반 몹 생성안하도록 설정
+            }
+            //50초 마다 패턴 변화
+            else if (TotalTime >= 250.0f)
+            {
+                SpawnNum = 13;
+            }
+            else if (TotalTime >= 200.0f)
+            {
+                SpawnNum = 11;
+            }
+            else if (TotalTime >= 150.0f)
+            {
+                SpawnNum = 9;
+            }
+            else if (TotalTime >= 100.0f)
+            {
+                SpawnNum = 7;
+            }
+            else if (TotalTime >= 50.0f)
+            {
+                SpawnNum = 5;
+            }
+            else
+            {
+                SpawnTime = 10.0f;
+                SpawnNum = 3;
+            }
+        }
+        if (TempTime >= SpawnTime)
+        {
+            TempTime = 0.0f;
+            if (Enemys.Num() > 0)
+            {
+                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 1) / 2);
+                for (int i = 0; i < (SpawnNum + 1) / 2; i++) //버섯 소환
+                {
+                    TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
+                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator);
+                }
+                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 1) / 2);
+                for (int i = 0; i < (SpawnNum - 1) / 2; i++) //거북이 소환
+                {
+                    GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
+                }
+            }
+        }
+        break;
+
     default: //스테이지가 설정되지 않았을 경우
         UE_LOG(LogTemp, Display, TEXT("Setting Stage Number."));
         break;
