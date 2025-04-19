@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
+#include "Components/WrapBox.h"
 #include "AccessoryData.h"
 #include "DrawingBook_UI.generated.h"
 
@@ -30,7 +31,23 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void CloseDrawingBook();
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> AccessoryIconClass;
+
+    int32 GetThemePriority(const FString& Theme);
+    int32 GetRarityPriority(EAccessoryRarity Rarity);
+
+
+protected:
+    //악세서리 아이콘 출력 함수
+    void PopulateAccessoryIcons();
+    
+
+
     /** 악세서리 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     UDataTable* AccessoryDataTable;
+
+    UPROPERTY(meta = (BindWidget))
+    class UWrapBox* AccessoryWrapBox;
 };
