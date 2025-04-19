@@ -845,7 +845,6 @@ void AAGSDCharacter::Fire()
             UE_LOG(LogTemp, Log, TEXT("NO Anim"));
             return;
         }
-        
         PlayFireMontage(FireMontage);
 	}	
 }
@@ -976,8 +975,10 @@ void AAGSDCharacter::UpdateSwapWeaponIcon()
 
 void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
 {
-    FVector AddVector = FVector(100.0f, 0, 0);
-    Location = Location + AddVector;
+    //FVector AddVector = FVector(100.0f, 0, 0);
+    //AddVector = Rotation.RotateVector(AddVector);
+    Location = Location;
+    UE_LOG(LogTemp, Log, TEXT("%.2f %.2f %.2f"), Location.X, Location.Y,Location.Z);
     UNiagaraComponent* WeaponParticleComponent;
     WeaponParticleComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponParticle, Location, Rotation);
     if(IsValid(WeaponParticleComponent)) {
@@ -1018,6 +1019,7 @@ void AAGSDCharacter::WeaponTake()
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
+
     WeaponAnimType = WeaponData->WeaponAnimType;
     UAnimInstance* CurrentAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
     CurrentAnimInstance->LinkAnimClassLayers(WeaponAnimType);
@@ -1026,6 +1028,12 @@ void AAGSDCharacter::WeaponTake()
     }
     else {
         WeaponParticle = nullptr;
+    }
+    if (WeaponData->WeaponSound != nullptr) {
+        WeaponSoundCue = WeaponData->WeaponSound;
+    }
+    else {
+        WeaponSoundCue = nullptr;
     }
 }
 void AAGSDCharacter::Debug()
@@ -1136,13 +1144,13 @@ void AAGSDCharacter::StopFiring()
 
 void AAGSDCharacter::CreateProjectile()
 {
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     // 발사
     if (!WeaponType) {
         if (ProjectileClass)
         {
-            // 총구 위치
-            MuzzleOffset.Set(0.1f, 0.0f, 0.0f);
-
             // 총구 방향
             FRotator MuzzleRotation = TraceHitDirection.Rotation();
             MuzzleRotation.Pitch = 0;

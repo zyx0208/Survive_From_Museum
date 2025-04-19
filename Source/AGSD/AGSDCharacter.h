@@ -345,9 +345,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMesh* CurrentWeaponMesh;
 
+    //무기 공격 사운드
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    USoundCue* WeaponSoundCue;
+
     //무기 유형에 따른 애니메이션
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TSubclassOf<UAnimInstance> WeaponAnimType;
+
 
     //무기 소켓
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
