@@ -444,7 +444,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void ShowStorageBoxUI();
 
-    
+    UFUNCTION()
+    bool WeaponSwapCheck();
+    bool NoSwap = false;
 
     //디버그
     UFUNCTION()

@@ -936,6 +936,11 @@ void AAGSDCharacter::ShowWeaponExchangeUI()
 }
 
 void AAGSDCharacter::WeaponSwap() {
+    NoSwap=WeaponSwapCheck();
+    if (NoSwap) {
+        return;
+    }
+    
 	if (CurrentWeaponSlot) {
         WeaponID = FString::FromInt(WeaponArray[1]);
         WeaponTake();
@@ -1406,6 +1411,17 @@ void AAGSDCharacter::ShowStorageBoxUI()
             HealthBarWidget->RemoveFromViewport();
             PauseGameForLevelUp();
         }
+    }
+}
+
+bool AAGSDCharacter::WeaponSwapCheck()
+{
+    if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
