@@ -13,6 +13,7 @@
 #include "InputActionValue.h"
 #include "AGSDGameInstance.h"
 #include "Components/AudioComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Sound/SoundWave.h"
 
 #include "Particles/ParticleSystemComponent.h"//이펙트 만들기
@@ -977,8 +978,10 @@ void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
 {
     FVector AddVector = FVector(100.0f, 0, 0);
     Location = Location + AddVector;
-    if(WeaponParticle) {
-        UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WeaponParticle, Location, Rotation, true);
+    UNiagaraComponent* WeaponParticleComponent;
+    WeaponParticleComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponParticle, Location, Rotation);
+    if(IsValid(WeaponParticleComponent)) {
+        WeaponParticleComponent->Activate();
     }
 }
 void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)

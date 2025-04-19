@@ -14,6 +14,8 @@
 #include "Components/AudioComponent.h"
 
 #include "Blueprint/UserWidget.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 #include "Animation/AnimMontage.h"
 #include "Components/PoseableMeshComponent.h"
@@ -391,7 +393,7 @@ public:
 
     //파티클
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
-    UParticleSystem* WeaponParticle;
+    UNiagaraSystem* WeaponParticle;
 
     //보조무기 추가용
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

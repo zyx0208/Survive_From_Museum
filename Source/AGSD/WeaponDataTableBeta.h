@@ -10,6 +10,7 @@
 #include "Components/PoseableMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "NiagaraComponent.h"
 #include "WeaponDataTableBeta.generated.h"
 
 /**
@@ -62,7 +63,7 @@ public:
 
     //무기 공격 파티클
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    UParticleSystem* WeaponParticle;
+    UNiagaraSystem* WeaponParticle;
 
     //무기 공격 유형
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
