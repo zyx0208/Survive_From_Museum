@@ -147,6 +147,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> StorageBoxWidgetClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> DrawingBookWidgetClass;
+
     UPROPERTY()
     UUserWidget* WeaponExchangeWidget;
     
@@ -155,6 +158,8 @@ protected:
 
     UPROPERTY()
     UUserWidget* StorageBoxWidget;
+    UPROPERTY()
+    UUserWidget* DrawingBookWidget;
 
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
     UPROPERTY()
@@ -447,9 +452,14 @@ public:
     //현재 상자와 오버랩 되었는지 확인
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool OverlapBox = false;
+    //도감 오버랩 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool OverlapDrawingBook = false;
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     void ShowStorageBoxUI();
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void ShowDrawingBookUI();
 
     UFUNCTION()
     bool WeaponSwapCheck();

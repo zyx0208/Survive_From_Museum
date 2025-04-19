@@ -47,6 +47,7 @@
 
 #include "WeaponDrop.h"
 #include "StorageBox.h"
+#include "DrawingBook.h"
 
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
@@ -619,6 +620,10 @@ void AAGSDCharacter::Interaction()
         ShowStorageBoxUI();
         //UE_LOG(LogTemp, Log, TEXT("Box here"));
     }
+    else if (OverlapDrawingBook)
+    {
+        ShowDrawingBookUI();
+    }
     else
     {
         TArray<AActor*> FoundNPC;
@@ -787,7 +792,14 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         StorageBoxWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("StorageBoxWidget removed successfully."));
     }
-
+    else if (IsValid(DrawingBookWidget))
+    {
+        DrawingBookWidget->RemoveFromViewport();
+        DashCooldownWidget->AddToViewport();
+        HealthBarWidget->AddToViewport();
+        DrawingBookWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("DrawingBookWidget removed successfully."));
+    }
     else if (IsValid(WeaponExchangeWidget)) {
         WeaponExchangeWidget->RemoveFromViewport();
         WeaponExchangeWidget = nullptr;
@@ -1075,6 +1087,12 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
                 UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
             }
         }
+        // 충돌한 오브젝트가 DrawingBook임을 확인
+        if (OtherActor && OtherActor->IsA<ADrawingBook>())
+        {
+            OverlapDrawingBook = true;
+            if (OverlapDrawingBook) UE_LOG(LogTemp, Log, TEXT("OverLap DrawingBook"));
+        }
     }
 }
 
@@ -1092,6 +1110,8 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
         {
             OverlapBox = false;
         }
+        // 충돌한 오브젝트가 DrawingBook임을 확인
+        if (OtherActor && OtherActor->IsA<ADrawingBook>()) OverlapDrawingBook = false;
     }
 }
 
@@ -1409,7 +1429,7 @@ void AAGSDCharacter::Clear()
     // 로그 출력
     UE_LOG(LogTemp, Warning, TEXT("Level Clear"));
 }
-
+//창고 UI 출력
 void AAGSDCharacter::ShowStorageBoxUI()
 {
     if (StorageBoxWidgetClass)
@@ -1418,6 +1438,21 @@ void AAGSDCharacter::ShowStorageBoxUI()
         if (StorageBoxWidget)
         {
             StorageBoxWidget->AddToViewport();
+            DashCooldownWidget->RemoveFromViewport();
+            HealthBarWidget->RemoveFromViewport();
+            PauseGameForLevelUp();
+        }
+    }
+}
+//도감 UI 출력
+void AAGSDCharacter::ShowDrawingBookUI()
+{
+    if (DrawingBookWidgetClass)
+    {
+        DrawingBookWidget = CreateWidget<UUserWidget>(GetWorld(), DrawingBookWidgetClass);
+        if (DrawingBookWidget)
+        {
+            DrawingBookWidget->AddToViewport();
             DashCooldownWidget->RemoveFromViewport();
             HealthBarWidget->RemoveFromViewport();
             PauseGameForLevelUp();
