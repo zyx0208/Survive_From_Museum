@@ -12,7 +12,7 @@
 #include "NPC1Class.h"
 #include "Sound/SoundWave.h"
 #include "Components/AudioComponent.h"
-
+#include "MouseIndicatorActor.h"    //마우스 포인터
 #include "Blueprint/UserWidget.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
@@ -164,6 +164,11 @@ protected:
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
     UPROPERTY()
     AAGSDCharacter_LevelUP* LevelUpHandler;
+    //마우스 포인터
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MouseIndicator")
+    TSubclassOf<AMouseIndicatorActor> MouseIndicatorClass;
+    UPROPERTY()
+    class AMouseIndicatorActor* MouseIndicator;
 
 public:
 	/** Returns CameraBoom subobject **/

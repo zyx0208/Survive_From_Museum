@@ -10,6 +10,7 @@
 #include "Components/Image.h"
 #include "Engine/DataTable.h"
 #include "AccessoryData.h" 
+#include "WeaponDataTableBeta.h"
 #include "ResultUI.generated.h"
 
 /**
@@ -29,6 +30,11 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void CloseResult();
+    
+    UPROPERTY(meta = (BindWidget))
+    class UImage* WeaponIcon1;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* WeaponIcon2;
 
 protected:
     UPROPERTY(meta = (BindWidget))
@@ -40,6 +46,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     UDataTable* AccessoryDataTable;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+    UDataTable* WeaponDataTable;
+
     void PopulateAccessoryIcons();
+
+    void DisplayWeaponImage(UTexture2D* Icon1, UTexture2D* Icon2);
 
 };

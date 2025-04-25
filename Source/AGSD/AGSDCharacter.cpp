@@ -22,6 +22,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h" // 라인 트레이스 함수 사용을 위해 필요
 #include "Kismet/KismetMathLibrary.h" //대쉬 거리 계산을 위해 필요
+
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
@@ -259,6 +260,12 @@ void AAGSDCharacter::BeginPlay()
 
     // 레벨업 처리 핸들러 생성
     LevelUpHandler = NewObject<AAGSDCharacter_LevelUP>(this);
+
+    //마우스 포인터
+    if (MouseIndicatorClass)
+    {
+        MouseIndicator = GetWorld()->SpawnActor<AMouseIndicatorActor>(MouseIndicatorClass, FVector::ZeroVector, FRotator::ZeroRotator);
+    }
 }
 
 void AAGSDCharacter::Tick(float DeltaTime)
@@ -302,8 +309,14 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			FVector AdjustedMouseLocation = HitResult.Location;
 
 			// 캐릭터와 마우스 사이의 선을 디버그 선으로 그리기
-			DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
-
+			//DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
+            if (MouseIndicator)
+            {
+                MouseIndicator->SetActorLocation(AdjustedMouseLocation + FVector(-1.f, -1.f, 0.01f)); // 살짝 띄워서 Z-fighting 방지
+                FRotator DecalRotation = HitResult.ImpactNormal.Rotation();
+                DecalRotation.Pitch -= 90.0f; // 바닥에 붙이기 위해 회전 조절
+                MouseIndicator->SetActorRotation(DecalRotation);
+            }
 			//라인트레이스 위치와 방향 저장
 			TraceHitLocation = HitResult.Location;
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
