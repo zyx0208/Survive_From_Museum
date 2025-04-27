@@ -132,7 +132,10 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용"));
             // 0~5 사이의 랜덤한 스탯 선택
             int32 RandomStat = FMath::RandRange(0, 5);
-            RandmoStatApply(Character, RandomStat);
+            RandmoStatApplyM(Character, RandomStat);
+            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
+            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
+            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
         }
         else
         {
@@ -156,7 +159,7 @@ void AAGSDCharacter_LevelUP::ParseAccessoryEffect(const FString& EffectString, T
     }
 }
 
-void AAGSDCharacter_LevelUP::RandmoStatApply(AAGSDCharacter* Character, int randomstat)
+void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int randomstat)
 {
     switch (randomstat)
     {
@@ -204,6 +207,60 @@ void AAGSDCharacter_LevelUP::RandmoStatApply(AAGSDCharacter* Character, int rand
         if (Character->AttackSpeedLevel > 1.0f) // 최소 공격속도 제한
         {
             Character->AttackSpeedLevel *= 0.9f; // 10% 감소
+            UE_LOG(LogTemp, Log, TEXT("AttackSpeedLevel 감소: %.2f"), Character->AttackSpeedLevel);
+        }
+        break;
+    }
+}
+
+void AAGSDCharacter_LevelUP::RandmoStatApplyP(AAGSDCharacter* Character, int randomstat)
+{
+    switch (randomstat)
+    {
+    case 0: // MaxHealth 증가
+        if (Character->MaxHealth > 10)  // 최소 체력 제한
+        {
+            Character->MaxHealth += 5;
+            UE_LOG(LogTemp, Log, TEXT("MaxHealth 감소: %d"), Character->MaxHealth);
+        }
+        break;
+
+    case 1: // Defense 감소
+        if (Character->Defense > 1) // 최소 방어력 제한
+        {
+            Character->Defense += 1;
+            UE_LOG(LogTemp, Log, TEXT("Defense 감소: %d"), Character->Defense);
+        }
+        break;
+
+    case 2: // SpeedLevel 증가
+        if (Character->SpeedLevel > 100.0f) // 최소 속도 제한
+        {
+            Character->SpeedLevel *= 1.1f; // 10% 증가
+            UE_LOG(LogTemp, Log, TEXT("SpeedLevel 감소: %.2f"), Character->SpeedLevel);
+        }
+        break;
+
+    case 3: // Attack 증가
+        if (Character->Attack > 1.0f) // 최소 공격력 제한
+        {
+            Character->Attack *= 1.1f; // 10% 증가
+            UE_LOG(LogTemp, Log, TEXT("Attack 감소: %.2f"), Character->Attack);
+        }
+        break;
+
+    case 4: // AttackRangeLevel 증가
+        if (Character->AttackRangeLevel > 1.0f) // 최소 사거리 제한
+        {
+            Character->AttackRangeLevel *= 1.1f; // 10% 증가
+            UE_LOG(LogTemp, Log, TEXT("AttackRangeLevel 감소: %.2f"), Character->AttackRangeLevel);
+        }
+        break;
+
+    case 5: // AttackSpeedLevel 증가
+        if (Character->AttackSpeedLevel > 1.0f) // 최소 공격속도 제한
+        {
+            Character->AttackSpeedLevel *= 1.1f; // 10% 증가
             UE_LOG(LogTemp, Log, TEXT("AttackSpeedLevel 감소: %.2f"), Character->AttackSpeedLevel);
         }
         break;
