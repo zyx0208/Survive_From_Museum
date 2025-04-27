@@ -26,6 +26,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsAttacking;//해당 캐릭터가 현재 공격중인가?를 나타내는 변수(공격중일때는 추적을 멈춤)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect1 = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect2 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackEffect3 = NULL;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackedEffect = NULL;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EnemyProjectile = NULL;
