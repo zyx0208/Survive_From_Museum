@@ -48,39 +48,10 @@ void AEnemy1AIController::AttackTypeA()
 
 void AEnemy1AIController::AttackTypeB()
 {
-	if (BossCount >= 2) //3번째 공격은 공격범위의 전범위 공격
-	{
-		BossCount = 0;
-		DrawDebugCylinder(GetWorld(), //공격 범위 그리기
-			GetCharacter()->GetActorLocation(), //원통 시작위치
-			GetCharacter()->GetActorLocation(), //원통 끝 위치
-            Enemy->AttackRange * 1.5f, //원통 반지름
-			36, //원통의 세그먼트 개수
-			FColor::Red, //원통 색상
-			false, //지속적으로 화면에 표시하는가?
-			0.3f, //지속시간
-			100.0f, //선 두께(0이 기본)
-			1.0f); //투명도(불투명 = 1)
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.5f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= -1)
-		{
-			//플레이어 구현이 완료되면 이 안에 코드를 수정
-			UE_LOG(LogTemp, Display, TEXT("Hit!"));
-			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
-		}
-		GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
-		BossCount++;
-		if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) >= 0.7f)
-		{
-			//플레이어 구현이 완료되면 이 안에 코드를 수정
-			UE_LOG(LogTemp, Display, TEXT("Hit!"));
-			Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
-		}
-		GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + GetCharacter()->GetActorForwardVector() * Enemy->AttackRange, GetCharacter()->GetActorRotation());
-	}
+    FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector()), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector() - GetCharacter()->GetActorRightVector()), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector() + GetCharacter()->GetActorRightVector()), GetCharacter()->GetActorRotation());
 }
 
 void AEnemy1AIController::AttackTypeC()

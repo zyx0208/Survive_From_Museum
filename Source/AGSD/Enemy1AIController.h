@@ -48,7 +48,7 @@ private:
 	bool IsFisrt = true;//C++과 블루프린트에서 begin 함수보다 반드시 늦게 실행해야 하지만 한번만 실행해야 되는 함수를 사용하기 위해
 	bool TickSwitch = false;//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
 	virtual void AttackTypeA();//1번 공격 타입 : 근거리
-	virtual void AttackTypeB();//2번 공격 타입 : 보스1
+	virtual void AttackTypeB();//2번 공격 타입 : 왕자 보스
 	virtual void AttackTypeC();//3번 공격 타입 : 공격모션이 없는 근거리
 	virtual void AttackTypeD();//4번 공격 타입 : 고릴라 보스
     virtual void AttackTypeE();//5번 공격 타입 : 원거리
