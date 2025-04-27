@@ -191,20 +191,21 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 1) / 2);
-                for (int i = 0; i < (SpawnNum + 1) / 2; i++) //버섯 소환
+                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3) / 2);
+                for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
                 {
-                    TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
+                    TempEnemyCounter = FMath::RandRange(0, 1);
                     GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
                         PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator);
                 }
-                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 1) / 2);
-                for (int i = 0; i < (SpawnNum - 1) / 2; i++) //거북이 소환
+                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
+                for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
                 {
-                    GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
+                    TempEnemyCounter = FMath::RandRange(2, 3);
+                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
                         PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
+                        FRotator::ZeroRotator);
                 }
             }
         }
