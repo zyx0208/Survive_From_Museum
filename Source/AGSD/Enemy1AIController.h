@@ -20,6 +20,7 @@ public:
     virtual void Attacked(float damage, int chanel);//플레이어의 공격을 맞았을 경우(동일 채널 내 무적 시간 존재)
 	virtual void Died(int64 num);//죽을 경우(매개변수는 적 드롭 아이템 등을 설정하기 위한 수)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")float AttackCooltime_temp = 0.0f; //공격속도 계산을 위한 임의의 변수
 
     void KillCountCall(UWorld* World);
 
@@ -44,7 +45,6 @@ private:
     UPROPERTY()
     TWeakObjectPtr<AEnemy1Class> Enemy; //Enemy 캐릭터의 속성을 불러오기 위함(체력, 공격력 등)
 	ACharacter* PlayerCharacter; //플레이어 위치 및 방향 정보를 담는 액터 배열
-	float AttackCooltime_temp = 0.0f; //공격속도 계산을 위한 임의의 변수
 	bool IsFisrt = true;//C++과 블루프린트에서 begin 함수보다 반드시 늦게 실행해야 하지만 한번만 실행해야 되는 함수를 사용하기 위해
 	bool TickSwitch = false;//게임 실행 중에 짝수 혹은 홀수의 틱마다 발동되는 코드를 작성하기 위함
 	virtual void AttackTypeA();//1번 공격 타입 : 근거리
