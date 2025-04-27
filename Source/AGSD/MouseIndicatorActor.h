@@ -16,6 +16,11 @@ public:
 	AMouseIndicatorActor();
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-    class UStaticMeshComponent* MeshComponent;
+    class UDecalComponent* DecalComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    class UBoxComponent* CollisionBox;
+
+    void SetDecalCollision(ECollisionEnabled::Type Mouse);
 
 };

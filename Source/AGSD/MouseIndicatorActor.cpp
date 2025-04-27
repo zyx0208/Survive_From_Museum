@@ -2,26 +2,41 @@
 
 
 #include "MouseIndicatorActor.h"
-#include "Components/StaticMeshComponent.h"
-#include "UObject/ConstructorHelpers.h"
+#include "Components/DecalComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AMouseIndicatorActor::AMouseIndicatorActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 
-    MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
-    RootComponent = MeshComponent;
+    DecalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
+    RootComponent = DecalComponent;
 
-    // 머티리얼이나 메시 할당은 블루프린트나 여기서 직접 설정
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("/Engine/BasicShapes/Plane")); // 평면 메시
-    if (Mesh.Succeeded())
+    // 디폴트 Decal 세팅
+    static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterial(TEXT("/Game/DecalMaterials/M_MouseCursor")); // 너가 만든 머티리얼 경로로 교체
+    if (DecalMaterial.Succeeded())
     {
-        MeshComponent->SetStaticMesh(Mesh.Object);
-        MeshComponent->SetRelativeScale3D(FVector(0.5f)); // 사이즈 조절
-        MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        DecalComponent->SetDecalMaterial(DecalMaterial.Object);
     }
+
+    DecalComponent->DecalSize = FVector(64.f, 128.f, 128.f); // (Thickness, X Size, Y Size)
+    DecalComponent->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f)); // 바닥에 똑바로 누워있게
+
+    // 충돌은 Box로 대체
+    CollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionBox"));
+    CollisionBox->SetupAttachment(DecalComponent);
+    CollisionBox->SetBoxExtent(FVector(50.f, 50.f, 10.f)); // 커서 범위 크기 조정
+    CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 기본은 꺼짐
+    CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore); // 기본 무시
+    CollisionBox->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap); // 예: 커서만 체크하는 채널
 }
 
 
+void AMouseIndicatorActor::SetDecalCollision(ECollisionEnabled::Type Mouse)
+{
+    if (CollisionBox)
+    {
+        CollisionBox->SetCollisionEnabled(Mouse);
+    }
+}

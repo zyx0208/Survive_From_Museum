@@ -312,10 +312,8 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			//DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
             if (MouseIndicator)
             {
-                MouseIndicator->SetActorLocation(AdjustedMouseLocation + FVector(-1.f, -1.f, 0.01f)); // 살짝 띄워서 Z-fighting 방지
-                FRotator DecalRotation = HitResult.ImpactNormal.Rotation();
-                DecalRotation.Pitch -= 90.0f; // 바닥에 붙이기 위해 회전 조절
-                MouseIndicator->SetActorRotation(DecalRotation);
+                FVector DecalLocation = AdjustedMouseLocation + FVector(0.f, 0.f, 5.f);
+                MouseIndicator->SetActorLocation(DecalLocation);
             }
 			//라인트레이스 위치와 방향 저장
 			TraceHitLocation = HitResult.Location;
