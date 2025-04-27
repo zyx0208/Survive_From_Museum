@@ -243,27 +243,45 @@ void AEnemy1AIController::Died(int64 num)
         //드랍 설정
         if (DropNum <= 1) //1% 확률로 무기 드랍
         {
-            World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->WeaponDrop)
+            {
+                World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
         else if (DropNum <= 81) //80% 확률로 경험치 드랍
         {
-            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->EXball)
+            {
+                World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
         else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
         {
-            World->SpawnActor<AActor>(Enemy->Heal_half, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->Heal_half)
+            {
+                World->SpawnActor<AActor>(Enemy->Heal_half, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
         else if (DropNum <= 90) //3% 확률로 HP 전부 회복 드랍
         {
-            World->SpawnActor<AActor>(Enemy->Heal_full, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->Heal_full)
+            {
+                World->SpawnActor<AActor>(Enemy->Heal_full, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
         else if (DropNum <= 95) //5% 확률로 자석 드랍
         {
-            World->SpawnActor<AActor>(Enemy->Magnetic, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->Magnetic)
+            {
+                World->SpawnActor<AActor>(Enemy->Magnetic, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
         else//5% 확률로 폭탄 드랍
         {
-            World->SpawnActor<AActor>(Enemy->Bomb, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            if (Enemy->Bomb)
+            {
+                World->SpawnActor<AActor>(Enemy->Bomb, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+            }
         }
 		break;
 	default://버그나 보스전 등으로 인해 강제로 삭제해야 하는 경우
