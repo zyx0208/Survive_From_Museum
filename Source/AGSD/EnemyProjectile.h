@@ -24,6 +24,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EnemyProjectile")float ShotSpeed = 0.0f;//발사체의 이동속도
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EnemyProjectile")float Damage = 0.0f;//발사체의 공격력
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EnemyProjectile")bool IsAbleDistroy;//파괴가능여부
     UFUNCTION() void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
     // 충돌을 감지할 콜리전 컴포넌트
     UPROPERTY(VisibleAnywhere)

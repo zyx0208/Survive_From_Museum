@@ -102,6 +102,40 @@ void AEnemy1AIController::AttackTypeE()
     GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
 }
 
+void AEnemy1AIController::AttackTypeF()
+{
+    if ((BossCount + 1) == 9) //9번째 공격은 점찍 공격
+    {
+        BossCount = 0;
+        UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+        GetCharacter()->SetActorLocation(PlayerLocation);
+        IsSavePlayerLocation = false;
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        
+    }
+    else if (((BossCount+1) % 3) == 0) //3번째 공격은 충격파 발사
+    {
+        UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+        BossCount++;
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+    }
+    else //이외에는 4방향 부채꼴 파이어볼 공격
+    {
+        UE_LOG(LogTemp, Display, TEXT("BossCount : %d"), BossCount);
+        BossCount++;
+        FRotator EnemyRotator = GetCharacter()->GetActorRotation();
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        EnemyRotator.Yaw -= 15.0f;
+        for (int i = 0; i < 4; i++)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+            EnemyRotator.Yaw += 10.0f;
+        }
+    }
+}
+
 void AEnemy1AIController::Attacked(float damage)
 {
     if (IsFisrt)
@@ -342,6 +376,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         IsStun = false;
         IsPlayingAnim = true;
         IsFisrt = false;
+        IsSavePlayerLocation = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
@@ -440,6 +475,11 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		{
 			//공격 상호작용
 			StopMovement();
+            if ((!IsSavePlayerLocation) and (Enemy->AttackType == 6) and (BossCount == 8))
+            {
+                IsSavePlayerLocation = true;
+                PlayerLocation = PlayerCharacter->GetActorLocation();
+            }
             Enemy->IsAttacking = true;
 			AttackCooltime_temp += DeltaTime;
 			if (AttackCooltime_temp >= Enemy->AttackCooltime)//공격실행
@@ -461,6 +501,9 @@ void AEnemy1AIController::Tick(float DeltaTime)
                     break;
                 case 5:
                     AttackTypeE();
+                    break;
+                case 6:
+                    AttackTypeF();
                     break;
 				default://공격타입이 설정되지 않았을 경우
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));

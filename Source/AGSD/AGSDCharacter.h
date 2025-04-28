@@ -230,7 +230,7 @@ public:
 	// XP를 추가하고 레벨 업을 처리하는 함수
 	void AddXP(int32 XPAmount);
 	void LevelUp();
-	void Attacked(float Damage); //데미지를 받을때 발생하는 함수
+    UFUNCTION(BlueprintCallable, Category = "Interaction") void Attacked(float Damage); //데미지를 받을때 발생하는 함수
     void SetHP(float value); //해당 수치만큼 체력을 조정(현재 체력값에서 조정)
     void MagneticEffect(float time); //time의 시간 만큼 자석 효과 활성화
     void MagneticEffectOff(); //자석효과 종료 후 정상화시키는 함수
