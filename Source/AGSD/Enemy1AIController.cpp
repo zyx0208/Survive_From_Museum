@@ -406,7 +406,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
             IsPlayingAnim = true;
             GetCharacter()->GetMesh()->bPauseAnims = false;
         }
-        if (IsStun)
+        if ((IsStun) or (Enemy->IsDead))
         {
             IsPlayingAnim = false;
             StopMovement();
