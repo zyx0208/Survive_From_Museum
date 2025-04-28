@@ -22,6 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int BossCount = 0; //보스 공격 횟수를 측정하기 위한 함수
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")float AttackCooltime_temp = 0.0f; //공격속도 계산을 위한 임의의 변수
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")FVector PlayerLocation; //플레이어의 위치를 파악하기 위한 임시 변수
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int AttackNum_Temp;//랜덤 공격을 위한 값 저장 변수
 
     void KillCountCall(UWorld* World);
 
@@ -53,7 +54,7 @@ private:
 	virtual void AttackTypeC();//3번 공격 타입 : 공격모션이 없는 근거리
 	virtual void AttackTypeD();//4번 공격 타입 : 고릴라 보스
     virtual void AttackTypeE();//5번 공격 타입 : 원거리
-    virtual void AttackTypeF();//6번 공격 타입 : 거북이 보스
+    virtual void AttackTypeF(int AttackNum);//6번 공격 타입 : 거북이 보스
 	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수1
 	FVector ChenkIsolated_2 = FVector(0.0f, 0.0f, 0.0f);//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수2
 	float ChenkIsolated_Timer = 0.0f;//적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수3
@@ -62,4 +63,5 @@ private:
     bool Temp_Dead = false;//죽음판정을 빨리 계산하기 위한 변수
     bool IsPlayingAnim; //몬스터 애니메이션 관련 변수
     bool IsSavePlayerLocation; //플레이어의 위치를 저장했는지 확인하는 변수
+    
 };
