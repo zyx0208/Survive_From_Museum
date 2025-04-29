@@ -37,6 +37,9 @@ public:
     FTimerHandle Chanel5TimerHandle;//무적 관리를 위한 함수5
     void Chanel5TimerEnd();//무적 해제를 위한 함수5
 
+    FTimerHandle AttackedEffectHandle;//공격받는 이펙트 관리를 위한 함수
+    void AttackedEffectEnd();//공격받는 이펙트 관리를 위한 함수
+
     UFUNCTION(BlueprintCallable, Category = "Test")
     void Stun(float duration);//스턴 상태를 나타내기 위한 함수
     FTimerHandle StunTimer;//기절 시간을 관리하기 위한 타이머

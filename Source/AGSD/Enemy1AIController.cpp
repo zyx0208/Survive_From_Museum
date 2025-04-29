@@ -149,6 +149,11 @@ void AEnemy1AIController::Attacked(float damage)
         Enemy->CurrentHP -= damage;
         UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if (!GetWorldTimerManager().IsTimerActive(AttackedEffectHandle))
+        {
+            Enemy->IsAttacked = true;
+            GetWorldTimerManager().SetTimer(AttackedEffectHandle, this, &AEnemy1AIController::AttackedEffectEnd, 0.1f, false);
+        }
         //체력이 0이하일 경우 죽음
         if (Enemy->CurrentHP <= 0.0f)
         {
@@ -206,7 +211,13 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     }
     //UE_LOG(LogTemp, Warning, TEXT("Test"));
     UE_LOG(LogTemp, Warning, TEXT("Enemy Addr = 0x%p"), Enemy);
-    if (Enemy.IsValid()) {
+    if (Enemy.IsValid())
+    {
+        if (!GetWorldTimerManager().IsTimerActive(AttackedEffectHandle))
+        {
+            Enemy->IsAttacked = true;
+            GetWorldTimerManager().SetTimer(AttackedEffectHandle, this, &AEnemy1AIController::AttackedEffectEnd, 0.1f, false);
+        }
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     }
     UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d(Chanel %d)"), Enemy->CurrentHP, chanel);
@@ -215,6 +226,12 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     {
         Died(Enemy->AttackType);
     }
+}
+
+void AEnemy1AIController::AttackedEffectEnd()
+{
+    Enemy->IsAttacked = false;
+    GetWorldTimerManager().ClearTimer(AttackedEffectHandle);
 }
 
 void AEnemy1AIController::Chanel1TimerEnd()
@@ -380,6 +397,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         IsPlayingAnim = true;
         IsFisrt = false;
         IsSavePlayerLocation = false;
+        Enemy->IsAttacked = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
