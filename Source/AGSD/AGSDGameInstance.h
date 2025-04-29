@@ -49,6 +49,8 @@ public:
     int64 NowStage;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 ReinforceWeaponIndex;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    int64 ReinforceWeaponIndex2;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
