@@ -147,7 +147,7 @@ void AEnemy1AIController::Attacked(float damage)
     }
     if (Enemy.IsValid()) {
         Enemy->CurrentHP -= damage;
-        UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d"), Enemy->CurrentHP);
+        UE_LOG(LogTemp, Display, TEXT("Damamge : %f CurrentHP : %d Actor : %s"), damage, Enemy->CurrentHP, *Enemy->GetName());
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
         if (!GetWorldTimerManager().IsTimerActive(AttackedEffectHandle))
         {
@@ -220,7 +220,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         }
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     }
-    UE_LOG(LogTemp, Display, TEXT("CurrentHP : %d(Chanel %d)"), Enemy->CurrentHP, chanel);
+    UE_LOG(LogTemp, Display, TEXT("Damamge : %f CurrentHP : %d Actor : %s"), damage, Enemy->CurrentHP, *Enemy->GetName());
     //체력이 0이하일 경우 죽음
     if (Enemy->CurrentHP <= 0.0f)
     {

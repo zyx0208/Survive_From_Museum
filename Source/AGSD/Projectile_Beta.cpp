@@ -99,6 +99,36 @@ void AProjectile_Beta::WeaponHitEffect(AActor* OtherActor)
 {
 }
 
+void AProjectile_Beta::Damage(AActor* OtherActor)
+{
+    if (IsValid(OtherActor) && OtherActor != this)
+    {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
+        // 충돌한 오브젝트가 ACharacter 클래스인지 확인(적이 캐릭터 클래스이기 때문)
+        if (OtherActor && OtherActor->IsA<ACharacter>())
+        {
+            // ACharacter로 캐스팅
+            ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
+            if (IsValid(HitEnemy))
+            {
+                //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
+                AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
+                if (IsValid(HitEnemyController))
+                {
+                    HitEnemyController->Attacked(ProjectileDamage + PlayerAttack, 1);
+                }
+            }
+            WeaponHitEffect(OtherActor);
+        }
+    }
+}
+
+void AProjectile_Beta::SetPlayerState(float Damage, float Range)
+{
+    PlayerAttack = Damage;
+    PlayerRange = Range;
+}
+
 void AProjectile_Beta::UpdatePlayerStat()
 {
     AActor* ParentActor = GetAttachParentActor();
@@ -143,26 +173,8 @@ void AProjectile_Beta::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
 
 void AProjectile_Beta::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (IsValid(OtherActor) && OtherActor != this && IsValid(OtherComp))
-    {
-        //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("OverLap")));
-        // 충돌한 오브젝트가 ACharacter 클래스인지 확인(적이 캐릭터 클래스이기 때문)
-        if (OtherActor && OtherActor->IsA<ACharacter>())
-        {
-            // ACharacter로 캐스팅
-            ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
-            if (IsValid(HitEnemy))
-            {
-                //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
-                AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
-                if (IsValid(HitEnemyController))
-                {
-                    HitEnemyController->Attacked(ProjectileDamage+PlayerAttack, 1);
-                }
-            }
-            WeaponHitEffect(OtherActor);
-        }
-    }
+    Damage(OtherActor);
 }
+
 
 

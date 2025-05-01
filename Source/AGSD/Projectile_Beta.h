@@ -77,4 +77,12 @@ public:
 	// 무기 적중시 효과
 	UFUNCTION()
 	virtual void WeaponHitEffect(AActor* OhterActor);
+
+    // 데미지 입히는 함수
+    UFUNCTION()
+    virtual void Damage(AActor* OtherActor);
+
+    //플레이어의 능력치 전달
+    UFUNCTION()
+    void SetPlayerState(float Damage,float Range);
 };

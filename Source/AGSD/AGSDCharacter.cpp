@@ -254,10 +254,11 @@ void AAGSDCharacter::BeginPlay()
     }
     */
     AnimInstance = GetMesh()->GetAnimInstance();
+    /*
     if (AnimInstance) {
         UE_LOG(LogTemp, Warning, TEXT("No Anim"));
     }
-
+    */
     // 레벨업 처리 핸들러 생성
     LevelUpHandler = NewObject<AAGSDCharacter_LevelUP>(this);
 
@@ -415,7 +416,7 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		//UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
 
@@ -716,7 +717,7 @@ void AAGSDCharacter::AddXP(int32 XPAmount)
     XPAmount *= BounsXPLevel;
 	CurrentXP += XPAmount ; // 주어진 XP를 현재 경험치에 더함
 	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
-	UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
+	//UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
 	if (CurrentXP >= XPToNextLevel)
 	{
@@ -736,7 +737,7 @@ void AAGSDCharacter::LevelUp()
 	XPToNextLevel = XPToNextLevel * 1.5; // 예: 다음 레벨로 가기 위한 경험치 50% 증가
 
 	// 선택 사항: 레벨 업을 알리거나 특별한 이벤트를 트리거할 수 있음
-	UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);
+	//UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);
 
 	// 레벨 업 시 능력치 증가나 새로운 능력 해제 등의 추가 동작을 구현할 수 있음
 }
@@ -865,7 +866,7 @@ void AAGSDCharacter::Fire()
 	if (FireMontage && GetMesh())
 	{
         if (!AnimInstance) {
-            UE_LOG(LogTemp, Log, TEXT("NO Anim"));
+            //UE_LOG(LogTemp, Log, TEXT("NO Anim"));
             return;
         }
         PlayFireMontage(FireMontage);
@@ -1216,8 +1217,7 @@ void AAGSDCharacter::CreateProjectile()
                     {
                         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
                         FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                        Projectile->PlayerAttack = Attack;
-                        Projectile->PlayerRange = AttackRangeLevel;
+                        Projectile->SetPlayerState(Attack, AttackRangeLevel);
                         if (WeaponData)
                         {
                             //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
