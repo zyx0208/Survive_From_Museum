@@ -1038,6 +1038,7 @@ void AAGSDCharacter::WeaponTake()
     FireRate = WeaponData->Frate;
     Numberofprojectile = WeaponData->Inumberofprojectile;
     ProjectileClass = WeaponData->WeaponProjectile;
+
     FireMontage = WeaponData->WeaponAnimationMontage;
     CurrentWeaponMesh = WeaponData->WeaponMesh;
     RepeatFire = WeaponData->RepeatFire;
@@ -1206,10 +1207,6 @@ void AAGSDCharacter::CreateProjectile()
                 SpawnParams.Instigator = GetInstigator();
                 //탄환숫자만큼 발사반복
                 for (int i = 0; i < Numberofprojectile; i++) {
-
-                    // 총구에 탄환 생성.
-                    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("RepeatFire"));
-                    //AProjectile_A* Projectile = World->SpawnActor<AProjectile_A>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
                     AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
                     float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
                     FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
@@ -1218,6 +1215,8 @@ void AAGSDCharacter::CreateProjectile()
                         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
                         FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
                         Projectile->SetPlayerState(Attack, AttackRangeLevel);
+                        Projectile->SetActorEnableCollision(true);
+                        Projectile->SetActorTickEnabled(true);
                         if (WeaponData)
                         {
                             //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
@@ -1496,7 +1495,7 @@ void AAGSDCharacter::PlayWalkingSound()
         // 이동 중이면 걷는 소리 재생
         if (!IsWalking)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Walking"));
+            //UE_LOG(LogTemp, Warning, TEXT("Walking"));
             IsWalking = true;
             if (WalkingAudioComponent && WalkingSound)
             {
@@ -1518,7 +1517,7 @@ void AAGSDCharacter::PlayWalkingSound()
         // 이동하지 않으면 걷는 소리 중지
         if (IsWalking)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Not Walking"));
+            //UE_LOG(LogTemp, Warning, TEXT("Not Walking"));
             IsWalking = false;
             if (WalkingAudioComponent && WalkingSound)
             {

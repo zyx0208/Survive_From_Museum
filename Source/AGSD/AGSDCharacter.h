@@ -113,6 +113,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Projectile")
 	TSubclassOf<class AProjectile_Beta> ProjectileClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    AProjectile_Beta* ProjectilePool;
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

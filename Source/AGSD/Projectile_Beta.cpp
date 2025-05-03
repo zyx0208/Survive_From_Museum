@@ -72,6 +72,9 @@ void AProjectile_Beta::BeginPlay()
     Super::BeginPlay();
 
     ProjectileMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile_Beta::OnOverlapBegin);
+
+    this->SetActorEnableCollision(false);
+    this->SetActorTickEnabled(false);
 }
 
 // Called every frame
@@ -127,6 +130,7 @@ void AProjectile_Beta::SetPlayerState(float Damage, float Range)
 {
     PlayerAttack = Damage;
     PlayerRange = Range;
+    UE_LOG(LogTemp, Display, TEXT("attack: %f range: %f"), Damage,Range);
 }
 
 void AProjectile_Beta::UpdatePlayerStat()
