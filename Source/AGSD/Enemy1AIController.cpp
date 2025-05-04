@@ -398,6 +398,10 @@ void AEnemy1AIController::Tick(float DeltaTime)
         IsFisrt = false;
         IsSavePlayerLocation = false;
         Enemy->IsAttacked = false;
+        if (PlayerCharacter)
+        {
+            MoveToActor(PlayerCharacter, 999999999.0f, true, true, true, 0, true);
+        }
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
