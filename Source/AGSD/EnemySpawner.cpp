@@ -42,7 +42,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
@@ -109,14 +109,14 @@ void AEnemySpawner::Tick(float DeltaTime)
                 {
                     TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
                     GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator);
                 }
                 UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
                 for (int i = 0; i < (SpawnNum - 3)/2; i++) //정예몹 소환(정예몹 인덱스 : 마지막 인덱스)
                 {
                     GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
                 }
             }
@@ -130,7 +130,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
@@ -208,7 +208,7 @@ void AEnemySpawner::Tick(float DeltaTime)
                 {
                     TempEnemyCounter = FMath::RandRange(0, 1);
                     GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator);
                 }
                 UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
@@ -216,7 +216,7 @@ void AEnemySpawner::Tick(float DeltaTime)
                 {
                     TempEnemyCounter = FMath::RandRange(2, 3);
                     GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f) * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
                         FRotator::ZeroRotator);
                 }
             }
