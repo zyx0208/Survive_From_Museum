@@ -13,9 +13,7 @@ AProjectile_Jelda_Upgrade::AProjectile_Jelda_Upgrade()
 
 void AProjectile_Jelda_Upgrade::Tick(float deltaTime)
 {
-    Super::Super::Tick(deltaTime);
-    // 현재 위치와 시작 위치의 거리를 계산
-    float DistanceTraveled = FVector::Dist(StartLocation, GetActorLocation());
+    Super::Tick(deltaTime);
 }
 
 void AProjectile_Jelda_Upgrade::WeaponHitEffect(AActor* OtherActor)
