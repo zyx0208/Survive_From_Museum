@@ -43,11 +43,12 @@ void ANPC1Class::Tick(float DeltaTime)
     //대화 진행도 설정
     if (GameInstance)
     {
-        Progress = GameInstance->Temp_TalkingProgress;
+        TalkProgress = GameInstance->Temp_TalkingProgress;
+        StageProgress = GameInstance->Temp_StageProgress;
     }
     else
     {
-        Progress = 0;
+        TalkProgress = 0;
     }
 }
 
@@ -59,30 +60,112 @@ void ANPC1Class::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void ANPC1Class::ShowTextUI()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Progress : %d"), Progress);
-    
-    switch (Progress)
+    UE_LOG(LogTemp, Warning, TEXT("Stage : %d, Talk : %d"), StageProgress, TalkProgress);
+    switch (StageProgress)
     {
-    case -1:
     case 0:
-        if (Text1)
+        switch (TalkProgress)
         {
-            CreateWidget<UUserWidget>(GetWorld(), Text1)->AddToViewport();
-            GameInstance->Temp_TalkingProgress = 1;
+        case -1:
+        case 0:
+            if (Text0_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text0_1)->AddToViewport();
+                GameInstance->Temp_TalkingProgress = 1;
+                break;
+            }
+        case 1:
+            if (Text0_2)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text0_2)->AddToViewport();
+                GameInstance->Temp_TalkingProgress++;
+                break;
+            }
+        case 2:
+            if (Text0_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text0_3)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
             break;
         }
+        break;
     case 1:
-        if (Text2)
+        switch (TalkProgress)
         {
-            CreateWidget<UUserWidget>(GetWorld(), Text2)->AddToViewport();
-            GameInstance->Temp_TalkingProgress++;
+        case -1:
+        case 0:
+            if (Text1_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text1_1)->AddToViewport();
+                GameInstance->Temp_TalkingProgress = 1;
+                break;
+            }
+        case 1:
+            if (Text1_2)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text1_2)->AddToViewport();
+                GameInstance->Temp_TalkingProgress++;
+                break;
+            }
+        case 2:
+            if (Text1_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text1_3)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
             break;
         }
-    default:
-        if (TextLast)
+        break;
+    case 2:
+        switch (TalkProgress)
         {
-            CreateWidget<UUserWidget>(GetWorld(), TextLast)->AddToViewport();
+        case -1:
+        case 0:
+            if (Text2_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text2_1)->AddToViewport();
+                GameInstance->Temp_TalkingProgress = 1;
+                break;
+            }
+        case 1:
+            if (Text2_2)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text2_2)->AddToViewport();
+                GameInstance->Temp_TalkingProgress++;
+                break;
+            }
+        case 2:
+            if (Text2_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text2_3)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
+            break;
+        }
+        break;
+    default:
+        if (TextError)
+        {
+            CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
         }
         break;
     }
+
+    
 }

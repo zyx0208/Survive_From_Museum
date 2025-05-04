@@ -25,10 +25,18 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text1 = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text2 = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> TextLast = NULL;//반복 대화문
-    int64 Progress;//어떤 대화창을 출력할지를 위한 변수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> TextError = NULL; //텍스트가 지정되지 않았을 경우
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text0_1 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text0_2 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text0_3 = NULL;//반복 대화문
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text1_1 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text1_2 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text1_3 = NULL;//반복 대화문
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text2_1 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text2_2 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text2_3 = NULL;//반복 대화문
+    int64 StageProgress;//스태이지 진행도
+    int64 TalkProgress;//대화 진행도
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     UAGSDGameInstance* GameInstance;
