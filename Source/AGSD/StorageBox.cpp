@@ -14,9 +14,6 @@ AStorageBox::AStorageBox()
     SphereComponent->InitSphereRadius(50.0f);  // 충돌 범위 설정
     RootComponent = SphereComponent;
 
-    // 구체 오브젝트 초기화
-    BoxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BoxMesh"));
-    BoxMesh->SetupAttachment(SphereComponent); // SphereComponent의 자식으로 설정
 
 }
 

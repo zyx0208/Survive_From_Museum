@@ -25,9 +25,6 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "Collision")
     class USphereComponent* SphereComponent;
 
-    // 박스 오브젝트 
-    UPROPERTY(VisibleAnywhere, Category = "Visual")
-    class UStaticMeshComponent* BoxMesh;
 
 public:	
 	// Called every frame
