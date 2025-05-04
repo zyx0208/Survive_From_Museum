@@ -58,8 +58,9 @@ void ULevelUp_UI::SelectRandomAccessories()
        
         if (Accessory)
         {
-            if ((Accessory->Theme == "Jelda" && CurrentMapName != "Level2Stage") || 
-                (Accessory->Theme == "Mario" && CurrentMapName != "Level3Stage"))
+            //Jaru, Elyon, JK, 
+            if ((Accessory->Theme == "Elyon" && CurrentMapName != "Level2Stage") || 
+                (Accessory->Theme == "JK" && CurrentMapName != "Level3Stage"))
             {
                 continue; // 조건이 맞지 않으면 스킵
             }
@@ -139,10 +140,23 @@ void ULevelUp_UI::SelectRandomAccessories()
             UpdateAccessoryVFX(i, Rarity);
             break;
         }
+
         if (ItemPool && ItemPool->Num() > 0)
         {
-            int32 RandomIndex = FMath::RandRange(0, ItemPool->Num() - 1);
-            SelectedAccessories.Add(*(*ItemPool)[RandomIndex]);
+            FAccessoryData* SelectedItem = nullptr;
+            int32 Attempts = 0;
+            const int32 MaxAttempts = 10;
+            do
+            {
+                int32 RandomIndex = FMath::RandRange(0, ItemPool->Num() - 1);
+                SelectedItem = (*ItemPool)[RandomIndex];
+                ++Attempts;
+            } while (SelectedItem && SelectedAccessories.Contains(*SelectedItem) && Attempts < MaxAttempts);
+
+            if (SelectedItem && !SelectedAccessories.Contains(*SelectedItem))
+            {
+                SelectedAccessories.Add(*SelectedItem);
+            }
         }
     }
 }

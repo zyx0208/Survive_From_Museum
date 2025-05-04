@@ -20,6 +20,8 @@ void UReinforceTextUI::ReinforceWeapon()
     int32 ReinforceWeaponIndex2 = GameInstance->ReinforceWeaponIndex2;
     int32 setIndex = 0;
     int32 setIndex2 = 0;
+    bool setweaponindex1 = false;
+    bool setweaponindex2 = false;
     //무기 강화를 위한 인덱스 매칭(IID값) #무기업그레이드
     //WeaponIndexSetArray = { 4, 5, 9, 7, 10, 6, 8, 1 }; //무기 기초 배열(IID값)
     //UpgradeWeaponIndexSetArray = { 0, 0, 11, 12, 13, 0, 0, 0 };   //무기 업그레이드시 IID값 변경 설정    
@@ -42,6 +44,15 @@ void UReinforceTextUI::ReinforceWeapon()
     default:
         break;
     }
+    //캐릭터 무기 교체(무기 강화)
+    AAGSDCharacter* CurrentCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!CurrentCharacter) return;
+
+    CurrentCharacter->WeaponArray[0] == ReinforceWeaponIndex || CurrentCharacter->WeaponArray[0] == ReinforceWeaponIndex2
+        ? setweaponindex1 = true : setweaponindex1 = false;
+    CurrentCharacter->WeaponArray[1] == ReinforceWeaponIndex || CurrentCharacter->WeaponArray[1] == ReinforceWeaponIndex2
+        ? setweaponindex2 = true : setweaponindex2 = false;
+
     // 무기 강화(데이터 테이블 변화) 
     static const FString ContextString(TEXT("ReinforceWeapon"));
     TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
@@ -49,7 +60,9 @@ void UReinforceTextUI::ReinforceWeapon()
     for (FName RowName : RowNames)
     {
         FWeaponDataTableBetaStruct* WeaponRow = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
-        if (WeaponRow && (WeaponRow->IID == ReinforceWeaponIndex || WeaponRow->IID == ReinforceWeaponIndex2))
+        if (!WeaponRow) return;
+        if ((WeaponRow->IID == ReinforceWeaponIndex && (setweaponindex1 || setweaponindex2)) ||
+            (WeaponRow->IID == ReinforceWeaponIndex2 && (setweaponindex1 || setweaponindex2)))
         {
             WeaponRow->bIsAcquired = true;
             WeaponRow->bIsReinforce = true;
@@ -57,9 +70,7 @@ void UReinforceTextUI::ReinforceWeapon()
         }
     }
 
-    //캐릭터 무기 교체(무기 강화)
-    AAGSDCharacter* CurrentCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (!CurrentCharacter) return;
+    
     if (CurrentCharacter->WeaponArray[0] == ReinforceWeaponIndex)
     {
         CurrentCharacter->WeaponArray[0] = setIndex;

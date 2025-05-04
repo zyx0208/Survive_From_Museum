@@ -65,4 +65,11 @@ struct FAccessoryData : public FTableRowBase
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     TSubclassOf<ASubWeapon> SubWeaponSelector;
+
+public:
+    bool operator==(const FAccessoryData& Other) const
+    {
+        return RowName == Other.RowName;
+    }
 };
+
