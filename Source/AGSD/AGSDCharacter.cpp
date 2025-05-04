@@ -1281,8 +1281,9 @@ void AAGSDCharacter::CreateProjectile()
                     {
                         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
                         FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                        Projectile->PlayerAttack = Attack;
-                        Projectile->PlayerRange = AttackRangeLevel;
+                        Projectile->SetPlayerState(Attack, AttackRangeLevel);
+                        Projectile->SetActorEnableCollision(true);
+                        Projectile->SetActorTickEnabled(true);
                         if (WeaponData)
                         {
                             // 탄환 방향설정
