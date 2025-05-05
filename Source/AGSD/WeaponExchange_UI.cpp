@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Engine/DataTable.h"
 #include "WeaponDataTableBeta.h"
+#include "WeaponDrop.h"
 #include "AGSDCharacter.h"
 
 void UWeaponExchange_UI::NativeConstruct()
@@ -132,7 +133,10 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
 
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
-        int32 OverlapID = FCString::Atoi(*PlayerCharacter->OverlapID);
+        AWeaponDrop* OverlapWeapon = PlayerCharacter->OverlapWeaponDrop;
+        //int32 OverlapID = FCString::Atoi(*PlayerCharacter->OverlapID);
+        int32 OverlapID = FCString::Atoi(*OverlapWeapon->WeaponID);
+            
         static const FString ContextString(TEXT("OnAgreeButtonClicked"));
         if (!PlayerCharacter->WeaponDataTableRef) return;
 
@@ -155,7 +159,9 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
                 break;
             }
         }
-
+        if (IsValid(OverlapWeapon)) {
+            OverlapWeapon->DestroySelf();
+        }
         PlayerCharacter->WeaponArray[HighlightedButtons[0]] = OverlapID;
         CloseWeaponExchange();
         PlayerCharacter->WeaponSwap();

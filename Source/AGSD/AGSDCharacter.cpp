@@ -978,6 +978,8 @@ void AAGSDCharacter::WeaponSwap() {
         UpdateSwapWeaponIcon();
         CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
+    
+
     /*
 	FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
 	FireRate = WeaponData->Frate;
