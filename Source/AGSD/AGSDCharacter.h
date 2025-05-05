@@ -164,6 +164,12 @@ protected:
     UPROPERTY()
     UUserWidget* DrawingBookWidget;
 
+    UPROPERTY()
+    UUserWidget* DamageTextWidget;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> DamageTextWidgetClass;
+
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
     UPROPERTY()
     AAGSDCharacter_LevelUP* LevelUpHandler;

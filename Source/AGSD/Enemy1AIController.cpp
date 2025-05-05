@@ -19,11 +19,18 @@
 #include "Math/UnrealMathUtility.h"//랜덤 수 추출을 위한 헤더
 #include "Enemy1Class.h"
 #include "TimerManager.h"
+#include "GameFramework/HUD.h"
+#include "AGSDGameInstance.h"
+#include "Damage_UI.h"
 #include "Animation/AnimInstance.h"
 
 void AEnemy1AIController::BeginPlay()
 {
 	Super::BeginPlay();
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if(GI){
+        DamageUI = Cast<UDamage_UI>(GI->DamageUIInstance);
+    }
 }
 
 void AEnemy1AIController::AttackTypeA()
@@ -168,6 +175,12 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     {
         return;
     }
+    FVector PawnLocation = Enemy->GetActorLocation();
+    FVector2D ScreenLocation;
+    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+    if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+        ShowDamage(damage, ScreenLocation);
+    }
     switch (chanel)
     {
     case 1 :
@@ -268,6 +281,13 @@ void AEnemy1AIController::Stun(float duration)
 void AEnemy1AIController::StunTimerEnd()
 {
     IsStun = false;
+}
+
+void AEnemy1AIController::ShowDamage(float damage, FVector2D screenPosition)
+{
+    if (DamageUI) {
+        DamageUI->DamageTextCreate(damage, screenPosition);
+    }
 }
 
 

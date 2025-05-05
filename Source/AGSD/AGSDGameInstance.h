@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Engine/DataTable.h"
+#include "Damage_UI.h"
 #include "AGSDGameInstance.generated.h"
 
 /**
@@ -51,6 +52,9 @@ public:
     int64 ReinforceWeaponIndex;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     int64 ReinforceWeaponIndex2;
+    //대미지UI접근
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    UUserWidget* DamageUIInstance;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

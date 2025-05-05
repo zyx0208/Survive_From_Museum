@@ -220,6 +220,17 @@ void AAGSDCharacter::BeginPlay()
             UpdateSwapWeaponIcon();
         }
     }
+    if (DamageTextWidgetClass)
+    {
+        DamageTextWidget = CreateWidget<UUserWidget>(GetWorld(), DamageTextWidgetClass);
+        if (DamageTextWidget) {
+            DamageTextWidget->AddToViewport();
+            UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+            if (GI) {
+                GI->DamageUIInstance = DamageTextWidget;
+            }
+        }
+    }
 
 	if (WeaponMeshComponent)//무기 손에 붙히기
 	{

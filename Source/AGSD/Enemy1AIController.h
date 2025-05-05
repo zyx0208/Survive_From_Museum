@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Enemy1Class.h"
+#include "Damage_UI.h"
 #include "Enemy1AIController.generated.h"
 /**
  * 
@@ -45,6 +46,11 @@ public:
     FTimerHandle StunTimer;//기절 시간을 관리하기 위한 타이머
     void StunTimerEnd();//기절 해제를 관리하기 위한 함수
     bool IsStun;//기절 상태인지를 나타내는 변수
+
+    void ShowDamage(float damage, FVector2D screenPosition);
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UDamage_UI* DamageUI;
 
 private:
     UPROPERTY()
