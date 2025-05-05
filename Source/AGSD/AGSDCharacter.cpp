@@ -64,8 +64,8 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AAGSDCharacter::AAGSDCharacter()
 {
-	MaxHealth = 100;
-	CurrentHealth = 100;
+	MaxHealth = 20;
+	CurrentHealth = 20;
 	Defense = 0;
     SpeedLevel = 500.f;
 
