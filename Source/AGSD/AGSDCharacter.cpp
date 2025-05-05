@@ -177,7 +177,7 @@ void AAGSDCharacter::BeginPlay()
 	{
 		// 마우스 입력 모드 설정: 게임 모드에서 마우스 입력을 활성화하고 커서 표시
 		PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()로 변경하여 순수 게임 모드로 설정 가능
-		PlayerController->bShowMouseCursor = false;  // 마우스 커서 표시
+		PlayerController->bShowMouseCursor = true;  // 마우스 커서 표시
 
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
@@ -322,11 +322,11 @@ void AAGSDCharacter::Tick(float DeltaTime)
 
 			// 캐릭터와 마우스 사이의 선을 디버그 선으로 그리기
 			//DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
-            if (MouseIndicator)
+            /*if (MouseIndicator)
             {
                 FVector DecalLocation = AdjustedMouseLocation + FVector(0.f, 0.f, 5.f);
                 MouseIndicator->SetActorLocation(DecalLocation);
-            }
+            }*/
 			//라인트레이스 위치와 방향 저장
 			TraceHitLocation = HitResult.Location;
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
