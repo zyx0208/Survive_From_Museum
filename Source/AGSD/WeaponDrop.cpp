@@ -20,19 +20,19 @@ AWeaponDrop::AWeaponDrop()
     {
         //투사체의 모양 생성
         CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-        // 투사체 콜리전 이름
-        CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("WeaponDropCollsion"));
+        
         //투사체 크기 설정
         CollisionComponent->InitSphereRadius(50.0f);
         RootComponent = CollisionComponent;
         // Event called when component hits something.
         
         //콜리전 채널 설정
+        CollisionComponent->SetCollisionProfileName(TEXT("WeaponDropCollision"));
         CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDrop::OnOverlapBegin);
         CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+        //CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
         
-        CollisionComponent->SetHiddenInGame(true);
+        //CollisionComponent->SetHiddenInGame(true);
     }
 
     if (!WeaponMeshComponent) {
