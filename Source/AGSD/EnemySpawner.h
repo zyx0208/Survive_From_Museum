@@ -26,6 +26,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")int Stage = 0; //스테이지 숫자 입력(1 ~ ...)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Boss = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Patton1 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Patton2 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Patton3 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Patton4 = NULL;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Patton5 = NULL;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> BossTextUI = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")FVector BossSpawnPoint;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")FVector PlayerSpawnPoint;
@@ -43,5 +48,9 @@ private:
 	float TempTime = 0.0f;//생성 시간을 제어하기 위한 임의 변수
 	int64 TempEnemyCounter = 0;//적 생성을 제어하기 위한 임의 변수
     float LogTime = 0.0f; //개발자가 몇분 지났는지 알기 위해 설정한 임의 변수
-    bool PattonSpawn; //패턴 소환을 위한 변수
+    bool Patton1Spawn; //패턴 소환을 위한 변수
+    bool Patton2Spawn; //패턴 소환을 위한 변수
+    bool Patton3Spawn; //패턴 소환을 위한 변수
+    bool Patton4Spawn; //패턴 소환을 위한 변수
+    bool Patton5Spawn; //패턴 소환을 위한 변수
 };

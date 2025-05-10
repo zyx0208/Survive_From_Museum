@@ -25,7 +25,11 @@ void AEnemySpawner::BeginPlay()
 	OuterCircleRange = 1500.0f;
 	SpawnTime = 5.0f;
 	PlayerCharacter = NULL;
-    PattonSpawn = false;
+    Patton1Spawn = false;
+    Patton2Spawn = false;
+    Patton3Spawn = false;
+    Patton4Spawn = false;
+    Patton5Spawn = false;
 }
 
 // Called every frame
@@ -164,26 +168,214 @@ void AEnemySpawner::Tick(float DeltaTime)
             else if (TotalTime >= 250.0f)
             {
                 SpawnNum = 13;
+                if (!Patton5Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton5Spawn = true;
+                    if (Patton5)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton5,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
             }
             else if (TotalTime >= 200.0f)
             {
                 SpawnNum = 11;
+                if (!Patton4Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton4Spawn = true;
+                    if (Patton4)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton4,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
             }
             else if (TotalTime >= 150.0f)
             {
                 SpawnNum = 9;
+                if (!Patton3Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton3Spawn = true;
+                    if (Patton3)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton3,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
             }
             else if (TotalTime >= 100.0f)
             {
                 SpawnNum = 7;
+                if (!Patton2Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton2Spawn = true;
+                    if (Patton2)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton2,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
             }
             else if (TotalTime >= 50.0f)
             {
                 SpawnNum = 5;
-                if (!PattonSpawn)
+                if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
-                    PattonSpawn = true;
+                    Patton1Spawn = true;
+                    if (Patton1)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton1,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+            else
+            {
+                SpawnTime = 10.0f;
+                SpawnNum = 3;
+            }
+        }
+        if (TempTime >= SpawnTime)
+        {
+            TempTime = 0.0f;
+            if (Enemys.Num() > 0)
+            {
+                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3) / 2);
+                for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
+                {
+                    TempEnemyCounter = FMath::RandRange(0, 1);
+                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator);
+                }
+                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
+                for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
+                {
+                    TempEnemyCounter = FMath::RandRange(2, 3);
+                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
+                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
+                        FRotator::ZeroRotator);
+                }
+            }
+        }
+        break;
+
+    case 3:
+        if (PlayerCharacter)
+        {
+            TempTime += DeltaTime;
+            TotalTime += DeltaTime;
+
+            //보스라운드
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            {
+                if (!BossRound)
+                {
+                    BossRound = true;
+                    //모든 적 캐릭터 강제 삭제
+                    TArray<AActor*> AllEnemys;
+                    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+                    for (int i = 0; i < AllEnemys.Num(); i++)
+                    {
+                        AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+                        if (Enemy)
+                        {
+                            AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                            if (AIC)
+                            {
+                                AIC->Died(-1);
+                            }
+                        }
+                    }
+                    //보스 몹 소환 및 플레이어 이동
+                    GetWorld()->SpawnActor<AActor>(Boss, BossSpawnPoint, FRotator::ZeroRotator);
+                    PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
+                    if (BossTextUI)
+                    {
+                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                    }
+                }
+                SpawnNum = -3;//일반 몹 생성안하도록 설정
+            }
+            //50초 마다 패턴 변화
+            else if (TotalTime >= 250.0f)
+            {
+                SpawnNum = 13;
+                if (!Patton5Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton5Spawn = true;
+                    if (Patton5)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton5,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+            else if (TotalTime >= 200.0f)
+            {
+                SpawnNum = 11;
+                if (!Patton4Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton4Spawn = true;
+                    if (Patton4)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton4,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+            else if (TotalTime >= 150.0f)
+            {
+                SpawnNum = 9;
+                if (!Patton3Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton3Spawn = true;
+                    if (Patton3)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton3,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+            else if (TotalTime >= 100.0f)
+            {
+                SpawnNum = 7;
+                if (!Patton2Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton2Spawn = true;
+                    if (Patton2)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton2,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+            }
+            else if (TotalTime >= 50.0f)
+            {
+                SpawnNum = 5;
+                if (!Patton1Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton1Spawn = true;
                     if (Patton1)
                     {
                         GetWorld()->SpawnActor<AActor>(Patton1,
