@@ -3,6 +3,7 @@
 
 #include "Projectile_Hammer.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 
 AProjectile_Hammer::AProjectile_Hammer()
@@ -21,6 +22,10 @@ void AProjectile_Hammer::WeaponHitEffect(AActor* OtherActor)
 
     if (HitEnemy) {
         FVector KnockBackVector = KnockBackDirection * 3000.0f;
+        KnockBackVector.Z = 10.0f;
+        UE_LOG(LogTemp, Log, TEXT("KnockBackX: %f KnockBackY: %f KnockBackZ: %f"), KnockBackVector.X, KnockBackVector.Y, KnockBackVector.Z);
+        UCharacterMovementComponent* EnemyMovement = HitEnemy->GetCharacterMovement();
+        EnemyMovement->StopMovementImmediately();
         HitEnemy->LaunchCharacter(KnockBackVector, true, true);
         UCapsuleComponent* EnemyComp = HitEnemy->GetCapsuleComponent();
         float Mass = HitEnemy->GetMesh()->CalculateMass();
