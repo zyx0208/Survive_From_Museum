@@ -1105,12 +1105,18 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
             }
         }
         // 충돌한 오브젝트가 Box임을 확인
-        if (OtherActor && OtherActor->IsA<AStorageBox>())
+        if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
         {
             OverlapBox = true;
-            if (OverlapBox)
+            UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
+            if (Box->InteractionWidget)
             {
-                UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
+                UE_LOG(LogTemp, Log, TEXT("Create UI"));
+                Box->InteractionWidget->SetVisibility(true);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Log, TEXT("%.2f %.2f %.2f"));
             }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
@@ -1132,9 +1138,14 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
             OverlapDropWeapon = false;
         }
         // 충돌한 오브젝트가 Box임을 확인
-        if (OtherActor && OtherActor->IsA<AStorageBox>())
+        if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
         {
             OverlapBox = false;
+            UE_LOG(LogTemp, Log, TEXT("OverLap out Box"));
+            if (Box->InteractionWidget)
+            {
+                Box->InteractionWidget->SetVisibility(false);
+            }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
         if (OtherActor && OtherActor->IsA<ADrawingBook>()) OverlapDrawingBook = false;

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "StorageBox.generated.h"
 
 UCLASS()
@@ -24,11 +25,16 @@ protected:
     // 박스의 충돌을 감지하는 컴포넌트
     UPROPERTY(VisibleAnywhere, Category = "Collision")
     class USphereComponent* SphereComponent;
-
+    
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-    
+
+    // 말풍선 위젯 클래스
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    UWidgetComponent* InteractionWidget;
 
 };
