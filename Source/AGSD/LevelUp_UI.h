@@ -107,4 +107,9 @@ public:
     class UImage* Option2LegendaryEffect;
     UPROPERTY(meta = (BindWidget))
     class UImage* Option3LegendaryEffect;
+
+    //클릭 미스 방지
+    UFUNCTION()
+    void EnableButtons();
+
 };

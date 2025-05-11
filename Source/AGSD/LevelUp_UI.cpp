@@ -34,6 +34,17 @@ void ULevelUp_UI::NativeConstruct()
     AccessoryLegendaryEffect.Add(Option2LegendaryEffect);
     AccessoryLegendaryEffect.Add(Option3LegendaryEffect);
 
+    // 비활성화
+    if (Option1) Option1->SetIsEnabled(false);
+    if (Option2) Option2->SetIsEnabled(false);
+    if (Option3) Option3->SetIsEnabled(false);
+    // 1초 후 버튼 활성화
+    FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([this](float DeltaTime)
+        {
+            EnableButtons(); // 1초 뒤에 호출될 함수
+            return false;    // 한 번만 실행
+        }), 1.0f); // 실시간 기준 1초
+
     // 랜덤 선택지 생성
     SelectRandomAccessories();
 	UpdateOptionTexts();
@@ -254,5 +265,12 @@ void ULevelUp_UI::UpdateAccessoryVFX(int index, EAccessoryRarity rarity)
         AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         break;
     }
+}
+
+void ULevelUp_UI::EnableButtons()
+{
+    if (Option1) Option1->SetIsEnabled(true);
+    if (Option2) Option2->SetIsEnabled(true);
+    if (Option3) Option3->SetIsEnabled(true);
 }
 
