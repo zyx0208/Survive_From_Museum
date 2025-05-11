@@ -30,6 +30,12 @@ void AEnemy1AIController::BeginPlay()
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
     if(GI){
         DamageUI = Cast<UDamage_UI>(GI->DamageUIInstance);
+        if (DamageUI) {
+            UE_LOG(LogTemp, Log, TEXT("EnemyController: DamageUI"));
+        }
+        else {
+            UE_LOG(LogTemp, Log, TEXT("EnemyController: NO DamageUI"));
+        }
     }
 }
 
@@ -178,9 +184,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     FVector PawnLocation = Enemy->GetActorLocation();
     FVector2D ScreenLocation;
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-    if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
-        ShowDamage(damage, ScreenLocation);
-    }
+    
     switch (chanel)
     {
     case 1 :
@@ -188,6 +192,9 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         {
             GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
+            if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+                ShowDamage(damage, ScreenLocation);
+            }
         }
         break;
     case 2:
@@ -195,6 +202,9 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         {
             GetWorldTimerManager().SetTimer(Chanel2TimerHandle, this, &AEnemy1AIController::Chanel2TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
+            if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+                ShowDamage(damage, ScreenLocation);
+            }
         }
         break;
     case 3:
@@ -202,6 +212,9 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         {
             GetWorldTimerManager().SetTimer(Chanel3TimerHandle, this, &AEnemy1AIController::Chanel3TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
+            if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+                ShowDamage(damage, ScreenLocation);
+            }
         }
         break;
     case 4:
@@ -209,6 +222,9 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         {
             GetWorldTimerManager().SetTimer(Chanel4TimerHandle, this, &AEnemy1AIController::Chanel4TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
+            if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+                ShowDamage(damage, ScreenLocation);
+            }
         }
         break;
     case 5:
@@ -216,10 +232,16 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         {
             GetWorldTimerManager().SetTimer(Chanel5TimerHandle, this, &AEnemy1AIController::Chanel5TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
+            if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+                ShowDamage(damage, ScreenLocation);
+            }
         }
         break;
     default:
         Enemy->CurrentHP -= damage;
+        if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+            ShowDamage(damage, ScreenLocation);
+        }
         break;
     }
     //UE_LOG(LogTemp, Warning, TEXT("Test"));
@@ -285,6 +307,7 @@ void AEnemy1AIController::StunTimerEnd()
 
 void AEnemy1AIController::ShowDamage(float damage, FVector2D screenPosition)
 {
+
     if (DamageUI) {
         DamageUI->DamageTextCreate(damage, screenPosition);
     }
