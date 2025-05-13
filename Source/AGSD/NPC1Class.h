@@ -6,6 +6,7 @@
 #include "AGSDGameInstance.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "NPC1Class.generated.h"
 
@@ -59,6 +60,8 @@ public:
     void ShowTextUI();
 
     // 말풍선 위젯 클래스
+    UPROPERTY(VisibleAnywhere, Category = "Visual")
+    UStaticMeshComponent* MeshComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
     TSubclassOf<UUserWidget> InteractionWidgetClass;

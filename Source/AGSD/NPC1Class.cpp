@@ -19,8 +19,11 @@ ANPC1Class::ANPC1Class()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+    MeshComponent->SetupAttachment(RootComponent);
+
     InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
-    InteractionWidget->SetupAttachment(RootComponent);
+    InteractionWidget->SetupAttachment(MeshComponent);
     InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
     InteractionWidget->SetDrawAtDesiredSize(true); // 자동 크기 조정 (선택)
     //InteractionWidget->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // 위젯 방향 고정 (필요 시)
