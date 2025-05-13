@@ -25,6 +25,9 @@ public:
     TArray<UTextBlock*> DamageTextArray;
     UPROPERTY(meta = (BindWidget))
     UCanvasPanel* RootCanvas;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float FadeDuration = 1.0f;
     //피해량 표기
     UFUNCTION()
     void DamageTextCreate(float damage, FVector2D screenPosition);

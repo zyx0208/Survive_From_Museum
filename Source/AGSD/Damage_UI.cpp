@@ -8,7 +8,7 @@
 
 void UDamage_UI::NativeConstruct()
 {
-    //DamageText->SetVisibility(ESlateVisibility::Hidden);
+    DamageText->SetVisibility(ESlateVisibility::Hidden);
     Construct();
     UpdateCanTick();
 }
@@ -19,7 +19,7 @@ void UDamage_UI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
     {
         if (DamageTextArray[i]) {
             FLinearColor CurrentColor = DamageTextArray[i]->GetColorAndOpacity().GetSpecifiedColor();
-            CurrentColor.A -= 0.01f;
+            CurrentColor.A -= InDeltaTime/FadeDuration;
             DamageTextArray[i]->SetColorAndOpacity(FSlateColor(CurrentColor));
             if (CurrentColor.A <= 0.0f)
             {
