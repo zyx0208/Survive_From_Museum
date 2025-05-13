@@ -176,7 +176,7 @@ void AAGSDCharacter::BeginPlay()
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		// 마우스 입력 모드 설정: 게임 모드에서 마우스 입력을 활성화하고 커서 표시
-		PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()로 변경하여 순수 게임 모드로 설정 가능
+		//PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()로 변경하여 순수 게임 모드로 설정 가능
 		PlayerController->bShowMouseCursor = true;  // 마우스 커서 표시
 
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -783,9 +783,9 @@ void AAGSDCharacter::PauseGameForLevelUp()
 	if (PlayerController)
 	{
 		PlayerController->SetPause(true);
-		FInputModeUIOnly InputMode;
-		PlayerController->SetInputMode(InputMode);
-		PlayerController->bShowMouseCursor = true;
+		//FInputModeUIOnly InputMode;
+		//PlayerController->SetInputMode(InputMode);
+		//PlayerController->bShowMouseCursor = true;
 	}
 }
 //레벨업 선택 이후 게임 이어하기
@@ -795,9 +795,9 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 	if (PlayerController)
 	{
 		PlayerController->SetPause(false);
-		FInputModeGameOnly InputMode;
-		PlayerController->SetInputMode(InputMode);
-		PlayerController->bShowMouseCursor = true;
+		//FInputModeGameOnly InputMode;
+		//PlayerController->SetInputMode(InputMode);
+		//PlayerController->bShowMouseCursor = true;
 	}
 
 	// UI 제거
@@ -1433,9 +1433,9 @@ void AAGSDCharacter::OnDeath()
     if (PlayerController)
     {
         PlayerController->SetPause(true);
-        FInputModeUIOnly InputMode;
-        PlayerController->SetInputMode(InputMode);
-        PlayerController->bShowMouseCursor = true;
+        //FInputModeUIOnly InputMode;
+        //PlayerController->SetInputMode(InputMode);
+        //PlayerController->bShowMouseCursor = true;
     }
 
     // Restart UI 생성
@@ -1459,9 +1459,9 @@ void AAGSDCharacter::Clear()
     if (PlayerController)
     {
         PlayerController->SetPause(true);
-        FInputModeUIOnly InputMode;
-        PlayerController->SetInputMode(InputMode);
-        PlayerController->bShowMouseCursor = true;
+        //FInputModeUIOnly InputMode;
+        //PlayerController->SetInputMode(InputMode);
+        //PlayerController->bShowMouseCursor = true;
     }
     // Restart UI 생성
     if (ClearUIClass)

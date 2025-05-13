@@ -218,6 +218,7 @@ void ULevelUp_UI::OnOption1Clicked()
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[0]);     
         FName RowName = SelectedAccessories[0].RowName;
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
+        UnableButtons();
         AccessoryPtr->bIsAcquired = true;
 	}
 }
@@ -229,6 +230,7 @@ void ULevelUp_UI::OnOption2Clicked()
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);    
         FName RowName = SelectedAccessories[1].RowName;
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
+        UnableButtons();
         AccessoryPtr->bIsAcquired = true;
 	}
 }
@@ -240,6 +242,7 @@ void ULevelUp_UI::OnOption3Clicked()
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[2]);
         FName RowName = SelectedAccessories[2].RowName;
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
+        UnableButtons();
         AccessoryPtr->bIsAcquired = true;
 	}
 }
@@ -272,5 +275,12 @@ void ULevelUp_UI::EnableButtons()
     if (Option1) Option1->SetIsEnabled(true);
     if (Option2) Option2->SetIsEnabled(true);
     if (Option3) Option3->SetIsEnabled(true);
+}
+
+void ULevelUp_UI::UnableButtons()
+{
+    if (Option1) Option1->SetIsEnabled(false);
+    if (Option2) Option2->SetIsEnabled(false);
+    if (Option3) Option3->SetIsEnabled(false);
 }
 

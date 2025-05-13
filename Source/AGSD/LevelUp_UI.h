@@ -111,5 +111,7 @@ public:
     //클릭 미스 방지
     UFUNCTION()
     void EnableButtons();
+    UFUNCTION()
+    void UnableButtons();
 
 };
