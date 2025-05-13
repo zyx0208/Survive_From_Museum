@@ -19,13 +19,24 @@ ANPC1Class::ANPC1Class()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+    InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
+    InteractionWidget->SetupAttachment(RootComponent);
+    InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
+    InteractionWidget->SetDrawAtDesiredSize(true); // 자동 크기 조정 (선택)
+    //InteractionWidget->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // 위젯 방향 고정 (필요 시)
+    InteractionWidget->SetDrawSize(FVector2D(64.f, 64.f));
+    InteractionWidget->SetRelativeLocation(FVector(0.f, 0.f, 100.f)); // 오브젝트 위쪽으로
+    InteractionWidget->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void ANPC1Class::BeginPlay()
 {
 	Super::BeginPlay();
-	
+    if (InteractionWidget && InteractionWidgetClass)
+    {
+        InteractionWidget->SetWidgetClass(InteractionWidgetClass);
+    }
 }
 
 // Called every frame
@@ -49,6 +60,17 @@ void ANPC1Class::Tick(float DeltaTime)
     else
     {
         TalkProgress = 0;
+    }
+
+    if (InteractionWidget && InteractionWidget->IsVisible())
+    {
+        APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+        if (CameraManager)
+        {
+            FVector ToCamera = CameraManager->GetCameraLocation() - InteractionWidget->GetComponentLocation();
+            FRotator LookAtRotation = FRotationMatrix::MakeFromX(ToCamera).Rotator();
+            InteractionWidget->SetWorldRotation(LookAtRotation);
+        }
     }
 }
 

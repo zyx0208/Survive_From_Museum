@@ -22,18 +22,23 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-    // 박스의 충돌을 감지하는 컴포넌트
-    UPROPERTY(VisibleAnywhere, Category = "Collision")
-    class USphereComponent* SphereComponent;
+    
     
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    // 박스의 충돌을 감지하는 컴포넌트
+    UPROPERTY(VisibleAnywhere, Category = "Collision")
+    USphereComponent* SphereComponent;
+    UPROPERTY(VisibleAnywhere, Category = "Visual")
+    UStaticMeshComponent* MeshComponent;
+
     // 말풍선 위젯 클래스
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
     TSubclassOf<UUserWidget> InteractionWidgetClass;
+
     UPROPERTY(VisibleAnywhere, Category = "UI")
     UWidgetComponent* InteractionWidget;
 

@@ -3,6 +3,7 @@
 
 #include "WeaponDrop.h"
 #include "WeaponDataTableBeta.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AWeaponDrop::AWeaponDrop()
@@ -49,6 +50,16 @@ AWeaponDrop::AWeaponDrop()
 
     WeaponIDInt = FMath::RandRange(5, 6);
     WeaponID = FString::FromInt(WeaponIDInt);
+
+    InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
+    InteractionWidget->SetupAttachment(WeaponMeshComponent);
+
+    InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
+    InteractionWidget->SetDrawAtDesiredSize(true); // 자동 크기 조정 (선택)
+    //InteractionWidget->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // 위젯 방향 고정 (필요 시)
+    InteractionWidget->SetDrawSize(FVector2D(64.f, 64.f));
+    InteractionWidget->SetRelativeLocation(FVector(0.f, 0.f, 100.f)); // 오브젝트 위쪽으로
+    InteractionWidget->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +74,11 @@ void AWeaponDrop::BeginPlay()
         WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
         WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
+
+    if (InteractionWidget && InteractionWidgetClass)
+    {
+        InteractionWidget->SetWidgetClass(InteractionWidgetClass);
+    }
 }
 
 // Called every frame
@@ -70,6 +86,16 @@ void AWeaponDrop::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (InteractionWidget && InteractionWidget->IsVisible())
+    {
+        APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+        if (CameraManager)
+        {
+            FVector ToCamera = CameraManager->GetCameraLocation() - InteractionWidget->GetComponentLocation();
+            FRotator LookAtRotation = FRotationMatrix::MakeFromX(ToCamera).Rotator();
+            InteractionWidget->SetWorldRotation(LookAtRotation);
+        }
+    }
 }
 
 void AWeaponDrop::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

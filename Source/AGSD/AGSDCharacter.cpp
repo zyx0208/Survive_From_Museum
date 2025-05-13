@@ -1101,6 +1101,7 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
             if (OverlapWeaponDrop)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Overlap Weapon: %s"), *OverlapWeaponDrop->WeaponID));
+                if(OverlapWeaponDrop->InteractionWidget) OverlapWeaponDrop->InteractionWidget->SetVisibility(true);
                 OverlapID = *OverlapWeaponDrop->WeaponID;
             }
         }
@@ -1108,23 +1109,26 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
         if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
         {
             OverlapBox = true;
-            UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
+            //UE_LOG(LogTemp, Log, TEXT("OverLap Box"));
             if (Box->InteractionWidget)
             {
-                UE_LOG(LogTemp, Log, TEXT("Create UI"));
                 Box->InteractionWidget->SetVisibility(true);
+                //UE_LOG(LogTemp, Log, TEXT("Widget SetVisible"));
             }
             else
             {
-                UE_LOG(LogTemp, Log, TEXT("%.2f %.2f %.2f"));
+                //UE_LOG(LogTemp, Log, TEXT("Error InteractionUI"));
             }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
-        if (OtherActor && OtherActor->IsA<ADrawingBook>())
+        if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
         {
             OverlapDrawingBook = true;
+            if (Book->InteractionWidget) Book->InteractionWidget->SetVisibility(true);
             if (OverlapDrawingBook) UE_LOG(LogTemp, Log, TEXT("OverLap DrawingBook"));
         }
+        if (ANPC1Class* npc = Cast<ANPC1Class>(OtherActor))
+            if (npc->InteractionWidget) npc->InteractionWidget->SetVisibility(true);
     }
 }
 
@@ -1135,20 +1139,28 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
         // 충돌한 오브젝트가 WeaponDrop임을 확인
         if (OtherActor && OtherActor->IsA<AWeaponDrop>())
         {
+            AWeaponDrop* WeaponDrop = Cast<AWeaponDrop>(OtherActor);
+            if (WeaponDrop->InteractionWidget) WeaponDrop->InteractionWidget->SetVisibility(false);
             OverlapDropWeapon = false;
         }
         // 충돌한 오브젝트가 Box임을 확인
         if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
         {
             OverlapBox = false;
-            UE_LOG(LogTemp, Log, TEXT("OverLap out Box"));
+            //UE_LOG(LogTemp, Log, TEXT("OverLap out Box"));
             if (Box->InteractionWidget)
             {
                 Box->InteractionWidget->SetVisibility(false);
             }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
-        if (OtherActor && OtherActor->IsA<ADrawingBook>()) OverlapDrawingBook = false;
+        if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
+        {
+            OverlapDrawingBook = false;
+            if (Book->InteractionWidget) Book->InteractionWidget->SetVisibility(false);
+        }
+        if (ANPC1Class* npc = Cast<ANPC1Class>(OtherActor))
+            if (npc->InteractionWidget) npc->InteractionWidget->SetVisibility(false);
     }
 }
 

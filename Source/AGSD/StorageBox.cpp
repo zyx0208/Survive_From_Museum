@@ -2,6 +2,7 @@
 
 
 #include "StorageBox.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AStorageBox::AStorageBox()
@@ -14,10 +15,16 @@ AStorageBox::AStorageBox()
     SphereComponent->InitSphereRadius(50.0f);  // 충돌 범위 설정
     RootComponent = SphereComponent;
 
+    MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+    MeshComponent->SetupAttachment(RootComponent);
+
     InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
-    InteractionWidget->SetupAttachment(RootComponent);
-    InteractionWidget->SetWidgetSpace(EWidgetSpace::Screen);
-    InteractionWidget->SetDrawSize(FVector2D(150.f, 150.f));
+    InteractionWidget->SetupAttachment(MeshComponent);
+
+    InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
+    InteractionWidget->SetDrawAtDesiredSize(true); // 자동 크기 조정 (선택)
+    //InteractionWidget->SetRelativeRotation(FRotator(0.f, 180.f, 0.f)); // 위젯 방향 고정 (필요 시)
+    InteractionWidget->SetDrawSize(FVector2D(64.f, 64.f));
     InteractionWidget->SetRelativeLocation(FVector(0.f, 0.f, 100.f)); // 오브젝트 위쪽으로
     InteractionWidget->SetVisibility(false);
 }
@@ -31,6 +38,12 @@ void AStorageBox::BeginPlay()
     {
         InteractionWidget->SetWidgetClass(InteractionWidgetClass);
     }
+
+    //FVector WorldLoc = InteractionWidget->GetComponentLocation();
+    //UE_LOG(LogTemp, Log, TEXT("BeginPlay Widget World Location: %s"), *WorldLoc.ToString());
+    //DrawDebugSphere(GetWorld(), WorldLoc, 20.f, 12, FColor::Green, false, 5.f);
+
+    //InteractionWidget->SetVisibility(true);
 }
 
 // Called every frame
@@ -38,4 +51,14 @@ void AStorageBox::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (InteractionWidget && InteractionWidget->IsVisible())
+    {
+        APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+        if (CameraManager)
+        {
+            FVector ToCamera = CameraManager->GetCameraLocation() - InteractionWidget->GetComponentLocation();
+            FRotator LookAtRotation = FRotationMatrix::MakeFromX(ToCamera).Rotator();
+            InteractionWidget->SetWorldRotation(LookAtRotation);
+        }
+    }
 }

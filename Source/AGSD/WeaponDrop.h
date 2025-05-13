@@ -7,6 +7,7 @@
 #include "WeaponDataTable.h"
 #include "Components/PoseableMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
 #include "WeaponDrop.generated.h"
 
 UCLASS()
@@ -55,4 +56,11 @@ public:
     //파괴
     UFUNCTION()
     void DestroySelf();
+
+    // 말풍선 위젯 클래스
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    UWidgetComponent* InteractionWidget;
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DrawingBook.generated.h"
 
 UCLASS()
@@ -32,4 +33,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+    // 말풍선 위젯 클래스
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    UWidgetComponent* InteractionWidget;
 };

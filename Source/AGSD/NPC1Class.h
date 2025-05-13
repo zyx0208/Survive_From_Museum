@@ -6,6 +6,7 @@
 #include "AGSDGameInstance.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
 #include "NPC1Class.generated.h"
 
 
@@ -56,6 +57,15 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     UAGSDGameInstance* GameInstance;
     void ShowTextUI();
+
+    // 말풍선 위젯 클래스
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+
+    UPROPERTY(VisibleAnywhere, Category = "UI")
+    UWidgetComponent* InteractionWidget;
+
 private:
     ACharacter* PlayerCharacter;
     bool IsFirst = true;
