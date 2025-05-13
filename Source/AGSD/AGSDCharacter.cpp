@@ -797,7 +797,7 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 		PlayerController->SetPause(false);
 		FInputModeGameOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
-		PlayerController->bShowMouseCursor = false;
+		PlayerController->bShowMouseCursor = true;
 	}
 
 	// UI 제거

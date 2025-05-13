@@ -148,6 +148,7 @@ void UStorageBox_UI::CloseStorageBox()
         PlayerCharacter->WeaponSwap();
         PlayerCharacter->WeaponTake();
         PlayerCharacter->ResumeGameAfterLevelUp();
+
     }
 }
 
