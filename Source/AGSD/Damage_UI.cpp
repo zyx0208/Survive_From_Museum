@@ -24,7 +24,7 @@ void UDamage_UI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
             if (CurrentColor.A <= 0.0f)
             {
                 DamageTextArray[i]->RemoveFromParent();
-                DamageTextArray.RemoveAt(i); // 인덱스로 안전하게 제거
+                DamageTextArray.RemoveAt(i);
             }
         }
         
@@ -39,12 +39,14 @@ void UDamage_UI::DamageTextCreate(float damage, FVector2D screenPosition)
         if (canvasSlot) {
             NewDamage->SetText(FText::AsNumber(damage));
             NewDamage->SetColorAndOpacity(FSlateColor(FLinearColor::Red));
+            NewDamage->SetVisibility(ESlateVisibility::HitTestInvisible);
             DamageTextArray.Add(NewDamage);
             float Scale = UWidgetLayoutLibrary::GetViewportScale(this);
             canvasSlot->SetPosition(screenPosition/Scale);
             canvasSlot->SetSize(FVector2D(150.0f, 30.0f));
             canvasSlot->SetAlignment(FVector2D(0.5f, 0.5f));
             canvasSlot->SetAutoSize(true);
+            
         }
     }    
     else {
