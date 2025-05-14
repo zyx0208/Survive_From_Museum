@@ -11,6 +11,7 @@
 #include "AccessoryData.h"
 #include "NPC1Class.h"
 #include "Sound/SoundWave.h"
+#include "Sound/SoundCue.h"
 #include "Components/AudioComponent.h"
 #include "MouseIndicatorActor.h"    //마우스 포인터
 #include "Blueprint/UserWidget.h"

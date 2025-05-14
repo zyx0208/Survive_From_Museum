@@ -30,12 +30,6 @@ void AEnemy1AIController::BeginPlay()
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
     if(GI){
         DamageUI = Cast<UDamage_UI>(GI->DamageUIInstance);
-        if (DamageUI) {
-            UE_LOG(LogTemp, Log, TEXT("EnemyController: DamageUI"));
-        }
-        else {
-            UE_LOG(LogTemp, Log, TEXT("EnemyController: NO DamageUI"));
-        }
     }
 }
 
@@ -158,15 +152,24 @@ void AEnemy1AIController::Attacked(float damage)
     {
         return;
     }
+    FVector PawnLocation = Enemy->GetActorLocation();
+    PawnLocation.Z += 100.0f;
+    FVector2D ScreenLocation;
+    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     if (Enemy.IsValid()) {
         Enemy->CurrentHP -= damage;
         UE_LOG(LogTemp, Display, TEXT("Damamge : %f CurrentHP : %d Actor : %s"), damage, Enemy->CurrentHP, *Enemy->GetName());
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
+            ShowDamage(damage, ScreenLocation);
+        }
+        /*
         if (!GetWorldTimerManager().IsTimerActive(AttackedEffectHandle))
         {
             Enemy->IsAttacked = true;
             GetWorldTimerManager().SetTimer(AttackedEffectHandle, this, &AEnemy1AIController::AttackedEffectEnd, 0.1f, false);
         }
+        */
         //체력이 0이하일 경우 죽음
         if (Enemy->CurrentHP <= 0.0f)
         {
@@ -182,6 +185,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         return;
     }
     FVector PawnLocation = Enemy->GetActorLocation();
+    PawnLocation.Z += 100.0f;
     FVector2D ScreenLocation;
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     
@@ -190,7 +194,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     case 1 :
         if (!GetWorldTimerManager().IsTimerActive(Chanel1TimerHandle))
         {
-            GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
+            //GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);

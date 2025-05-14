@@ -118,7 +118,7 @@ void AProjectile_Beta::Damage(AActor* OtherActor)
                 AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
                 if (IsValid(HitEnemyController))
                 {
-                    HitEnemyController->Attacked(ProjectileDamage + PlayerAttack, 1);
+                    HitEnemyController->Attacked(ProjectileDamage + PlayerAttack);
                 }
             }
             WeaponHitEffect(OtherActor);
