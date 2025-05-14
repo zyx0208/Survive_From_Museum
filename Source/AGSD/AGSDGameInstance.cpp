@@ -23,6 +23,27 @@ void UAGSDGameInstance::Init()
     }
 }
 
+void UAGSDGameInstance::CreateGameData()
+{
+    // SaveGame 객체 생성
+    USavingGame* SaveGameInstance = NewObject<USavingGame>();
+
+    // 데이터를 디폴트값으로 지정
+    SaveGameInstance->StageProgress = -1;
+    SaveGameInstance->TalkingProgress = 0;
+    SaveGameInstance->BGMVolume = 1.0f;
+    SaveGameInstance->SFXVolume = 1.0f;
+
+    // 저장할 슬롯 이름
+    FString SaveSlotName = TEXT("SaveSlot1");
+
+    // 유저 인덱스 (기본값은 0으로 설정)
+    int32 UserIndex = 0;
+
+    // 게임 데이터를 저장
+    UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, UserIndex);
+}
+
 void UAGSDGameInstance::SaveGameData()
 {
     // SaveGame 객체 생성
@@ -72,6 +93,8 @@ void UAGSDGameInstance::LoadGameData()
     else
     {
         UE_LOG(LogTemp, Warning, TEXT("No save file found."));
+        //저장된 세이브가 없을 경우 새로운 세이브 파일 생성
+        CreateGameData();
     }
 }
 
@@ -83,7 +106,7 @@ void UAGSDGameInstance::ResetGameData()
     // 데이터를 초기값으로 저장
     SaveGameInstance->StageProgress = -1;
     SaveGameInstance->TalkingProgress = 0;
-
+    
     // 임시 변수 초기화
     Temp_StageProgress = -1;
     Temp_TalkingProgress = 0;

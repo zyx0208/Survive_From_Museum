@@ -163,13 +163,13 @@ void AEnemy1AIController::Attacked(float damage)
         if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
             ShowDamage(damage, ScreenLocation);
         }
-        /*
+        
         if (!GetWorldTimerManager().IsTimerActive(AttackedEffectHandle))
         {
             Enemy->IsAttacked = true;
             GetWorldTimerManager().SetTimer(AttackedEffectHandle, this, &AEnemy1AIController::AttackedEffectEnd, 0.1f, false);
         }
-        */
+        
         //체력이 0이하일 경우 죽음
         if (Enemy->CurrentHP <= 0.0f)
         {
@@ -194,7 +194,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     case 1 :
         if (!GetWorldTimerManager().IsTimerActive(Chanel1TimerHandle))
         {
-            //GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
+            GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
             Enemy->CurrentHP -= damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
