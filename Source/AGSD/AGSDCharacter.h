@@ -88,8 +88,11 @@ public:
     USoundWave* WalkingSound;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
     USoundWave* DashSound;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+    USoundWave* XPSound;
     UAudioComponent* WalkingAudioComponent;
     UAudioComponent* DashAudioComponent;
+    UAudioComponent* XPAudioComponent;
 
     void UpdateCameraObstruction();
 

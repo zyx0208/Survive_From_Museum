@@ -159,6 +159,9 @@ AAGSDCharacter::AAGSDCharacter()
     SubWeaponAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SubWeaponAttachPoint"));
     SubWeaponAttachPoint->SetupAttachment(RootComponent);
 
+    XPAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("XPAudioComponent"));
+    XPAudioComponent->SetupAttachment(RootComponent);
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 25.0f;
@@ -367,6 +370,14 @@ void AAGSDCharacter::Tick(float DeltaTime)
         {
             // XP 흡수 처리
             AddXP(XPOrb->XPValue);
+
+            // 대쉬 사운드 재생
+            if (XPSound)
+            {
+                // AudioComponent에 사운드를 설정하고 재생
+                XPAudioComponent->SetSound(XPSound);
+                XPAudioComponent->Play();
+            }
 
             // XPOrb 제거
             XPOrb->Destroy();
