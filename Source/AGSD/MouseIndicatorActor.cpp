@@ -14,7 +14,7 @@ AMouseIndicatorActor::AMouseIndicatorActor()
     RootComponent = DecalComponent;
 
     // 디폴트 Decal 세팅
-    static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterial(TEXT("/Game/DecalMaterials/M_MouseCursor")); // 너가 만든 머티리얼 경로로 교체
+    /*static ConstructorHelpers::FObjectFinder<UMaterial> DecalMaterial(TEXT("/Game/DecalMaterials/M_MouseCursor")); // 너가 만든 머티리얼 경로로 교체
     if (DecalMaterial.Succeeded())
     {
         DecalComponent->SetDecalMaterial(DecalMaterial.Object);
@@ -29,7 +29,7 @@ AMouseIndicatorActor::AMouseIndicatorActor()
     CollisionBox->SetBoxExtent(FVector(50.f, 50.f, 10.f)); // 커서 범위 크기 조정
     CollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 기본은 꺼짐
     CollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore); // 기본 무시
-    CollisionBox->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap); // 예: 커서만 체크하는 채널
+    CollisionBox->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap); // 예: 커서만 체크하는 채널*/
 }
 
 
