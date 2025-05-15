@@ -724,14 +724,16 @@ void AAGSDCharacter::UpdateStat()
     UTextBlock* SpeedText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("Speed")));
     UTextBlock* AttackSpeedText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("AttackSpeed")));
     UTextBlock* AttackRangeText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("AttackRange")));
+    UTextBlock* HPText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("HPText")));
 
-    if (!AttackDamageText || !DefenseText || !SpeedText || !AttackSpeedText || !AttackRangeText) return;
+    if (!AttackDamageText || !DefenseText || !SpeedText || !AttackSpeedText || !AttackRangeText || !HPText) return;
 
     AttackDamageText->SetText(FText::FromString(FString::Printf(TEXT("Damage: %.1f"), Attack)));
     DefenseText->SetText(FText::FromString(FString::Printf(TEXT("Defense: %d"), Defense)));
     SpeedText->SetText(FText::FromString(FString::Printf(TEXT("Speed: %.1f"), SpeedLevel)));
     AttackSpeedText->SetText(FText::FromString(FString::Printf(TEXT("AttackSpeed: %.1f"), AttackSpeedLevel)));
     AttackRangeText->SetText(FText::FromString(FString::Printf(TEXT("AttackRange: %.1f"), AttackRangeLevel)));
+    HPText->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), CurrentHealth, MaxHealth)));
 }
 
 void AAGSDCharacter::AddXP(int32 XPAmount)
