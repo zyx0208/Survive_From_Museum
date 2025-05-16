@@ -76,6 +76,14 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Health %d / %d"), HealthIncrease, Character->CurrentHealth, Character->MaxHealth);
             Character->UpdateHealthBar();
         }
+        else if (Effect.Contains(TEXT("체력회복")))
+        {
+            FString ValueString = Effect.Mid(5).TrimStartAndEnd();
+            float HealthIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT("")));
+            Character->CurrentHealth += Character->MaxHealth * (HealthIncrease / 100.0f);
+            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d / %d"), Character->CurrentHealth, Character->MaxHealth);
+            Character->UpdateHealthBar();
+        }
         else if (Effect.Contains(TEXT("임시보호막")))
         {
             Character->Barrier += 10;
@@ -126,16 +134,26 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             UE_LOG(LogTemp, Log, TEXT("부활 및 1초 무적효과 적용"));
             Character->IsResurrection = true;
         }
-        else if (Effect.Contains(TEXT("랜덤")))
+        else if (Effect.Contains(TEXT("랜덤+")))
         {
             // 랜덤효과 적용
-            UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용"));
+            UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용+"));
+            // 0~5 사이의 랜덤한 스탯 선택
+            int32 RandomStat = FMath::RandRange(0, 5);
+            RandmoStatApplyP(Character, RandomStat);
+        }
+        else if (Effect.Contains(TEXT("랜덤-")))
+        {
+            // 랜덤효과 적용
+            UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용-"));
             // 0~5 사이의 랜덤한 스탯 선택
             int32 RandomStat = FMath::RandRange(0, 5);
             RandmoStatApplyM(Character, RandomStat);
-            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
-            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
-            RandmoStatApplyP(Character, FMath::RandRange(0, 5));
+        }
+        else if (Effect.Contains(TEXT("피격시 5초 무적")))
+        {
+            UE_LOG(LogTemp, Log, TEXT("피격시 5초 무적효과 적용"));
+            Character->bIs_Attacked_Invincible = true;
         }
         else
         {

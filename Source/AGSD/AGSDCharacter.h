@@ -209,6 +209,7 @@ public:
     float XPRangeLevel;     // 경험치 획득 반경
 
     bool IsResurrection = false;
+    bool bIs_Attacked_Invincible = false;
 
 
 
@@ -302,6 +303,11 @@ public:
 
     // 무적 해제 타이머 핸들
     FTimerHandle InvincibilityTimerHandle;
+    // 무적 해제 타이머 핸들(피격 시 무적용)
+    FTimerHandle InvincibilityTimerHandle2;
+    // 무적 해제 타이머 핸들(피격 시 무적용)
+    FTimerHandle UnInvincibilityTimerHandle;
+    bool Invincibility_Cooldown = true;
 
     // 쿨타임 UI 타이머 핸들러
     FTimerHandle DashCooldownUpdateTimerHandle;
@@ -313,6 +319,12 @@ public:
     // 무적 해제 함수
     UFUNCTION()
     void ResetInvincibility();
+    // 무적 해제 함수
+    UFUNCTION()
+    void ResetInvincibility2();
+    // 무적 해제 함수
+    UFUNCTION()
+    void ResetUnInvincibility();
 
     //사망 함수
     UFUNCTION()

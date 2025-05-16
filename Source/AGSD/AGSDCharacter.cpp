@@ -624,6 +624,17 @@ void AAGSDCharacter::ResetInvincibility()
 {
     bIsInvincible = false; // 무적 해제
 }
+void AAGSDCharacter::ResetInvincibility2()
+{
+    bIsInvincible = false; // 무적 해제(피격 무적용)
+    Invincibility_Cooldown = false;
+    GetWorldTimerManager().SetTimer(
+        InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetUnInvincibility, 60.0f, false);
+}
+void AAGSDCharacter::ResetUnInvincibility()
+{
+    Invincibility_Cooldown = true;  // 피격 무적 쿨타임 확인용
+}
 //대쉬 쿨타임 갱신 함수
 void AAGSDCharacter::UpdateDashCooldownUI()
 {
@@ -1381,6 +1392,13 @@ void AAGSDCharacter::Attacked(float Damage)
         CurrentHealth -= 0;
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
+    //피격시 무적(데미지는 받고 이후 5초간 무적 / 60초 쿨타임)
+    if (bIs_Attacked_Invincible && Invincibility_Cooldown)
+    {
+        bIsInvincible = true;
+        GetWorldTimerManager().SetTimer(
+            InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetInvincibility2, 5.0f, false);
+    }
     if (CurrentHealth <= 0) //캐릭터 사망 및 부활
     {        
         if (IsResurrection) //부활
