@@ -146,7 +146,7 @@ void UStorageBox_UI::CloseStorageBox()
             UE_LOG(LogTemp, Log, TEXT("CloseStorageBox: Weapon selection applied."));
         }
         PlayerCharacter->WeaponSwap();
-        PlayerCharacter->WeaponTake();
+        PlayerCharacter->WeaponSwap();
         PlayerCharacter->ResumeGameAfterLevelUp();
 
     }
