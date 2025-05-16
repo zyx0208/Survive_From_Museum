@@ -21,6 +21,8 @@ void UAGSDGameInstance::Init()
         UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
         UserSettings->ApplySettings(false);
     }
+    WeaponArray.Add(4);
+    WeaponArray.Add(5);
 }
 
 void UAGSDGameInstance::CreateGameData()

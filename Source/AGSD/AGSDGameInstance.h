@@ -60,6 +60,10 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     UUserWidget* DamageUIInstance;
 
+    //캐릭터 무기
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    TArray<int> WeaponArray;
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTable;

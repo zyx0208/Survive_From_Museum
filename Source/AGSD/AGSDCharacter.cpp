@@ -187,9 +187,15 @@ void AAGSDCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
 	check(GEngine != nullptr);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
+
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+
+    if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
+        WeaponArray[0] = GI->WeaponArray[0];
+        WeaponArray[1] = GI->WeaponArray[1];
+    }
 
 	if (WeaponDataTableRef)
 	{
@@ -228,7 +234,6 @@ void AAGSDCharacter::BeginPlay()
         DamageTextWidget = CreateWidget<UUserWidget>(GetWorld(), DamageTextWidgetClass);
         if (DamageTextWidget) {
             DamageTextWidget->AddToViewport();
-            UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
             if (GI) {
                 GI->DamageUIInstance = DamageTextWidget;
             }
@@ -684,6 +689,21 @@ void AAGSDCharacter::Interaction()
             }
         }
     }
+}
+
+void AAGSDCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    Super::EndPlay(EndPlayReason);
+
+    FString ReasonText;
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (IsValid(GI)) {
+        if (GI->WeaponArray.Num() > 1&&WeaponArray.Num() > 1) {
+            GI->WeaponArray[0] = WeaponArray[0];
+            GI->WeaponArray[1] = WeaponArray[1];
+        }      
+    }
+
 }
 
 //체력바 갱신 함수

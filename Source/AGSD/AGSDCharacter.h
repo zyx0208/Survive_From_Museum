@@ -189,6 +189,8 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 
 public:
 	//캐릭터 스탯
