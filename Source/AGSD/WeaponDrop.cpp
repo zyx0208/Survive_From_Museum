@@ -31,7 +31,7 @@ AWeaponDrop::AWeaponDrop()
         CollisionComponent->SetCollisionProfileName(TEXT("WeaponDropCollision"));
         CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AWeaponDrop::OnOverlapBegin);
         CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-        //CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+        CollisionComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
         
         //CollisionComponent->SetHiddenInGame(true);
     }
@@ -44,6 +44,7 @@ AWeaponDrop::AWeaponDrop()
         {
             WeaponMeshComponent->SetStaticMesh(WeaponMesh.Object);
             WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            WeaponMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
         }
         
     }
