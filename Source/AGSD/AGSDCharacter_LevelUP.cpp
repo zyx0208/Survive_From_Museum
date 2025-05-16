@@ -80,7 +80,15 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float HealthIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT("")));
-            Character->CurrentHealth += Character->MaxHealth * (HealthIncrease / 100.0f);
+            int32 tempHealth = Character->MaxHealth * (HealthIncrease / 100.0f);
+            if (Character->CurrentHealth + tempHealth >= Character->MaxHealth)
+            {
+                Character->CurrentHealth = Character->MaxHealth;
+            }
+            else
+            {
+                Character->CurrentHealth += tempHealth;
+            }
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d / %d"), Character->CurrentHealth, Character->MaxHealth);
             Character->UpdateHealthBar();
         }

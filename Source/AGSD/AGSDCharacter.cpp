@@ -84,6 +84,8 @@ AAGSDCharacter::AAGSDCharacter()
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
+    IsResurrection = false;     //부활
+    bIs_Attacked_Invincible = false;    //피격시 무적
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -721,6 +723,7 @@ void AAGSDCharacter::UpdateHealthBar()
 			HealthProgressBar->SetPercent(HealthPercentage);
             BarrierProgressBar->SetPercent(BarrierPercentage);
 		}
+        UpdateStat();
 	}
 }
 void AAGSDCharacter::UpdateXPBar()
@@ -1393,7 +1396,7 @@ void AAGSDCharacter::Attacked(float Damage)
     //체력계산
     if (fixed_Damge > 0) //받는 데미지가 음수가 되버리면 0으로 계산
     {
-        if (Barrier > 0 && fixed_Damge > Barrier)
+        if (Barrier > 0 && fixed_Damge >= Barrier)
         {
             CurrentHealth -= fixed_Damge - Barrier;
             Barrier = 0;
