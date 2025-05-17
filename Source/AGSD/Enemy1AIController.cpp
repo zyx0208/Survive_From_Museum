@@ -353,7 +353,10 @@ void AEnemy1AIController::Died(int64 num)
         {
             if (Enemy->EXball)
             {
-                World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
+                for (int i = 0; i < FMath::RandRange(1, 3); i++)
+                {
+                    World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation() + FVector(FMath::FRandRange(-20.0f, 20.0f), FMath::FRandRange(-20.0f, 20.0f), 0.0f), FRotator::ZeroRotator);
+                }
             }
         }
         else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
