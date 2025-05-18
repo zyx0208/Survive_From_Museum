@@ -113,6 +113,7 @@ void ANPC1Class::ShowTextUI()
                 break;
             }
         case 3:
+        case 4:
             if (Text0_4)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text0_4)->AddToViewport();
