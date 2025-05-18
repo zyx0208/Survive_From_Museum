@@ -203,6 +203,44 @@ void ANPC1Class::ShowTextUI()
             break;
         }
         break;
+    case 3:
+        switch (TalkProgress)
+        {
+        case -1:
+        case 0:
+            if (Text3_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text3_1)->AddToViewport();
+                GameInstance->Temp_TalkingProgress = 1;
+                break;
+            }
+        case 1:
+            if (Text3_2)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text3_2)->AddToViewport();
+                GameInstance->Temp_TalkingProgress++;
+                break;
+            }
+        case 2:
+            if (Text3_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text3_3)->AddToViewport();
+                break;
+            }
+        case 3:
+            if (Text3_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text3_4)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
+            break;
+        }
+        break;
     default:
         if (TextError)
         {
