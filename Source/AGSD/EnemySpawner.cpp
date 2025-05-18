@@ -8,6 +8,7 @@
 #include "Enemy1Class.h"
 #include "Enemy1AIController.h"
 #include "Blueprint/UserWidget.h"
+#include "AGSDGameInstance.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -71,7 +72,10 @@ void AEnemySpawner::Tick(float DeltaTime)
                     PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
                     if (BossTextUI)
                     {
-                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        if ((Cast<UAGSDGameInstance>(GetGameInstance())->Temp_TalkingProgress <= 4)and(Cast<UAGSDGameInstance>(GetGameInstance())->Temp_StageProgress == 0))
+                        {
+                            CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        }
                     }
                 }
                 SpawnNum = -3;//일반 몹 생성안하도록 설정
@@ -159,7 +163,10 @@ void AEnemySpawner::Tick(float DeltaTime)
                     PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
                     if (BossTextUI)
                     {
-                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        if ((Cast<UAGSDGameInstance>(GetGameInstance())->Temp_TalkingProgress <= 3) and (Cast<UAGSDGameInstance>(GetGameInstance())->Temp_StageProgress == 1))
+                        {
+                            CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        }
                     }
                 }
                 SpawnNum = -3;//일반 몹 생성안하도록 설정
@@ -303,7 +310,10 @@ void AEnemySpawner::Tick(float DeltaTime)
                     PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
                     if (BossTextUI)
                     {
-                        CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        if ((Cast<UAGSDGameInstance>(GetGameInstance())->Temp_TalkingProgress <= 3) and (Cast<UAGSDGameInstance>(GetGameInstance())->Temp_StageProgress == 2))
+                        {
+                            CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        }
                     }
                 }
                 SpawnNum = -3;//일반 몹 생성안하도록 설정

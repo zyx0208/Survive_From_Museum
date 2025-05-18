@@ -114,6 +114,7 @@ void ANPC1Class::ShowTextUI()
             }
         case 3:
         case 4:
+        case 5:
             if (Text0_4)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text0_4)->AddToViewport();
@@ -152,6 +153,7 @@ void ANPC1Class::ShowTextUI()
                 break;
             }
         case 3:
+        case 4:
             if (Text1_4)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text1_4)->AddToViewport();
@@ -190,6 +192,7 @@ void ANPC1Class::ShowTextUI()
                 break;
             }
         case 3:
+        case 4:
             if (Text2_3)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text2_4)->AddToViewport();
@@ -228,6 +231,7 @@ void ANPC1Class::ShowTextUI()
                 break;
             }
         case 3:
+        case 4:
             if (Text3_3)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text3_4)->AddToViewport();
