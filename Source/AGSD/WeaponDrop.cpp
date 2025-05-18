@@ -49,7 +49,7 @@ AWeaponDrop::AWeaponDrop()
         
     }
 
-    WeaponIDInt = FMath::RandRange(5, 6);
+    WeaponIDInt = FMath::RandRange(4, 10);
     WeaponID = FString::FromInt(WeaponIDInt);
 
     InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
