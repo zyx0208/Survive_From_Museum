@@ -196,7 +196,7 @@ public:
 	//캐릭터 스탯
 	int32 MaxHealth;        // 최대 체력
 	int32 CurrentHealth;    // 현제 체력
-	int32 Defense;          // 방어력
+	float Defense;          // 방어력
     float SpeedLevel;       // 이동속도
     int32 Barrier;           // 방어막
 

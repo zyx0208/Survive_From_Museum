@@ -109,9 +109,9 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         else if (Effect.Contains(TEXT("방어력")))
         {
             FString ValueString = Effect.Mid(4).TrimStartAndEnd();
-            int32 DefenseIncrease = FCString::Atoi(*ValueString.Replace(TEXT("%"), TEXT("")));
-            (Character->Defense + DefenseIncrease <= 0) ? Character->Defense = 0 : Character->Defense += DefenseIncrease;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %d Defense %d"), DefenseIncrease, Character->Defense);
+            float DefenseIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT("")));
+            (Character->Defense + DefenseIncrease <= 0) ? Character->Defense = 0.0f : Character->Defense += DefenseIncrease;
+            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Defense %.1f"), DefenseIncrease, Character->Defense);
         }
         else if (Effect.Contains(TEXT("대쉬 쿨타임")))
         {
@@ -201,13 +201,13 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int ran
         break;
 
     case 1: // Defense 감소
-        if (Character->Defense >= 1) // 최소 방어력 제한
+        if (Character->Defense >= 1.0f) // 최소 방어력 제한
         {
-            Character->Defense -= 1;
-            UE_LOG(LogTemp, Log, TEXT("Defense 감소: %d"), Character->Defense);
+            Character->Defense -= 1.0f;
+            UE_LOG(LogTemp, Log, TEXT("Defense 감소: %f"), Character->Defense);
         }
         else
-            Character->Defense = 0;
+            Character->Defense = 0.0f;
         break;
 
     case 2: // SpeedLevel 감소
@@ -254,10 +254,10 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyP(AAGSDCharacter* Character, int ran
         
         break;
 
-    case 1: // Defense 감소
+    case 1: // Defense 증가
         
-         Character->Defense += 1;
-        UE_LOG(LogTemp, Log, TEXT("Defense 감소: %d"), Character->Defense);
+         Character->Defense += 1.0f;
+        UE_LOG(LogTemp, Log, TEXT("Defense 감소: %f"), Character->Defense);
         
         break;
 

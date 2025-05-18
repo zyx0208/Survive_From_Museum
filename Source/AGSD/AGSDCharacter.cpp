@@ -66,7 +66,7 @@ AAGSDCharacter::AAGSDCharacter()
 {
 	MaxHealth = 20;
 	CurrentHealth = 20;
-	Defense = 0;
+	Defense = 0.0f;
     SpeedLevel = 500.f;
 
     Attack = 0.0f; //초기 공격력 수정해도 상관없음
@@ -1392,7 +1392,7 @@ void AAGSDCharacter::Attacked(float Damage)
     {
         return;
     }
-    int32 fixed_Damge = (int32)(Damage * ((100.0f - (float)Defense) / 100.0f));
+    int32 fixed_Damge = (int32)(Damage * ((100.0f - Defense) / 100.0f));
     //체력계산
     if (fixed_Damge > 0) //받는 데미지가 음수가 되버리면 0으로 계산
     {
@@ -1416,11 +1416,13 @@ void AAGSDCharacter::Attacked(float Damage)
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     //피격시 무적(데미지는 받고 이후 5초간 무적 / 60초 쿨타임)
-    if (bIs_Attacked_Invincible && Invincibility_Cooldown)
+    if (Invincibility_Cooldown)
     {
+        float tempcooldown = 0.5f;
+        if (bIs_Attacked_Invincible) tempcooldown = 5.0f;
         bIsInvincible = true;
         GetWorldTimerManager().SetTimer(
-            InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetInvincibility2, 5.0f, false);
+            InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetInvincibility2, tempcooldown, false);
     }
     if (CurrentHealth <= 0) //캐릭터 사망 및 부활
     {        
