@@ -355,7 +355,7 @@ void AEnemy1AIController::Died(int64 num)
             {
                 for (int i = 0; i < FMath::RandRange(1, 3); i++)
                 {
-                    World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation() + FVector(FMath::FRandRange(-20.0f, 20.0f), FMath::FRandRange(-20.0f, 20.0f), 0.0f), FRotator::ZeroRotator);
+                    World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation() + FVector(FMath::FRandRange(-100.0f, 100.0f), FMath::FRandRange(-100.0f, 100.0f), 0.0f), FRotator::ZeroRotator);
                 }
             }
         }
