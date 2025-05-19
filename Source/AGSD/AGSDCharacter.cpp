@@ -1418,11 +1418,14 @@ void AAGSDCharacter::Attacked(float Damage)
     //피격시 무적(데미지는 받고 이후 5초간 무적 / 60초 쿨타임)
     if (Invincibility_Cooldown)
     {
-        float tempcooldown = 0.5f;
-        if (bIs_Attacked_Invincible) tempcooldown = 5.0f;
+        if (bIs_Attacked_Invincible)
+        {
+            float tempcooldown = 5.0f;
+            GetWorldTimerManager().SetTimer(
+                InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetInvincibility2, tempcooldown, false);
+        }
         bIsInvincible = true;
-        GetWorldTimerManager().SetTimer(
-            InvincibilityTimerHandle2, this, &AAGSDCharacter::ResetInvincibility2, tempcooldown, false);
+        
     }
     if (CurrentHealth <= 0) //캐릭터 사망 및 부활
     {        

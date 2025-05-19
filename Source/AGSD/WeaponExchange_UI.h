@@ -59,7 +59,12 @@ public:
     /** 무기 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTableBeta;
-    
+
+    TArray<UImage*> EffectImage;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* EffectImage1;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* EffectImage2;
 
 private:
     /** 버튼 클릭 이벤트 핸들러 */

@@ -50,6 +50,11 @@ void UWeaponExchange_UI::NativeConstruct()
             DisplayWeaponImage(WeaponIcon1, WeaponIcon2, WeaponIconNewWeapon, NewWeaponDescription);
         }
     }
+
+    EffectImage.Add(EffectImage1);
+    EffectImage.Add(EffectImage2);
+    EffectImage[0]->SetVisibility(ESlateVisibility::Hidden);
+    EffectImage[1]->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription)
@@ -107,7 +112,8 @@ void UWeaponExchange_UI::OnImageSlotClicked(int32 ButtonIndex)
 {
     HighlightedButtons.Reset();
     HighlightedButtons.Add(ButtonIndex);
-
+    EffectImage[0]->SetVisibility(ESlateVisibility::Hidden);
+    EffectImage[1]->SetVisibility(ESlateVisibility::Hidden);
     FLinearColor NewColor = ImageSlot1Button->GetBackgroundColor();
     NewColor.A = 1.0f;
     ImageSlot1Button->SetBackgroundColor(NewColor);
@@ -116,10 +122,14 @@ void UWeaponExchange_UI::OnImageSlotClicked(int32 ButtonIndex)
     if (HighlightedButtons.Contains(0)){
         NewColor.A = 0.0f;
         ImageSlot1Button->SetBackgroundColor(NewColor);
+        EffectImage[0]->SetVisibility(ESlateVisibility::Visible);
+        EffectImage[1]->SetVisibility(ESlateVisibility::Hidden);
     }
     if (HighlightedButtons.Contains(1)) {
         NewColor.A = 0.0f;
         ImageSlot2Button->SetBackgroundColor(NewColor);
+        EffectImage[0]->SetVisibility(ESlateVisibility::Hidden);
+        EffectImage[1]->SetVisibility(ESlateVisibility::Visible);
     }
 }
 

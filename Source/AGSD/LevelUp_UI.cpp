@@ -27,6 +27,9 @@ void ULevelUp_UI::NativeConstruct()
 		Option3->OnClicked.AddDynamic(this, &ULevelUp_UI::OnOption3Clicked);
 	}
     //Effect Image 설정
+    AccessoryCommonEffect.Add(Option1CommonEffect);
+    AccessoryCommonEffect.Add(Option2CommonEffect);
+    AccessoryCommonEffect.Add(Option3CommonEffect);
     AccessoryRareEffect.Add(Option1RareEffect);
     AccessoryRareEffect.Add(Option2RareEffect);
     AccessoryRareEffect.Add(Option3RareEffect);
@@ -252,18 +255,22 @@ void ULevelUp_UI::UpdateAccessoryVFX(int index, EAccessoryRarity rarity)
     switch (rarity)
     {
     case EAccessoryRarity::Common:
+        AccessoryCommonEffect[index]->SetVisibility(ESlateVisibility::Visible);
         AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         break;
     case EAccessoryRarity::Rare:
+        AccessoryCommonEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Visible);
         AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         break;
     case EAccessoryRarity::Legendary:
+        AccessoryCommonEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Visible);
         break;
     default:
+        AccessoryCommonEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryRareEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         AccessoryLegendaryEffect[index]->SetVisibility(ESlateVisibility::Hidden);
         break;

@@ -92,9 +92,15 @@ public:
     UFUNCTION()
     void OnOption3Clicked();
 
-
+    TArray<UImage*> AccessoryCommonEffect;
     TArray<UImage*> AccessoryRareEffect;
     TArray<UImage*> AccessoryLegendaryEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option1CommonEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option2CommonEffect;
+    UPROPERTY(meta = (BindWidget))
+    class UImage* Option3CommonEffect;
     UPROPERTY(meta = (BindWidget))
     class UImage* Option1RareEffect;
     UPROPERTY(meta = (BindWidget))
