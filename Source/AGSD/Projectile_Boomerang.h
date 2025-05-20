@@ -16,20 +16,21 @@ class AGSD_API AProjectile_Boomerang : public AProjectile_Beta
 public:
     AProjectile_Boomerang();
     virtual void WeaponHitEffect(AActor* OtherActor) override;
-    virtual void Tick(float DeltaTime) override;
+    //virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 
-    float Radius;
-    float CurrentAngle;
+    //float Radius;
+    //float CurrentAngle;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ACharacter* TargetCharacter;
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    //ACharacter* TargetCharacter;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FRotator RotationSpeed;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FRotator CurrentRotation;
+
 
     virtual void UpdatePlayerStat() override;
 };

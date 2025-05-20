@@ -7,18 +7,21 @@
 #include "SubWeapon.h"
 AProjectile_Boomerang::AProjectile_Boomerang()
 {
+    PrimaryActorTick.bStartWithTickEnabled = true;
     PrimaryActorTick.bCanEverTick = true;
+
+    SetActorTickEnabled(true);
     // 투사체 속도, 데미지, 사거리
     ProjectileSpeed = 1.0f;
     ProjectileDamage = 200.0f;
-    ProjectileRange = 100.0f;
+    ProjectileRange = 100.0f;/*
     if (ProjectileMovementComponent)
     {
-        // 속도 0으로 설정
+        ProjectileMovementComponent->Deactivate();
+        ProjectileMovementComponent->SetUpdatedComponent(nullptr);
         ProjectileMovementComponent->Velocity = FVector::ZeroVector;
-        ProjectileMovementComponent->InitialSpeed = 0;
-        ProjectileMovementComponent->MaxSpeed = 0;
-    }
+        ProjectileMovementComponent->SetComponentTickEnabled(false);
+    }*/
 
     RotationSpeed = FRotator(0.0f, 1000.0f, 0.0f);
     CurrentRotation = FRotator(0.0f, 0.0f, 0.0f);
@@ -27,7 +30,18 @@ AProjectile_Boomerang::AProjectile_Boomerang()
 void AProjectile_Boomerang::BeginPlay()
 {
     Super::BeginPlay();
+    //SetActorTickEnabled(true);
+
     // 투사체 속도, 데미지, 사거리
+    CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile_Beta::OnOverlapBegin);
+    if (CollisionComponent->OnComponentBeginOverlap.IsBound())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Overlap delegate is bound."));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Overlap delegate is NOT bound."));
+    }
 }
 
 void AProjectile_Boomerang::UpdatePlayerStat()
@@ -48,12 +62,14 @@ void AProjectile_Boomerang::UpdatePlayerStat()
 
 void AProjectile_Boomerang::WeaponHitEffect(AActor* OtherActor)
 {
+    UE_LOG(LogTemp, Warning, TEXT("[Boomerang]"));
 }
 
-void AProjectile_Boomerang::Tick(float DeltaTime)
+/*void AProjectile_Boomerang::Tick(float DeltaTime)
 {
-    CurrentRotation = CurrentRotation + (RotationSpeed * DeltaTime);
+    Super::Super::Tick(DeltaTime);
+    CurrentRotation = (CurrentRotation + (RotationSpeed * DeltaTime));
     SetActorRotation(CurrentRotation);
-}
+}*/
 
 
