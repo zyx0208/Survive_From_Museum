@@ -31,12 +31,20 @@ void AProjectile_Hammer::WeaponHitEffect(AActor* OtherActor)
         float Mass = HitEnemy->GetMesh()->CalculateMass();
         UE_LOG(LogTemp, Log, TEXT("EnemyMass: %f"), Mass);
         if (EnemyComp) {
-            EnemyComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+            // 전체 충돌은 활성화 상태 유지
+            EnemyComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+            // 기본값을 Overlap으로 설정
+            EnemyComp->SetCollisionResponseToAllChannels(ECR_Overlap);
+
+            // 벽(StaticObject, WorldStatic)은 Block으로 설정
+            EnemyComp->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+            EnemyComp->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block); // 필요 시
 
             FTimerHandle TimerHandle;
             GetWorld()->GetTimerManager().SetTimer(TimerHandle, [=]()
                 {
-                    EnemyComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+                    EnemyComp->SetCollisionProfileName(TEXT("Enemy"));
                 }, 0.2f, false);
         }
         

@@ -388,7 +388,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 
             // XPOrb 제거
             XPOrb->Destroy();
-
+            MagnetStrength = 250.0f; //초기 자석 값
             // MagnetField에서 제거
             MagnetField.RemoveAt(i);
         }
@@ -763,7 +763,7 @@ void AAGSDCharacter::UpdateStat()
     if (!AttackDamageText || !DefenseText || !SpeedText || !AttackSpeedText || !AttackRangeText || !HPText) return;
 
     AttackDamageText->SetText(FText::FromString(FString::Printf(TEXT("Damage: %.1f"), Attack)));
-    DefenseText->SetText(FText::FromString(FString::Printf(TEXT("Defense: %d"), Defense)));
+    DefenseText->SetText(FText::FromString(FString::Printf(TEXT("Defense: %.1f"), Defense)));
     SpeedText->SetText(FText::FromString(FString::Printf(TEXT("Speed: %.1f"), SpeedLevel)));
     AttackSpeedText->SetText(FText::FromString(FString::Printf(TEXT("AttackSpeed: %.1f"), AttackSpeedLevel)));
     AttackRangeText->SetText(FText::FromString(FString::Printf(TEXT("AttackRange: %.1f"), AttackRangeLevel)));

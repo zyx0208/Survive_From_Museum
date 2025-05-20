@@ -114,14 +114,19 @@ void AProjectile_Beta::Damage(AActor* OtherActor)
             ACharacter* HitEnemy = Cast<ACharacter>(OtherActor);
             if (IsValid(HitEnemy))
             {
-                //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
-                AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
-                if (IsValid(HitEnemyController))
-                {
-                    HitEnemyController->Attacked(ProjectileDamage + PlayerAttack);
+                if (!DamagedEnemy.Contains(HitEnemy)) {
+                    //HitEnemy의 가진 AEnemy1AIController를 가져옴(여기에 피격 함수가 있음)
+                    AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
+                    if (IsValid(HitEnemyController))
+                    {
+                        DamagedEnemy.Add(HitEnemy);
+                        HitEnemyController->Attacked(ProjectileDamage + PlayerAttack);
+                        
+                        WeaponHitEffect(OtherActor);
+                    }
                 }
             }
-            WeaponHitEffect(OtherActor);
+           
         }
     }
 }

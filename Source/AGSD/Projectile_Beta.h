@@ -54,6 +54,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	UProjectileMovementComponent* ProjectileMovementComponent;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    TArray<AActor*> DamagedEnemy;
+
 	// 탄환 방향 함수
 	void FireInDirection(const FVector& ShootDirection);
 
