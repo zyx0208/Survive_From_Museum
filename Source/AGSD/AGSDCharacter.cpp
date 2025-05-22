@@ -388,7 +388,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 
             // XPOrb 제거
             XPOrb->Destroy();
-            MagnetStrength = 250.0f; //초기 자석 값
+            //MagnetStrength = 250.0f; //초기 자석 값
             // MagnetField에서 제거
             MagnetField.RemoveAt(i);
         }

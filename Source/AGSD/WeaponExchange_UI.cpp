@@ -173,6 +173,8 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
             OverlapWeapon->DestroySelf();
         }
         PlayerCharacter->WeaponArray[HighlightedButtons[0]] = OverlapID;
+        PlayerCharacter->WeaponSwap();
+        PlayerCharacter->WeaponSwap();
         CloseWeaponExchange();
         PlayerCharacter->WeaponSwap();
         PlayerCharacter->WeaponSwap();
