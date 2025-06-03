@@ -107,6 +107,8 @@ protected:
 	void Dash();
 
     void Interaction();
+
+    void HandleEscape();
 		
     void PlayWalkingSound();
     bool IsWalking;
@@ -255,8 +257,7 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
     class USphereComponent* MagnetSphere;
     //자석 범위 변수
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
-    float MagnetStrength = 250.0f; //초기 자석 값
+    
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet")
     float MagnetAcceleration = 50.0f; // 기본 가속도 값
     UPROPERTY()

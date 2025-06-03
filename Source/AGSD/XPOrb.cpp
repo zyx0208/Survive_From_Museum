@@ -56,6 +56,7 @@ void AXPOrb::Tick(float DeltaTime)
 }
 void AXPOrb::SetRandomXP()
 {
+    MagnetStrength = 500.0f;
     // 랜덤 값에 따라 경험치 설정 (60%: 2, 30%: 4, 10%: 6)
     float RandomValue = FMath::FRand(); // 0.0f ~ 1.0f 사이의 랜덤 값
     if (RandomValue <= 0.6f)

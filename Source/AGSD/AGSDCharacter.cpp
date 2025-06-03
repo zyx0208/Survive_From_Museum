@@ -66,10 +66,10 @@ AAGSDCharacter::AAGSDCharacter()
 {
 	MaxHealth = 20;
 	CurrentHealth = 20;
-	Defense = 0.0f;
+	Defense = 100.0f;
     SpeedLevel = 500.f;
 
-    Attack = 0.0f; //초기 공격력 수정해도 상관없음
+    Attack = 1.0f; //초기 공격력 수정해도 상관없음
 
 
 	CharacterLevel = 1;        // 캐릭터 초기 레벨
@@ -79,7 +79,7 @@ AAGSDCharacter::AAGSDCharacter()
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
     AttackSpeedLevel = 1.0f;
-    AttackRangeLevel = 1.0f;
+    AttackRangeLevel = 1.0f;        //3단계로 진행
     IsWalking = false;
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
@@ -395,9 +395,9 @@ void AAGSDCharacter::Tick(float DeltaTime)
         else
         {
             // 끌어당기기
-            MagnetStrength += MagnetAcceleration * DeltaTime;
-            FVector Force = Direction * MagnetStrength * DeltaTime;
-            XPOrb->AddActorWorldOffset(Force, true);
+            XPOrb->MagnetStrength += MagnetAcceleration * DeltaTime;
+            XPOrb->force = Direction * XPOrb->MagnetStrength * DeltaTime;
+            XPOrb->AddActorWorldOffset(XPOrb->force, true);
         }
     }
 
@@ -412,6 +412,7 @@ void AAGSDCharacter::Tick(float DeltaTime)
 
 void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
@@ -442,6 +443,8 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
         //PlayerInputComponent->BindAction("WeaponExchange", IE_Pressed, this, &AAGSDCharacter::);
         //디버그용 버튼
         PlayerInputComponent->BindAction("Debug", IE_Pressed, this, &AAGSDCharacter::Debug);
+        //일시정지 버튼 
+        PlayerInputComponent->BindAction("GamePauseButton", IE_Pressed, this, &AAGSDCharacter::HandleEscape);
 	}
 	else
 	{
@@ -521,6 +524,11 @@ void AAGSDCharacter::UpdateCameraObstruction()
         FVector NewCameraLocation = FMath::VInterpTo(FollowCamera->GetComponentLocation(), UnobstructedLocation, DeltaTime, InterpSpeed);
         FollowCamera->SetWorldLocation(NewCameraLocation);
     }
+}
+//일시정시 관리 함수
+void AAGSDCharacter::HandleEscape()
+{
+    UE_LOG(LogTemp, Warning, TEXT("ESC pressed, Game Pause"));
 }
 
 void AAGSDCharacter::Dash()
@@ -1392,7 +1400,7 @@ void AAGSDCharacter::Attacked(float Damage)
     {
         return;
     }
-    int32 fixed_Damge = (int32)(Damage * ((100.0f - Defense) / 100.0f));
+    int32 fixed_Damge = (int32)(Damage) - (int32)(Damage * ((Defense - 100.0f) / 100.0f));
     //체력계산
     if (fixed_Damge > 0) //받는 데미지가 음수가 되버리면 0으로 계산
     {

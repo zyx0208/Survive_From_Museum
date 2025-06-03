@@ -48,6 +48,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XP", meta = (AllowPrivateAccess = "true"))
     int32 XPValue;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Magnet", meta = (AllowPrivateAccess = "true"))
+    float MagnetStrength = 500.0f; //초기 자석 값
+    FVector force;
+
 private:
     bool bIsConsumed = false; // 이미 흡수되었는지 확인
 
