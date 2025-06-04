@@ -102,7 +102,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float SpeedIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT("")));
-            Character->SpeedLevel += (SpeedIncrease / 100.0f);
+            Character->SpeedLevel += SpeedIncrease;
             Character->GetCharacterMovement()->MaxWalkSpeed = Character->SpeedLevel;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Speed %.1f"), SpeedIncrease, Character->SpeedLevel);
         }
