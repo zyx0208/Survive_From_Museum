@@ -25,6 +25,8 @@
 #include "WeaponDrop.h"
 #include "GameTimer.h"
 
+#include "HPandDashUI.h"
+
 //#include "AGSDCharacter_LevelUP.h"
 
 #include "AGSDCharacter.generated.h"
@@ -134,6 +136,19 @@ protected:
 
 	UPROPERTY()
 	UUserWidget* HealthBarWidget;
+
+    //소형 hp & dash 바
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UUserWidget> HPandDashWidgetClass;
+    UPROPERTY()
+    UHPandDashUI* HPandDashSimpleWidget;
+    // 새 UI 액터 클래스 참조
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<class AHPDashUIActor> HPDashUIActorClass;
+    // UI 액터 인스턴스
+    UPROPERTY()
+    AHPDashUIActor* HPDashUIActorInstance;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> LevelUpUIBPClass;

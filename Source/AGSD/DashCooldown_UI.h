@@ -16,8 +16,8 @@ class AGSD_API UDashCooldown_UI : public UUserWidget
 	
 public:
     /** UI 업데이트 함수 */
-    UFUNCTION(BlueprintCallable, Category = "Cooldown")
-    void UpdateDashCooldown(float CooldownPercentage);
+    //UFUNCTION(BlueprintCallable, Category = "Cooldown")
+    //void UpdateDashCooldown(float CooldownPercentage);
     void UpdateAttackCooldown(float CooldownPercentage);
     void UpdateWeaponIcon();
     void UpdateSwapWeapon();
@@ -28,16 +28,16 @@ public:
 
 protected:
     /** 위젯 바인딩 */
-    UPROPERTY(meta = (BindWidget))
-    class UImage* DashIcon;
+    /*UPROPERTY(meta = (BindWidget))
+    class UImage* DashIcon;*/
 
     UPROPERTY(meta = (BindWidget))
     class UImage* MainWeaponIcon;
     UPROPERTY(meta = (BindWidget))
     class UImage* SubWeaponIcon;
 
-    UPROPERTY(meta = (BindWidget))
-    class UProgressBar* DashCooldownBar;
+    /*UPROPERTY(meta = (BindWidget))
+    class UProgressBar* DashCooldownBar;*/
     UPROPERTY(meta=(BindWidget))
     class UProgressBar* AttackCooldownBar;
 

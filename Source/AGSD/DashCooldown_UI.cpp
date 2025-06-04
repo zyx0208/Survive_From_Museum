@@ -50,13 +50,13 @@ void UDashCooldown_UI::UpdateSwapWeapon()
     }
 }
 
-void UDashCooldown_UI::UpdateDashCooldown(float CooldownPercentage)
+/*void UDashCooldown_UI::UpdateDashCooldown(float CooldownPercentage)
 {
     if (DashCooldownBar)
     {
         DashCooldownBar->SetPercent(CooldownPercentage);
     }
-}
+}*/
 
 void UDashCooldown_UI::UpdateAttackCooldown(float CooldownPercentage)
 {

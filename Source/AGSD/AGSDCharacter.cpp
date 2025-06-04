@@ -41,7 +41,7 @@
 #include "Components/TextBlock.h"
 
 #include "DashCooldown_UI.h"
-
+#include "HPDashUIActor.h"
 #include "WeaponDataTable.h"
 #include "WeaponDataTableBeta.h"
 #include "UObject/ConstructorHelpers.h"
@@ -287,6 +287,28 @@ void AAGSDCharacter::BeginPlay()
     if (MouseIndicatorClass)
     {
         MouseIndicator = GetWorld()->SpawnActor<AMouseIndicatorActor>(MouseIndicatorClass, FVector::ZeroVector, FRotator::ZeroRotator);
+    }
+
+    if (HPDashUIActorClass)
+    {
+        HPDashUIActorInstance = GetWorld()->SpawnActor<AHPDashUIActor>(HPDashUIActorClass, GetActorLocation(), FRotator::ZeroRotator);
+        if (HPDashUIActorInstance)
+        {
+            HPDashUIActorInstance->Initialize(this); // 캐릭터를 따라다님
+
+            // 위젯 연결
+            if (HPandDashWidgetClass)
+            {
+                UWidgetComponent* WidgetComp = HPDashUIActorInstance->FindComponentByClass<UWidgetComponent>();
+                if (WidgetComp)
+                {
+                    UUserWidget* UIWidget = CreateWidget<UUserWidget>(GetWorld(), HPandDashWidgetClass);
+                    WidgetComp->SetWidget(UIWidget);
+                    UpdateHealthBar();
+                    UpdateDashCooldownUI();
+                }
+            }
+        }
     }
 }
 
@@ -653,11 +675,11 @@ void AAGSDCharacter::ResetUnInvincibility()
 //대쉬 쿨타임 갱신 함수
 void AAGSDCharacter::UpdateDashCooldownUI()
 {
-    if (!DashCooldownWidget)
+    /*if (!DashCooldownWidget)
     {
         //UE_LOG(LogTemp, Error, TEXT("DashCooldownWidget is NULL! Check if UI was created in BeginPlay."));
         return;
-    }
+    }*/
     if (DashCooldownTimer > 0)
     {
         DashCooldownTimer -= 0.1f;
@@ -665,7 +687,15 @@ void AAGSDCharacter::UpdateDashCooldownUI()
 
        // UE_LOG(LogTemp, Log, TEXT("Cooldown Percentage: %f"), CooldownPercentage);
 
-        DashCooldownWidget->UpdateDashCooldown(CooldownPercentage);
+        //DashCooldownWidget->UpdateDashCooldown(CooldownPercentage);
+        if (HPDashUIActorInstance)
+        {
+            UHPandDashUI* UIWidget = Cast<UHPandDashUI>(HPDashUIActorInstance->FindComponentByClass<UWidgetComponent>()->GetWidget());
+            if (UIWidget)
+            {
+                UIWidget->UpdateSimpleDashBar(CooldownPercentage);
+            }
+        }
     }
 }
 
@@ -731,8 +761,17 @@ void AAGSDCharacter::UpdateHealthBar()
 			HealthProgressBar->SetPercent(HealthPercentage);
             BarrierProgressBar->SetPercent(BarrierPercentage);
 		}
+        if (HPDashUIActorInstance)
+        {
+            UHPandDashUI* UIWidget = Cast<UHPandDashUI>(HPDashUIActorInstance->FindComponentByClass<UWidgetComponent>()->GetWidget());
+            if (UIWidget)
+            {
+                UIWidget->UpdateSimpleHPBar(HealthPercentage);
+            }
+        }
         UpdateStat();
 	}
+    
 }
 void AAGSDCharacter::UpdateXPBar()
 {
