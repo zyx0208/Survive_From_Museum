@@ -14,6 +14,8 @@ void UAGSDGameInstance::Init()
 {
     Super::Init();
 
+    LoadGameData();
+
     UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
     if (UserSettings)
     {
@@ -23,6 +25,12 @@ void UAGSDGameInstance::Init()
     }
     WeaponArray.Add(4);
     WeaponArray.Add(5);
+}
+
+void UAGSDGameInstance::Shutdown()
+{
+    Super::Shutdown();
+    SaveGameData(); // 자동 저장
 }
 
 void UAGSDGameInstance::CreateGameData()
