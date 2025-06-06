@@ -53,7 +53,7 @@ AWeaponDrop::AWeaponDrop()
     WeaponID = FString::FromInt(WeaponIDInt);
 
     InteractionWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidget"));
-    InteractionWidget->SetupAttachment(WeaponMeshComponent);
+    InteractionWidget->SetupAttachment(RootComponent);
 
     InteractionWidget->SetWidgetSpace(EWidgetSpace::World);
     InteractionWidget->SetDrawAtDesiredSize(true); // 자동 크기 조정 (선택)
