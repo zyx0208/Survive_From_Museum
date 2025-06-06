@@ -120,7 +120,7 @@ void AProjectile_Beta::Damage(AActor* OtherActor)
                     if (IsValid(HitEnemyController))
                     {
                         DamagedEnemy.Add(HitEnemy);
-                        HitEnemyController->Attacked(ProjectileDamage + PlayerAttack);
+                        HitEnemyController->Attacked((ProjectileDamage + PlayerAttack)*ProjectileCoefficient);
                         
                         WeaponHitEffect(OtherActor);
                     }

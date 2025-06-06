@@ -41,10 +41,15 @@ public:
 	float ProjectileDamage;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Projectile)
+    float ProjectileCoefficient = 1.0f;
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Projectile)
 	float PlayerAttack;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Projectile)
     float PlayerRange;
+
+    
 
 	// 탄환 충돌
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
