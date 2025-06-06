@@ -25,9 +25,11 @@ void AAGSDGameMode::BeginPlay()
     Super::BeginPlay(); // 부모 클래스의 BeginPlay 호출
     UE_LOG(LogTemp, Log, TEXT("GameMode BeginPlay Called!"));
     // 게임 인스턴스를 안전하게 캐스팅
+    /*
     UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
+    */
     ResetAccessoryData();
-
+    /*
     if (GameInstance)
     {
         // 게임 인스턴스에서 데이터를 로드하는 함수 호출
@@ -39,6 +41,7 @@ void AAGSDGameMode::BeginPlay()
     {
         UE_LOG(LogTemp, Warning, TEXT("GameInstance is null!"));
     }
+    */
 }
 
 void AAGSDGameMode::GameExit()
@@ -55,7 +58,9 @@ void AAGSDGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
     Super::EndPlay(EndPlayReason);
 
     // 게임 종료 시 데이터 저장
+    /*
     AAGSDGameMode::GameExit();
+    */
 }
 
 void AAGSDGameMode::ResetAccessoryData()

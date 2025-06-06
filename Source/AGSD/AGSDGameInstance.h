@@ -19,6 +19,7 @@ class AGSD_API UAGSDGameInstance : public UGameInstance
 public:
     // 게임 인스턴스 초기화 시 호출되는 함수
     virtual void Init() override;
+    virtual void Shutdown() override;
 
     // 게임 데이터 슬롯을 생성하는 함수
     UFUNCTION(BlueprintCallable, Category = "SaveGame")
