@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
@@ -53,4 +55,5 @@ private:
     bool Patton3Spawn; //패턴 소환을 위한 변수
     bool Patton4Spawn; //패턴 소환을 위한 변수
     bool Patton5Spawn; //패턴 소환을 위한 변수
+    UNavigationSystemV1* NavSys;
 };

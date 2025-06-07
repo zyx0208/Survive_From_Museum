@@ -8,13 +8,15 @@
 #include "Enemy1Class.h"
 #include "Enemy1AIController.h"
 #include "Blueprint/UserWidget.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+    
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +32,7 @@ void AEnemySpawner::BeginPlay()
     Patton3Spawn = false;
     Patton4Spawn = false;
     Patton5Spawn = false;
+    NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 }
 
 // Called every frame
@@ -112,16 +115,32 @@ void AEnemySpawner::Tick(float DeltaTime)
                 for (int i = 0; i < (SpawnNum + 3)/2; i++) //일반몹 소환
                 {
                     TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
-                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator);
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation()
+                        + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
                 UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
                 for (int i = 0; i < (SpawnNum - 3)/2; i++) //정예몹 소환(정예몹 인덱스 : 마지막 인덱스)
                 {
-                    GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation()
+                        + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
             }
         }
@@ -255,17 +274,31 @@ void AEnemySpawner::Tick(float DeltaTime)
                 for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
                 {
                     TempEnemyCounter = FMath::RandRange(0, 1);
-                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator);
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
                 UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
                 for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
                 {
                     TempEnemyCounter = FMath::RandRange(2, 3);
-                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator);
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
             }
         }
@@ -399,17 +432,31 @@ void AEnemySpawner::Tick(float DeltaTime)
                 for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
                 {
                     TempEnemyCounter = FMath::RandRange(0, 1);
-                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator);
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
                 UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
                 for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
                 {
                     TempEnemyCounter = FMath::RandRange(2, 3);
-                    GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter],
-                        PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange),
-                        FRotator::ZeroRotator);
+                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                    FNavLocation NavEnemySpawnLocation;
+                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                    {
+                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                    }
                 }
             }
         }
