@@ -81,6 +81,7 @@ AAGSDCharacter::AAGSDCharacter()
     AttackSpeedLevel = 1.0f;
     AttackRangeLevel = 1.0f;        //3단계로 진행
     IsWalking = false;
+    DashCooldown = 3.0f;
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
@@ -1195,7 +1196,7 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
             if (OverlapWeaponDrop)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Overlap Weapon: %s"), *OverlapWeaponDrop->WeaponID));
-                if(OverlapWeaponDrop->InteractionWidget) OverlapWeaponDrop->InteractionWidget->SetVisibility(true);
+                //if(OverlapWeaponDrop->InteractionWidget) OverlapWeaponDrop->InteractionWidget->SetVisibility(true);
                 OverlapID = *OverlapWeaponDrop->WeaponID;
             }
         }

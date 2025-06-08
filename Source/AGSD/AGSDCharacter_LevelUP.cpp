@@ -115,12 +115,12 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         }
         else if (Effect.Contains(TEXT("대쉬 쿨타임")))
         {
-            (Character->DashCooldown <= 3.0f) ? Character->DashCooldown = 3.0f : Character->DashCooldown -= 1.0f;
+            (Character->DashCooldown <= 2.0f) ? Character->DashCooldown = 2.0f : Character->DashCooldown -= 1.0f;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: 1sec DashCooldown %.1f"), Character->DashCooldown);
         }
         else if (Effect.Contains(TEXT("경험치 획득량")))
         {
-            Character->BounsXPLevel += 0.25f;
+            Character->BounsXPLevel += 0.20f;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: +25 BounsXPLevel %.2f"), Character->BounsXPLevel);
         }
         else if (Effect.Contains(TEXT("경험치 획득반경")))
@@ -190,20 +190,20 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int ran
     switch (randomstat)
     {
     case 0: // MaxHealth 감소
-        if (Character->MaxHealth >= 20)  // 최소 체력 제한
+        if (Character->MaxHealth > 5)  // 최소 체력 제한
         {
-            Character->MaxHealth -= 10;
-            Character->CurrentHealth -= 10;
+            Character->MaxHealth -= 5;
+            Character->CurrentHealth -= 5;
             UE_LOG(LogTemp, Log, TEXT("MaxHealth 감소: %d"), Character->MaxHealth);
         }
         else
-            Character->MaxHealth = 10;
+            Character->MaxHealth = 1;
         break;
 
     case 1: // Defense 감소
-        if (Character->Defense >= 10.0f) // 최소 방어력 제한
+        if (Character->Defense >= 5.0f) // 최소 방어력 제한
         {
-            Character->Defense -= 10.0f;
+            Character->Defense -= 5.0f;
             UE_LOG(LogTemp, Log, TEXT("Defense 감소: %f"), Character->Defense);
         }
         else
@@ -211,10 +211,14 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int ran
         break;
 
     case 2: // SpeedLevel 감소
-        if (Character->SpeedLevel > 0.1f) // 최소 속도 제한
+        if (Character->SpeedLevel > 25.0f) // 최소 속도 제한
         {
-            Character->SpeedLevel -= 0.1f; // 10% 감소 
+            Character->SpeedLevel -= 25.0f; // 5% 감소(500.f 의 5%) 
             UE_LOG(LogTemp, Log, TEXT("SpeedLevel 감소: %.2f"), Character->SpeedLevel);
+        }
+        else
+        {
+            Character->SpeedLevel = 25.0f;
         }
         break;
 
@@ -249,21 +253,21 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyP(AAGSDCharacter* Character, int ran
     switch (randomstat)
     {
     case 0: // MaxHealth 증가
-        Character->MaxHealth += 10;
+        Character->MaxHealth += 5;
         UE_LOG(LogTemp, Log, TEXT("MaxHealth 감소: %d"), Character->MaxHealth);
         
         break;
 
     case 1: // Defense 증가
         
-         Character->Defense += 10.0f;
+         Character->Defense += 5.0f;
         UE_LOG(LogTemp, Log, TEXT("Defense 감소: %f"), Character->Defense);
         
         break;
 
     case 2: // SpeedLevel 증가
         
-        Character->SpeedLevel += 0.1f; // 10% 증가
+        Character->SpeedLevel += 25.0f; // 10% 증가
         UE_LOG(LogTemp, Log, TEXT("SpeedLevel 감소: %.2f"), Character->SpeedLevel);
         
         break;
