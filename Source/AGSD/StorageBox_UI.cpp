@@ -79,6 +79,10 @@ void UStorageBox_UI::NativeConstruct()
             }
         }
     }
+    if (SelectedImageSlot1)
+        SelectedImageSlot1->SetVisibility(ESlateVisibility::Hidden);
+    if (SelectedImageSlot2)
+        SelectedImageSlot2->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UStorageBox_UI::DisplayWeaponImage(int32 SlotIndex, UTexture2D* WeaponIcon)
@@ -221,11 +225,13 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
         if (SelectedSlotIndex1 == WeaponIndexSetArray[ButtonIndex])
         {
             SelectedImageSlot1->SetBrushFromTexture(nullptr);
+            SelectedImageSlot1->SetVisibility(ESlateVisibility::Hidden);
             SelectedSlotIndex1 = -1;
         }
         else if (SelectedSlotIndex2 == WeaponIndexSetArray[ButtonIndex])
         {
             SelectedImageSlot2->SetBrushFromTexture(nullptr);
+            SelectedImageSlot2->SetVisibility(ESlateVisibility::Hidden);
             SelectedSlotIndex2 = -1;
         }
     }
@@ -240,11 +246,13 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
             if (SelectedSlotIndex1 == OldestIndex)
             {
                 SelectedImageSlot1->SetBrushFromTexture(nullptr);
+                SelectedImageSlot1->SetVisibility(ESlateVisibility::Hidden);
                 SelectedSlotIndex1 = -1;
             }
             else if (SelectedSlotIndex2 == OldestIndex)
             {
                 SelectedImageSlot2->SetBrushFromTexture(nullptr);
+                SelectedImageSlot2->SetVisibility(ESlateVisibility::Hidden);
                 SelectedSlotIndex2 = -1;
             }
         }
@@ -254,11 +262,13 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
         if (SelectedSlotIndex1 == -1)
         {
             SelectedImageSlot1->SetBrushFromTexture(SelectedTexture);
+            SelectedImageSlot1->SetVisibility(ESlateVisibility::Visible);
             SelectedSlotIndex1 = WeaponIndexSetArray[ButtonIndex];
         }
         else if (SelectedSlotIndex2 == -1)
         {
             SelectedImageSlot2->SetBrushFromTexture(SelectedTexture);
+            SelectedImageSlot2->SetVisibility(ESlateVisibility::Visible);
             SelectedSlotIndex2 = WeaponIndexSetArray[ButtonIndex];
         }
     }
