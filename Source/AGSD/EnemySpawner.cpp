@@ -38,8 +38,8 @@ void AEnemySpawner::BeginPlay()
 // Called every frame
 void AEnemySpawner::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    Super::Tick(DeltaTime);
+    PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     switch (Stage)
     {
     case 1: //1 스테이지(300초 / 10초 당 1웨이브 / 5웨이브마다 등장 패턴 변화)
@@ -77,69 +77,58 @@ void AEnemySpawner::Tick(float DeltaTime)
                         CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
                     }
                 }
-                SpawnNum = -3;//일반 몹 생성안하도록 설정
             }
             //50초 마다 패턴 변화
             else if (TotalTime >= 250.0f)
             {
-                SpawnNum = 13;
+                SpawnTime = 10.0f / 13;
+                SpawnNum = 1;
             }
             else if (TotalTime >= 200.0f)
             {
-                SpawnNum = 11;
+                SpawnTime = 10.0f / 11;
+                SpawnNum = 1;
             }
             else if (TotalTime >= 150.0f)
             {
-                SpawnNum = 9;
+                SpawnTime = 10.0f / 9;
+                SpawnNum = 1;
             }
             else if (TotalTime >= 100.0f)
             {
-                SpawnNum = 7;
+                SpawnTime = 10.0f / 7;
+                SpawnNum = 1;
             }
             else if (TotalTime >= 50.0f)
             {
-                SpawnNum = 5;
+                SpawnTime = 10.0f / 5;
+                SpawnNum = 1;
             }
             else
             {
-                SpawnTime = 10.0f;
-                SpawnNum = 3;
+                SpawnTime = 10.0f / 3;
+                SpawnNum = 1;
             }
         }
-        if (TempTime >= SpawnTime)
+        if (TempTime >= SpawnTime and !BossRound)
         {
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3)/2);
-                for (int i = 0; i < (SpawnNum + 3)/2; i++) //일반몹 소환
+                TempEnemyCounter = 0;
+                for (int j = 0; j < 10; j++)
                 {
-                    TempEnemyCounter = FMath::RandRange(0, Enemys.Num() - 2);
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation()
                         + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
                     FNavLocation NavEnemySpawnLocation;
                     if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
                     {
                         GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                        break;
                     }
                     else
                     {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
-                    }
-                }
-                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
-                for (int i = 0; i < (SpawnNum - 3)/2; i++) //정예몹 소환(정예몹 인덱스 : 마지막 인덱스)
-                {
-                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation()
-                        + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
-                    FNavLocation NavEnemySpawnLocation;
-                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
-                    {
-                        GetWorld()->SpawnActor<AActor>(Enemys[Enemys.Num() - 1], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator); //마지막 인덱스(정예몹)을 확정으로 소환
-                    }
-                    else
-                    {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                        UE_LOG(LogTemp, Display, TEXT("[%d]Can't Find NaviMash for Spawn : %s"), j, *EnemySpawnLocation.ToString());
                     }
                 }
             }
@@ -181,12 +170,12 @@ void AEnemySpawner::Tick(float DeltaTime)
                         CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
                     }
                 }
-                SpawnNum = -3;//일반 몹 생성안하도록 설정
             }
             //50초 마다 패턴 변화
             else if (TotalTime >= 250.0f)
             {
-                SpawnNum = 13;
+                SpawnTime = 10.0f / 13;
+                SpawnNum = 1;
                 if (!Patton5Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -201,7 +190,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 200.0f)
             {
-                SpawnNum = 11;
+                SpawnTime = 10.0f / 11;
+                SpawnNum = 1;
                 if (!Patton4Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -216,7 +206,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 150.0f)
             {
-                SpawnNum = 9;
+                SpawnTime = 10.0f / 9;
+                SpawnNum = 1;
                 if (!Patton3Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -231,7 +222,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 100.0f)
             {
-                SpawnNum = 7;
+                SpawnTime = 10.0f / 7;
+                SpawnNum = 1;
                 if (!Patton2Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -246,7 +238,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 50.0f)
             {
-                SpawnNum = 5;
+                SpawnTime = 10.0f / 5;
+                SpawnNum = 1;
                 if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -261,43 +254,28 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else
             {
-                SpawnTime = 10.0f;
-                SpawnNum = 3;
+                SpawnTime = 10.0f / 3;
+                SpawnNum = 1;
             }
         }
-        if (TempTime >= SpawnTime)
+        if (TempTime >= SpawnTime and !BossRound)
         {
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3) / 2);
-                for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
+                TempEnemyCounter = FMath::RandRange(0, 1);
+                for (int j = 0; j < 10; j++)
                 {
-                    TempEnemyCounter = FMath::RandRange(0, 1);
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
                     FNavLocation NavEnemySpawnLocation;
                     if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
                     {
                         GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                        break;
                     }
                     else
                     {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
-                    }
-                }
-                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
-                for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
-                {
-                    TempEnemyCounter = FMath::RandRange(2, 3);
-                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
-                    FNavLocation NavEnemySpawnLocation;
-                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
-                    {
-                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
-                    }
-                    else
-                    {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                        UE_LOG(LogTemp, Display, TEXT("[%d]Can't Find NaviMash for Spawn : %s"), j, *EnemySpawnLocation.ToString());
                     }
                 }
             }
@@ -339,12 +317,12 @@ void AEnemySpawner::Tick(float DeltaTime)
                         CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
                     }
                 }
-                SpawnNum = -3;//일반 몹 생성안하도록 설정
             }
             //50초 마다 패턴 변화
             else if (TotalTime >= 250.0f)
             {
-                SpawnNum = 13;
+                SpawnTime = 10.0f / 13;
+                SpawnNum = 1;
                 if (!Patton5Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -359,7 +337,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 200.0f)
             {
-                SpawnNum = 11;
+                SpawnTime = 10.0f / 11;
+                SpawnNum = 1;
                 if (!Patton4Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -374,7 +353,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 150.0f)
             {
-                SpawnNum = 9;
+                SpawnTime = 10.0f / 9;
+                SpawnNum = 1;
                 if (!Patton3Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -389,7 +369,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 100.0f)
             {
-                SpawnNum = 7;
+                SpawnTime = 10.0f / 7;
+                SpawnNum = 1;
                 if (!Patton2Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -404,7 +385,8 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else if (TotalTime >= 50.0f)
             {
-                SpawnNum = 5;
+                SpawnTime = 10.0f / 5;
+                SpawnNum = 1;
                 if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -419,43 +401,28 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
             else
             {
-                SpawnTime = 10.0f;
-                SpawnNum = 3;
+                SpawnTime = 10.0f / 3;
+                SpawnNum = 1;
             }
         }
-        if (TempTime >= SpawnTime)
+        if (TempTime >= SpawnTime and !BossRound)
         {
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                UE_LOG(LogTemp, Display, TEXT("Nomal Spawn : %d"), (SpawnNum + 3) / 2);
-                for (int i = 0; i < (SpawnNum + 3) / 2; i++) //일반몹 소환
+                TempEnemyCounter = FMath::RandRange(0, 1);
+                for (int j = 0; j < 10; j++)
                 {
-                    TempEnemyCounter = FMath::RandRange(0, 1);
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
                     FNavLocation NavEnemySpawnLocation;
                     if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
                     {
                         GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                        break;
                     }
                     else
                     {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
-                    }
-                }
-                UE_LOG(LogTemp, Display, TEXT("Elite Spawn : %d"), (SpawnNum - 3) / 2);
-                for (int i = 0; i < (SpawnNum - 3) / 2; i++) //정예몹 소환
-                {
-                    TempEnemyCounter = FMath::RandRange(2, 3);
-                    FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
-                    FNavLocation NavEnemySpawnLocation;
-                    if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
-                    {
-                        GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
-                    }
-                    else
-                    {
-                        UE_LOG(LogTemp, Display, TEXT("Can't Find NaviMash for Spawn : %s"), *EnemySpawnLocation.ToString());
+                        UE_LOG(LogTemp, Display, TEXT("[%d]Can't Find NaviMash for Spawn : %s"), j, *EnemySpawnLocation.ToString());
                     }
                 }
             }
