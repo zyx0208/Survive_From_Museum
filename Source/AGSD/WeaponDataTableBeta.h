@@ -17,6 +17,24 @@
 /**
  *
  */
+ //무기 범위 증가 열거형
+UENUM(BlueprintType)
+enum class ERangeType : uint8
+{
+    RapidFire UMETA(DisplayName = "RapidFire"),
+    SprayFire UMETA(DisplayName = "SprayFire"),
+    BiggerProjectile UMETA(DisplayName = "BiggerProjectile")
+};
+//무기 승천 열거형
+UENUM(BlueprintType)
+enum class EAscensionType : uint8
+{
+    Damage UMETA(DisplayName = "Damage"),
+    Rate UMETA(DisplayName = "Rate"),
+    Range UMETA(DisplayName = "Projectile"),
+    Effect UMETA(DisplayName = "Effect")
+};
+
 USTRUCT(BlueprintType)
 struct FWeaponDataTableBetaStruct : public FTableRowBase
 {
@@ -85,4 +103,16 @@ public:
     //무기 설명
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FString WeaponDescription;
+
+    //승천 유형
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    EAscensionType WeaponAscension;
+
+    //범위 유형
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    ERangeType WeaponRangeType;
+
+    //승천 횟수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "9"))
+    int32 Ascension;
 };
