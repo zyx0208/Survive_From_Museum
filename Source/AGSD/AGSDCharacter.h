@@ -26,6 +26,7 @@
 #include "GameTimer.h"
 
 #include "HPandDashUI.h"
+#include "StatPanelWidget.h"
 
 //#include "AGSDCharacter_LevelUP.h"
 
@@ -136,6 +137,12 @@ protected:
 
 	UPROPERTY()
 	UUserWidget* HealthBarWidget;
+
+
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UStatPanelWidget> StatPanelWidgetClass;
+    UPROPERTY()
+    UStatPanelWidget* StatPanelWidget; // 현재 표시 중인 스탯 UI
 
     //소형 hp & dash 바
     UPROPERTY(EditAnywhere, Category = "UI")

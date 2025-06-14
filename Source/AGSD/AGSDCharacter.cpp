@@ -211,9 +211,15 @@ void AAGSDCharacter::BeginPlay()
 		}
 	}
 
-	if (HealthBarUIBPClass) //체력바 생성
+	if (HealthBarUIBPClass && StatPanelWidgetClass) //체력바 생성
 	{
 		HealthBarWidget = CreateWidget<UUserWidget>(GetWorld(), HealthBarUIBPClass);
+        StatPanelWidget = CreateWidget<UStatPanelWidget>(GetWorld(), StatPanelWidgetClass);
+        if (StatPanelWidget)
+        {
+            StatPanelWidget->AddToViewport();
+            StatPanelWidget->SetupStatBars(this); // 최초 초기화
+        }
 		if (HealthBarWidget)
 		{
 			HealthBarWidget->AddToViewport();
@@ -800,10 +806,17 @@ void AAGSDCharacter::UpdateXPBar()
 void AAGSDCharacter::UpdateStat()
 {
     if (!HealthBarWidget) return;
-    UTextBlock* HPText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("HPText")));
 
-    if (!HPText) return;
-    HPText->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), CurrentHealth, MaxHealth)));
+    UTextBlock* HPText = Cast<UTextBlock>(HealthBarWidget->GetWidgetFromName(TEXT("HPText")));
+    if (HPText)
+    {
+        HPText->SetText(FText::FromString(FString::Printf(TEXT("%d/%d"), CurrentHealth, MaxHealth)));
+    }
+
+    if (StatPanelWidget)
+    {
+        StatPanelWidget->SetupStatBars(this);  // 전체 스탯 갱신
+    }
 }
 
 void AAGSDCharacter::AddXP(int32 XPAmount)
