@@ -1152,6 +1152,9 @@ void AAGSDCharacter::WeaponTake()
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
+    RangeType = WeaponData->WeaponRangeType;
+    AscensionType = WeaponData->WeaponAscension;
+    Ascension = WeaponData->Ascension;
 
     WeaponAnimType = WeaponData->WeaponAnimType;
     UAnimInstance* CurrentAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());

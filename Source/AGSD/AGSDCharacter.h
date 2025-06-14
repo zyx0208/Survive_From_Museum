@@ -7,7 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "Projectile_A.h"
 #include "Projectile_Beta.h"
-#include "WeaponDataTable.h"
+#include "WeaponDataTableBeta.h"
 #include "AccessoryData.h"
 #include "NPC1Class.h"
 #include "Sound/SoundWave.h"
@@ -389,6 +389,15 @@ public:
 
     //무기 유형
     bool WeaponType;
+    
+    //무기 범위 타입
+    ERangeType RangeType;
+
+    //무기 승천 유형
+    EAscensionType AscensionType;
+
+    //무기 승천 단계
+    int32 Ascension;
 
 	//무기 메쉬 컴포넌트
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
