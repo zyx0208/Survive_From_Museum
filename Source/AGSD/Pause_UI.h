@@ -8,6 +8,7 @@
 #include "Pause_UI.generated.h"
 
 class UWrapBox;
+class UTextBlock;
 class UDataTable;
 
 /**
@@ -40,5 +41,26 @@ protected:
     /** WrapBox 위젯 (바인딩 필요) */
     UPROPERTY(meta = (BindWidget))
     UWrapBox* AccessoryWrapBox;
+
+    // 퍼즈 UI TEXT
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* HPText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* DefenseText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* AttackText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* AttackSpeedText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* AttackRangeText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* SpeedText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* DashText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* BounsXPText;
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* XPRangeText;
+
 
 };

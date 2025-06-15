@@ -17,6 +17,52 @@ void UPause_UI::NativeConstruct()
     {
         PopulateAccessoryIcons();
     }
+
+    if (HPText)
+    {
+        FString HPString = FString::Printf(TEXT("체력 : %d / %d"), PlayerCharacter->CurrentHealth, PlayerCharacter->MaxHealth);
+        HPText->SetText(FText::FromString(HPString));
+    }
+    if (DefenseText)
+    {
+        FString DefenseString = FString::Printf(TEXT("방어력 : %.0f%%"), PlayerCharacter->Defense);
+        DefenseText->SetText(FText::FromString(DefenseString));
+    }
+    if (AttackText)
+    {
+        FString AttackString = FString::Printf(TEXT("공격력 : %.0f"), PlayerCharacter->Attack);
+        AttackText->SetText(FText::FromString(AttackString));
+    }
+    if (AttackSpeedText)
+    {
+        FString ASString = FString::Printf(TEXT("공격속도 : %.1f"), PlayerCharacter->AttackSpeedLevel);
+        AttackSpeedText->SetText(FText::FromString(ASString));
+    }
+    if (AttackRangeText)
+    {
+        FString ARString = FString::Printf(TEXT("공격범위 : %.0f"), PlayerCharacter->AttackRangeLevel);
+        AttackRangeText->SetText(FText::FromString(ARString));
+    }
+    if (SpeedText)
+    {
+        FString SpeedString = FString::Printf(TEXT("이동속도 : %.1f"), PlayerCharacter->SpeedLevel);
+        SpeedText->SetText(FText::FromString(SpeedString));
+    }
+    if (DashText)
+    {
+        FString DashString = FString::Printf(TEXT("대쉬 쿨타임 : %.0f초"), PlayerCharacter->DashCooldown);
+        DashText->SetText(FText::FromString(DashString));
+    }
+    if (BounsXPText)
+    {
+        FString BounsXPString = FString::Printf(TEXT("경험치 획득 보너스 : %.1f배"), PlayerCharacter->BounsXPLevel);
+        BounsXPText->SetText(FText::FromString(BounsXPString));
+    }
+    if (XPRangeText)
+    {
+        FString XPRString = FString::Printf(TEXT("경험치 획득 범위 : %.1f"), PlayerCharacter->XPRangeLevel);
+        XPRangeText->SetText(FText::FromString(XPRString));
+    }
 }
 
 void UPause_UI::PopulateAccessoryIcons()
