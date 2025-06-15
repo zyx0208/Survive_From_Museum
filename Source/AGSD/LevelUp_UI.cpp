@@ -220,6 +220,9 @@ void ULevelUp_UI::OnOption1Clicked()
 	{
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[0]);     
         FName RowName = SelectedAccessories[0].RowName;
+
+        PlayerCharacter->PlayingGetAccessoryRowName(RowName);
+
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
         UnableButtons();
         AccessoryPtr->bIsAcquired = true;
@@ -232,6 +235,7 @@ void ULevelUp_UI::OnOption2Clicked()
 	{
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);    
         FName RowName = SelectedAccessories[1].RowName;
+        PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
         UnableButtons();
         AccessoryPtr->bIsAcquired = true;
@@ -244,6 +248,7 @@ void ULevelUp_UI::OnOption3Clicked()
 	{
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[2]);
         FName RowName = SelectedAccessories[2].RowName;
+        PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
         UnableButtons();
         AccessoryPtr->bIsAcquired = true;

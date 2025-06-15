@@ -563,5 +563,13 @@ public:
     UFUNCTION()
     void ShowWeaponExchangeUI();
 
+public:
+
+    UPROPERTY(BlueprintReadOnly)
+    TArray<FName> GetAccessory;
+    
+    void InitializeAccessoryList(); /** 배열 초기화 함수 */
+    
+    void PlayingGetAccessoryRowName(FName RowName); /** RowName 추가 함수 */
 };
 

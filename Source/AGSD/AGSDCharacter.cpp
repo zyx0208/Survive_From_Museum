@@ -85,6 +85,8 @@ AAGSDCharacter::AAGSDCharacter()
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
+    InitializeAccessoryList();  //획득한 악세서리 초기화
+
     IsResurrection = false;     //부활
     bIs_Attacked_Invincible = false;    //피격시 무적
 
@@ -1669,4 +1671,14 @@ void AAGSDCharacter::PlayWalkingSound()
             }
         }
     }
+}
+
+void AAGSDCharacter::InitializeAccessoryList()
+{
+    GetAccessory.Empty(); // 게임 시작 시 리스트 초기화
+}
+
+void AAGSDCharacter::PlayingGetAccessoryRowName(FName RowName)
+{
+    GetAccessory.Add(RowName);
 }
