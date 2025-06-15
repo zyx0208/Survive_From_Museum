@@ -21,8 +21,6 @@ public:
     UFUNCTION(BlueprintCallable)
     void UpdateBarDisplay();
 
-    UFUNCTION(BlueprintCallable)
-    void PlayBlinkEffect();  // 레벨업 시 효과
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (ExposeOnSpawn))
     UTexture2D* AttackStatIconTexture;
@@ -54,6 +52,7 @@ protected:
     float CurrentValue;
     float StartOffset;
     float UnitValue;
+    float LastValue = 0.f;
 
-    int32 MaxBars = 20;
+    //int32 MaxBars = 20;
 };

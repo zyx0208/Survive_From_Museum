@@ -102,7 +102,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float SpeedIncrease = FCString::Atof(*ValueString.Replace(TEXT("%"), TEXT("")));
-            Character->SpeedLevel += SpeedIncrease;
+            Character->SpeedLevel += 500.0f * (SpeedIncrease / 100.0f);
             Character->GetCharacterMovement()->MaxWalkSpeed = Character->SpeedLevel;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Speed %.1f"), SpeedIncrease, Character->SpeedLevel);
         }
@@ -121,7 +121,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         else if (Effect.Contains(TEXT("경험치 획득량")))
         {
             Character->BounsXPLevel += 0.20f;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: +25 BounsXPLevel %.2f"), Character->BounsXPLevel);
+            UE_LOG(LogTemp, Log, TEXT("Increase Effect: +20 BounsXPLevel %.2f"), Character->BounsXPLevel);
         }
         else if (Effect.Contains(TEXT("경험치 획득반경")))
         {
@@ -147,7 +147,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             // 랜덤효과 적용
             UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용+"));
             // 0~5 사이의 랜덤한 스탯 선택
-            int32 RandomStat = FMath::RandRange(0, 5);
+            int32 RandomStat = FMath::RandRange(0, 6);
             RandmoStatApplyP(Character, RandomStat);
         }
         else if (Effect.Contains(TEXT("랜덤-")))
@@ -155,7 +155,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             // 랜덤효과 적용
             UE_LOG(LogTemp, Log, TEXT("랜덤효과 적용-"));
             // 0~5 사이의 랜덤한 스탯 선택
-            int32 RandomStat = FMath::RandRange(0, 5);
+            int32 RandomStat = FMath::RandRange(0, 6);
             RandmoStatApplyM(Character, RandomStat);
         }
         else if (Effect.Contains(TEXT("피격시 5초 무적")))
@@ -211,14 +211,14 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int ran
         break;
 
     case 2: // SpeedLevel 감소
-        if (Character->SpeedLevel > 25.0f) // 최소 속도 제한
+        if (Character->SpeedLevel > 50.0f) // 최소 속도 제한
         {
-            Character->SpeedLevel -= 25.0f; // 5% 감소(500.f 의 5%) 
+            Character->SpeedLevel -= 50.0f; // 5% 감소(500.f 의 5%) 
             UE_LOG(LogTemp, Log, TEXT("SpeedLevel 감소: %.2f"), Character->SpeedLevel);
         }
         else
         {
-            Character->SpeedLevel = 25.0f;
+            Character->SpeedLevel = 50.0f;
         }
         break;
 
@@ -230,19 +230,39 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyM(AAGSDCharacter* Character, int ran
         }
         break;
 
-    case 4: // AttackRangeLevel 감소
-        /*if (Character->AttackRangeLevel > 1.0f) // 최소 사거리 제한
+    case 4: // 경험치획득량증가량 감소
+        if (Character->BounsXPLevel > 0.2f) // 최소 제한
         {
-            Character->AttackRangeLevel -= 1.0f; // 10% 감소
-            UE_LOG(LogTemp, Log, TEXT("AttackRangeLevel 감소: %.2f"), Character->AttackRangeLevel);
-        }*/
+            Character->BounsXPLevel -= 0.2f; // 20% 감소
+            UE_LOG(LogTemp, Log, TEXT("BounsXPLevel 감소: %.2f"), Character->BounsXPLevel);
+        }
+        else
+        {
+            Character->BounsXPLevel = 0.2f;
+        }
         break;
 
     case 5: // AttackSpeedLevel 감소
-        if (Character->AttackSpeedLevel > 1.0f) // 최소 공격속도 제한
+        if (Character->AttackSpeedLevel > 0.1f) // 최소 공격속도 제한
         {
             Character->AttackSpeedLevel -= 0.1f; // 10% 감소
             UE_LOG(LogTemp, Log, TEXT("AttackSpeedLevel 감소: %.2f"), Character->AttackSpeedLevel);
+        }
+        else
+        {
+            Character->AttackSpeedLevel = 0.1f;
+        }
+        break;
+
+    case 6: // 경험치 획득 반경 감소
+        if (Character->XPRangeLevel > 40.0f) //최소 제한
+        {
+            Character->XPRangeLevel -= 40.0f; //20% 감소
+            UE_LOG(LogTemp, Log, TEXT("XPRangeLevel 감소: %.2f"), Character->XPRangeLevel);
+        }
+        else
+        {
+            Character->XPRangeLevel = 40.0f;
         }
         break;
     }
@@ -254,44 +274,52 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyP(AAGSDCharacter* Character, int ran
     {
     case 0: // MaxHealth 증가
         Character->MaxHealth += 5;
-        UE_LOG(LogTemp, Log, TEXT("MaxHealth 감소: %d"), Character->MaxHealth);
+        Character->CurrentHealth += 5;
+        UE_LOG(LogTemp, Log, TEXT("MaxHealth 증가: %d / %d"), Character->CurrentHealth, Character->MaxHealth);
         
         break;
 
     case 1: // Defense 증가
         
          Character->Defense += 5.0f;
-        UE_LOG(LogTemp, Log, TEXT("Defense 감소: %f"), Character->Defense);
+        UE_LOG(LogTemp, Log, TEXT("Defense 증가: %f"), Character->Defense);
         
         break;
 
     case 2: // SpeedLevel 증가
         
-        Character->SpeedLevel += 25.0f; // 10% 증가
-        UE_LOG(LogTemp, Log, TEXT("SpeedLevel 감소: %.2f"), Character->SpeedLevel);
+        Character->SpeedLevel += 50.0f; // 10% 증가
+        UE_LOG(LogTemp, Log, TEXT("SpeedLevel 증가: %.2f"), Character->SpeedLevel);
         
         break;
 
     case 3: // Attack 증가
         
         Character->Attack += 1.0f; // 10% 증가
-        UE_LOG(LogTemp, Log, TEXT("Attack 감소: %.2f"), Character->Attack);
+        UE_LOG(LogTemp, Log, TEXT("Attack 증가: %.2f"), Character->Attack);
         
         break;
 
-    case 4: // AttackRangeLevel 증가
+    case 4: // BounsXPLevel 증가
         
-        /*Character->AttackRangeLevel *= 1.1f; // 10% 증가
-        UE_LOG(LogTemp, Log, TEXT("AttackRangeLevel 감소: %.2f"), Character->AttackRangeLevel);
-        */
+        Character->BounsXPLevel += 0.2f; // 20% 증가
+        UE_LOG(LogTemp, Log, TEXT("BounsXPLevel 증가: %.2f"), Character->BounsXPLevel);
+        
         break;
 
     case 5: // AttackSpeedLevel 증가
         
         Character->AttackSpeedLevel += 0.1f; // 10% 증가
-        UE_LOG(LogTemp, Log, TEXT("AttackSpeedLevel 감소: %.2f"), Character->AttackSpeedLevel);
+        UE_LOG(LogTemp, Log, TEXT("AttackSpeedLevel 증가: %.2f"), Character->AttackSpeedLevel);
 
         break;
+
+    case 6: //경험치 획득 반경 증가
+        Character->XPRangeLevel += 40.0f;
+        UE_LOG(LogTemp, Log, TEXT("XPRangeLevel 증가: %.2f"), Character->XPRangeLevel);
+        break;
     }
+
+    
 }
 

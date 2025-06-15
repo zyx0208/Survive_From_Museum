@@ -6,6 +6,9 @@
 #include "Components/HorizontalBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Animation/UMGSequencePlayer.h"
+#include "StatUnitBar.h"
 
 void UStatBarWidget::NativeConstruct()
 {
@@ -15,6 +18,8 @@ void UStatBarWidget::NativeConstruct()
 void UStatBarWidget::InitializeStat(FText InStatName, float InValue, float InStartOffset, float InUnitValue)
 {
     StatName = InStatName;
+    if (CurrentValue != NULL)
+        LastValue = CurrentValue;
     CurrentValue = InValue;
     StartOffset = InStartOffset;
     UnitValue = InUnitValue;
@@ -53,11 +58,11 @@ void UStatBarWidget::UpdateBarDisplay()
 {
     if (!BarContainer || !BarClass) return;
 
-    UE_LOG(LogTemp, Warning, TEXT("UI생성: %s %.1f %.1f %.1f"),
+    /*UE_LOG(LogTemp, Warning, TEXT("UI생성: %s %.1f %.1f %.1f"),
         *StatName.ToString(),
         CurrentValue,
         StartOffset,
-        UnitValue);
+        UnitValue);*/
 
 
     BarContainer->ClearChildren();
@@ -81,7 +86,9 @@ void UStatBarWidget::UpdateBarDisplay()
     else if (StatKey == TEXT("Speed"))
         FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
 
-    for (int32 i = 0; i < MaxBars; ++i)
+    int32 TotalBars = FullBars + (Remainder > 0.f ? 1 : 0); // 나머지 bar 포함
+
+    for (int32 i = 0; i < TotalBars; ++i)
     {
         UUserWidget* BarWidget = CreateWidget<UUserWidget>(this, BarClass);
         if (!BarWidget) continue;
@@ -89,21 +96,27 @@ void UStatBarWidget::UpdateBarDisplay()
         UProgressBar* ProgressBar = Cast<UProgressBar>(BarWidget->GetWidgetFromName(TEXT("UnitProgressBar")));
         if (ProgressBar)
         {
-            float Fill = 0.f;
-            if (i < FullBars) Fill = 1.f;
-            else if (i == FullBars) Fill = Remainder;
+            float Fill = 1.f;
+            if (i == FullBars && Remainder > 0.f)
+                Fill = Remainder;
 
             ProgressBar->SetPercent(Fill);
             ProgressBar->SetFillColorAndOpacity(FillColor);
         }
 
+        // 추가: 깜빡이기 효과
+        int32 OldBars = FMath::FloorToInt((LastValue - StartOffset) / UnitValue);
+        if ((LastValue < CurrentValue && i >= OldBars && i < TotalBars) ||  // 증가
+            (LastValue > CurrentValue && i >= TotalBars && i < OldBars))    // 감소
+        {
+            UStatUnitBar* UnitBar = Cast<UStatUnitBar>(BarWidget);
+            if (UnitBar)
+            {
+                UnitBar->PlayBlink(); // PlayBlink()는 BlueprintImplementableEvent로 선언되어야 함
+            }
+        }
         BarContainer->AddChildToHorizontalBox(BarWidget);
     }
 }
 
 
-void UStatBarWidget::PlayBlinkEffect()
-{
-    // 애니메이션 연동: Blueprint에서 Animation 생성 후 PlayAnimation 호출
-    //PlayAnimationByName(TEXT("Blink"), 0.f, 1);
-}
