@@ -926,6 +926,11 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         WeaponExchangeWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("WeaponExchangeWidget removed successfully."));
     }
+    else if (IsValid(WeaponAscensionWidget)) {
+        WeaponAscensionWidget->RemoveFromViewport();
+        WeaponAscensionWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("WeaponAscensionWidget removed successfully."));
+    }
 
     else
     {
@@ -1058,6 +1063,18 @@ void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 void AAGSDCharacter::ShowWeaponExchangeUI()
 {
+    int Overlap = FCString::Atoi(*OverlapID);
+    if ((WeaponArray[0] == Overlap) || (WeaponArray[1] == Overlap)) {
+        if (WeaponAscensionClass) {
+            WeaponAscensionWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponAscensionClass);
+        }
+        if (WeaponAscensionWidget) {
+            WeaponAscensionWidget->AddToViewport();
+            PauseGameForLevelUp();
+            
+        }
+    }
+    return;
     if (WeaponExchangeWidgetClass) {
         UE_LOG(LogTemp, Display, TEXT("ShowWeaponExchange"));
         WeaponExchangeWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponExchangeWidgetClass);

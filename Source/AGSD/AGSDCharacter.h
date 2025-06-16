@@ -183,9 +183,15 @@ protected:
 
     UPROPERTY()
     UUserWidget* WeaponExchangeWidget;
+
+    UPROPERTY()
+    UUserWidget* WeaponAscensionWidget;
     
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> WeaponExchangeWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> WeaponAscensionClass;
 
     UPROPERTY()
     UUserWidget* StorageBoxWidget;
