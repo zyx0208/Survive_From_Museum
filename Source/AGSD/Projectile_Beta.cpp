@@ -120,7 +120,7 @@ void AProjectile_Beta::Damage(AActor* OtherActor)
                     if (IsValid(HitEnemyController))
                     {
                         DamagedEnemy.Add(HitEnemy);
-                        HitEnemyController->Attacked((ProjectileDamage + PlayerAttack)*ProjectileCoefficient);
+                        HitEnemyController->Attacked(((ProjectileDamage + PlayerAttack)*ProjectileCoefficient)+PlayerAscension);
                         
                         WeaponHitEffect(OtherActor);
                     }
@@ -131,10 +131,11 @@ void AProjectile_Beta::Damage(AActor* OtherActor)
     }
 }
 
-void AProjectile_Beta::SetPlayerState(float Damage, float Range)
+void AProjectile_Beta::SetPlayerState(float Damage, float Range, int Ascension)
 {
     PlayerAttack = Damage;
     PlayerRange = Range;
+    PlayerAscension = Ascension;
     UE_LOG(LogTemp, Display, TEXT("attack: %f range: %f"), Damage,Range);
 }
 

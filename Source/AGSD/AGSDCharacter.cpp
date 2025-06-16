@@ -1392,7 +1392,7 @@ void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool Bigger)
                 if (Bigger) {
                     Projectile->SetActorScale3D(FVector(AttackRangeLevel));
                 }
-                Projectile->SetPlayerState(Attack, AttackRangeLevel);
+                Projectile->SetPlayerState(Attack, AttackRangeLevel, Ascension);
                 Projectile->SetActorEnableCollision(true);
                 Projectile->SetActorTickEnabled(true);
                 if (WeaponData)

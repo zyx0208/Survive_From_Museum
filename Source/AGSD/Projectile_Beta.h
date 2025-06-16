@@ -49,6 +49,9 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Projectile)
     float PlayerRange;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Projectile)
+    int PlayerAscension;
+
     
 
 	// 탄환 충돌
@@ -92,5 +95,5 @@ public:
 
     //플레이어의 능력치 전달
     UFUNCTION()
-    void SetPlayerState(float Damage,float Range);
+    void SetPlayerState(float Damage,float Range, int Ascension);
 };
