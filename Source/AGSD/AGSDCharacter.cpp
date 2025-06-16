@@ -1344,7 +1344,7 @@ void AAGSDCharacter::RapidFireCount()
     CreateProjectile(0.0f,false);
     FireCount++;
     int MoreProjectile = AttackRangeLevel;
-    if (FireCount > MoreProjectile + Numberofprojectile) {
+    if (FireCount > MoreProjectile + Numberofprojectile -2) {
         GetWorldTimerManager().ClearTimer(RapidFireTimerHandle);
     }
 }
@@ -1352,7 +1352,7 @@ void AAGSDCharacter::RapidFireCount()
 void AAGSDCharacter::SprayFire()
 {
     int MoreProjectile = AttackRangeLevel;
-    for (int i = 0; i < Numberofprojectile + MoreProjectile; i++) {
+    for (int i = 0; i < Numberofprojectile + MoreProjectile - 1; i++) {
         float AdjustYaw = (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
         CreateProjectile(AdjustYaw,false);
     }
