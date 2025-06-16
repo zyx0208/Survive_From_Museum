@@ -8,6 +8,6 @@ void UPlayerAnimNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBa
 {
 	AAGSDCharacter* Player = Cast<AAGSDCharacter>(MeshComp->GetOwner());
 	if (Player) {
-		Player->CreateProjectile();
+		Player->FireByType();
 	}
 }

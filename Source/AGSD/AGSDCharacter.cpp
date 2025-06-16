@@ -1156,7 +1156,6 @@ void AAGSDCharacter::WeaponTake()
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
     RangeType = WeaponData->WeaponRangeType;
-    AscensionType = WeaponData->WeaponAscension;
     Ascension = WeaponData->Ascension;
 
     WeaponAnimType = WeaponData->WeaponAnimType;
@@ -1312,11 +1311,109 @@ void AAGSDCharacter::StopFiring()
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
 }
 
-void AAGSDCharacter::CreateProjectile()
+void AAGSDCharacter::FireByType()
 {
     if (WeaponSoundCue != nullptr) {
         UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
     }
+
+    switch (RangeType)
+    {
+    case ERangeType::RapidFire:
+        RapidFire();
+        break;
+    case ERangeType::SprayFire:
+        SprayFire();
+        break;
+    case ERangeType::BiggerProjectile:
+        BiggerProjectile();
+        break;
+    default:
+        break;
+    }
+}
+
+void AAGSDCharacter::RapidFire()
+{
+    FireCount = 0;
+    GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::RapidFireCount, 0.25f, true);
+}
+
+void AAGSDCharacter::RapidFireCount()
+{
+    CreateProjectile(0.0f,false);
+    FireCount++;
+    int MoreProjectile = AttackRangeLevel;
+    if (FireCount > MoreProjectile + Numberofprojectile) {
+        GetWorldTimerManager().ClearTimer(RapidFireTimerHandle);
+    }
+}
+
+void AAGSDCharacter::SprayFire()
+{
+    int MoreProjectile = AttackRangeLevel;
+    for (int i = 0; i < Numberofprojectile + MoreProjectile; i++) {
+        float AdjustYaw = (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
+        CreateProjectile(AdjustYaw,false);
+    }
+}
+
+void AAGSDCharacter::BiggerProjectile()
+{
+    CreateProjectile(0.0f,true);
+}
+
+void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool Bigger)
+{
+    if (ProjectileClass) {
+        // 총구 방향
+        FRotator MuzzleRotation = TraceHitDirection.Rotation();
+        MuzzleRotation.Pitch = 0;
+        MuzzleRotation.Roll = 0;
+
+        // 총구위치 설정
+        MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
+        MuzzleLocation.Z = CharacterLocation.Z;
+
+        // 탄환 생성
+        UWorld* World = GetWorld();
+        if (World)
+        {
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.Owner = this;
+            SpawnParams.Instigator = GetInstigator();
+           
+            AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+            FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, MuzzleRotation.Yaw + AdjustedYaw, MuzzleRotation.Roll);
+            if (Projectile)
+            {
+                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
+                FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+                if (Bigger) {
+                    Projectile->SetActorScale3D(FVector(AttackRangeLevel));
+                }
+                Projectile->SetPlayerState(Attack, AttackRangeLevel);
+                Projectile->SetActorEnableCollision(true);
+                Projectile->SetActorTickEnabled(true);
+                if (WeaponData)
+                {
+                    FVector LaunchDirection = AdjustedRotation.Vector();
+                    Projectile->FireInDirection(LaunchDirection);
+                }
+
+            }
+           //파티클 생성
+            if (WeaponParticle) {
+                SpawnParticle(MuzzleLocation, AdjustedRotation);
+            }
+        }
+    }
+}
+
+/*
+void AAGSDCharacter::CreateProjectile()
+{
+
     // 발사
     if (!WeaponType) {
         if (ProjectileClass)
@@ -1389,7 +1486,7 @@ void AAGSDCharacter::CreateProjectile()
 
             // 총구위치 설정
             MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight(); 
+            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 
 
             MuzzleRotation.Pitch += 0.0f;
@@ -1406,9 +1503,9 @@ void AAGSDCharacter::CreateProjectile()
                 for (int i = 0; i < Numberofprojectile; i++) {
                     if (i % 2 == 1) {
                         MuzzleOffset.Y = -1 * LeftRight;
-                        
+
                     }
-                    else if (i!=0 && i % 2 == 0) {
+                    else if (i != 0 && i % 2 == 0) {
                         MuzzleOffset.Y = 1 * LeftRight;
                         LeftRight += 5.0f;
                     }
@@ -1439,7 +1536,7 @@ void AAGSDCharacter::CreateProjectile()
         }
     }
 }
-
+*/
 void AAGSDCharacter::Attacked(float Damage)
 {
     if (bIsInvincible) // 무적 상태에서는 피해 무시

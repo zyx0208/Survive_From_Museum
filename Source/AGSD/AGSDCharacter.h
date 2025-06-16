@@ -368,8 +368,23 @@ public:
 	UFUNCTION()
 	void StopFiring();
 
+    UFUNCTION()
+    void FireByType();
+
+    UFUNCTION()
+    void RapidFire();
+    UFUNCTION()
+    void RapidFireCount();
+    int FireCount = 0;
+
+    UFUNCTION()
+    void SprayFire();
+
+    UFUNCTION()
+    void BiggerProjectile();
+
 	UFUNCTION()
-	void CreateProjectile();
+	void CreateProjectile(float AdjustedYaw, bool Bigger);
 
 	//무기 공격속도
 	float FireRate;
@@ -378,6 +393,7 @@ public:
 	FTimerHandle FireTimerHandle;
 	FTimerHandle FireRateTimerHandle;
     FTimerHandle AttackCooldownTimerHandle;
+    FTimerHandle RapidFireTimerHandle;
 
     //무기 쿨타임 변수
     float AttackCooldownStartTime;
@@ -399,9 +415,6 @@ public:
     
     //무기 범위 타입
     ERangeType RangeType;
-
-    //무기 승천 유형
-    EAscensionType AscensionType;
 
     //무기 승천 단계
     int32 Ascension;
