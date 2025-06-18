@@ -81,6 +81,12 @@ public:
     /** 무기 아이콘을 UI에 표시 */
     void DisplayWeaponImage(int32 SlotIndex, UTexture2D* WeaponIcon);
 
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponNameText;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponDescriptionText;
+
 private:
     /** 버튼 클릭 이벤트 핸들러 */
     UFUNCTION()

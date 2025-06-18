@@ -83,6 +83,10 @@ void UStorageBox_UI::NativeConstruct()
         SelectedImageSlot1->SetVisibility(ESlateVisibility::Hidden);
     if (SelectedImageSlot2)
         SelectedImageSlot2->SetVisibility(ESlateVisibility::Hidden);
+    if (WeaponNameText)
+        WeaponNameText->SetVisibility(ESlateVisibility::Hidden);
+    if (WeaponDescriptionText)
+        WeaponDescriptionText->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UStorageBox_UI::DisplayWeaponImage(int32 SlotIndex, UTexture2D* WeaponIcon)
@@ -270,6 +274,51 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
             SelectedImageSlot2->SetBrushFromTexture(SelectedTexture);
             SelectedImageSlot2->SetVisibility(ESlateVisibility::Visible);
             SelectedSlotIndex2 = WeaponIndexSetArray[ButtonIndex];
+        }
+    }
+
+    FString WeaponName;
+    switch (ButtonIndex)
+    {
+    case 0: WeaponName = TEXT("테니스라켓"); break;
+    case 1: WeaponName = TEXT("야구공"); break;
+    case 2: WeaponName = TEXT("망치"); break;
+    case 3: WeaponName = TEXT("여행자의 양손검"); break;
+    case 4: WeaponName = TEXT("여행자의 활"); break;
+    case 5: WeaponName = TEXT("파이어 플라워"); break;
+    case 6: WeaponName = TEXT("기관총"); break;
+    case 7: WeaponName = TEXT("차지빔"); break;
+    default: WeaponName = TEXT("알 수 없음"); break;
+    }
+    
+    // 무기 설명은 데이터 테이블에서 가져옴
+    if (WeaponDataTableBeta)
+    {
+        static const FString ContextString(TEXT("OnImageSlotClicked"));
+        int32 TargetIID = WeaponIndexSetArray[ButtonIndex];
+
+        TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+        for (const FName& RowName : RowNames)
+        {
+            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+            if (WeaponData && WeaponData->IID == TargetIID)
+            {
+                if (WeaponNameText)
+                {
+                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, WeaponData->Ascension);
+                    if (WeaponData->bIsReinforce)
+                        tempname = FString::Printf(TEXT("강화된 %s"), *tempname);
+                    WeaponNameText->SetText(FText::FromString(tempname));
+                    WeaponNameText->SetVisibility(ESlateVisibility::Visible);
+                }
+                if (WeaponDescriptionText)
+                {
+                    WeaponDescriptionText->SetText(FText::FromString(WeaponData->WeaponDescription));
+                    WeaponDescriptionText->SetVisibility(ESlateVisibility::Visible);
+                }
+                    
+                break;
+            }
         }
     }
 }
