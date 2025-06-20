@@ -1073,8 +1073,9 @@ void AAGSDCharacter::ShowWeaponExchangeUI()
             PauseGameForLevelUp();
             
         }
+        return;
     }
-    return;
+    
     if (WeaponExchangeWidgetClass) {
         UE_LOG(LogTemp, Display, TEXT("ShowWeaponExchange"));
         WeaponExchangeWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponExchangeWidgetClass);
@@ -1358,20 +1359,18 @@ void AAGSDCharacter::RapidFire()
 
 void AAGSDCharacter::RapidFireCount()
 {
-    CreateProjectile(0.0f,false);
+    CreateProjectile(0.0f,true);
     FireCount++;
-    int MoreProjectile = AttackRangeLevel;
-    if (FireCount > MoreProjectile + Numberofprojectile -2) {
+    if (FireCount > Numberofprojectile-1) {
         GetWorldTimerManager().ClearTimer(RapidFireTimerHandle);
     }
 }
 
 void AAGSDCharacter::SprayFire()
 {
-    int MoreProjectile = AttackRangeLevel;
-    for (int i = 0; i < Numberofprojectile + MoreProjectile - 1; i++) {
+    for (int i = 0; i < Numberofprojectile ; i++) {
         float AdjustYaw = (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
-        CreateProjectile(AdjustYaw,false);
+        CreateProjectile(AdjustYaw,true);
     }
 }
 
