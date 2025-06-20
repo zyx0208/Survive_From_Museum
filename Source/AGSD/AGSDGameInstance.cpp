@@ -25,6 +25,107 @@ void UAGSDGameInstance::Init()
     }
     WeaponArray.Add(4);
     WeaponArray.Add(5);
+
+    FirstLoading();
+}
+
+void UAGSDGameInstance::FirstLoading()
+{
+    UE_LOG(LogTemp, Log, TEXT("Loading Start."));
+    //레벨 로딩용 카운터 초기화
+    LoadedLevelCount = 0;
+    IsLoadingEnd = false;
+
+    //로딩 화면 생성
+    if (LoadingWidgetClass)
+    {
+        LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+        if (LoadingWidget)
+        {
+            LoadingWidget->AddToViewport();
+            UE_LOG(LogTemp, Log, TEXT("Loading UI Create."));
+        }
+    }
+
+    //로딩이 필요한 액터들 배열에 추가
+    TArray<FSoftObjectPath> AssetsToLoad;
+
+    for (int32 i = 0; i < LoadingActor.Num(); i++)
+    {
+        TSoftClassPtr<AActor> SoftClass = LoadingActor[i];
+        AssetsToLoad.Add(SoftClass.ToSoftObjectPath());
+    }
+    UE_LOG(LogTemp, Log, TEXT("Asset Loading Ready."));
+
+    //로딩 시작
+    if (AssetsToLoad.Num() > 0)
+    {
+        //로딩 종료 후 레벨 로딩 함수 호출
+        StreamableManager.RequestAsyncLoad(AssetsToLoad, FStreamableDelegate::CreateUObject(this, &UAGSDGameInstance::SecondLoading));
+    }
+    else
+    {
+        //로딩할 게 없으면 레벨 로딩 함수 호출
+        SecondLoading();
+    }
+}
+
+void UAGSDGameInstance::SecondLoading()
+{
+    UE_LOG(LogTemp, Log, TEXT("Asset Loading Complete!"));
+
+    if (LoadingLevel.Num() == 0)
+    {
+        EndLoading();
+        return;
+    }
+
+    for (int32 i = 0; i < LoadingLevel.Num(); ++i)
+    {
+        const TSoftObjectPtr<UWorld>& SoftLevel = LoadingLevel[i];
+        FString LevelName = SoftLevel.GetAssetName();
+
+        //비어있는 레벨 또는 오류로 인해 레벨을 잘못 인식할 경우를 위한 예외 처리
+        if (LevelName.IsEmpty())
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Level name is Empty! [index : %d]"), i);
+            LoadedLevelCount++;
+            continue;
+        }
+
+        FLatentActionInfo LatentInfo;
+        LatentInfo.CallbackTarget = this;
+        LatentInfo.ExecutionFunction = FName("OnSingleLevelLoaded");
+        LatentInfo.Linkage = 0;
+        LatentInfo.UUID = i;
+
+        UGameplayStatics::LoadStreamLevel(this, FName(*LevelName), true, false, LatentInfo);
+    }
+}
+
+void UAGSDGameInstance::OnSingleLevelLoaded()
+{
+    LoadedLevelCount++;
+
+    UE_LOG(LogTemp, Log, TEXT("Level Loading Progress: %d / %d"), LoadedLevelCount, LoadingLevel.Num());
+
+    if (LoadedLevelCount >= LoadingLevel.Num())
+    {
+        EndLoading();
+    }
+}
+
+void UAGSDGameInstance::EndLoading()
+{
+    UE_LOG(LogTemp, Log, TEXT("Loading Complete!"));
+
+    // 로딩 화면 제거
+    if (LoadingWidget)
+    {
+        LoadingWidget->RemoveFromParent();
+        LoadingWidget = nullptr;
+    }
+    IsLoadingEnd = true;
 }
 
 void UAGSDGameInstance::Shutdown()
