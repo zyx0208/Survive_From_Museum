@@ -33,7 +33,6 @@ void UAGSDGameInstance::FirstLoading()
 {
     UE_LOG(LogTemp, Log, TEXT("Loading Start."));
     //레벨 로딩용 카운터 초기화
-    LoadedLevelCount = 0;
     IsLoadingEnd = false;
 
     //로딩 화면 생성
@@ -61,56 +60,11 @@ void UAGSDGameInstance::FirstLoading()
     if (AssetsToLoad.Num() > 0)
     {
         //로딩 종료 후 레벨 로딩 함수 호출
-        StreamableManager.RequestAsyncLoad(AssetsToLoad, FStreamableDelegate::CreateUObject(this, &UAGSDGameInstance::SecondLoading));
+        StreamableManager.RequestAsyncLoad(AssetsToLoad, FStreamableDelegate::CreateUObject(this, &UAGSDGameInstance::EndLoading));
     }
     else
     {
         //로딩할 게 없으면 레벨 로딩 함수 호출
-        SecondLoading();
-    }
-}
-
-void UAGSDGameInstance::SecondLoading()
-{
-    UE_LOG(LogTemp, Log, TEXT("Asset Loading Complete!"));
-
-    if (LoadingLevel.Num() == 0)
-    {
-        EndLoading();
-        return;
-    }
-
-    for (int32 i = 0; i < LoadingLevel.Num(); ++i)
-    {
-        const TSoftObjectPtr<UWorld>& SoftLevel = LoadingLevel[i];
-        FString LevelName = SoftLevel.GetAssetName();
-
-        //비어있는 레벨 또는 오류로 인해 레벨을 잘못 인식할 경우를 위한 예외 처리
-        if (LevelName.IsEmpty())
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Level name is Empty! [index : %d]"), i);
-            LoadedLevelCount++;
-            continue;
-        }
-
-        FLatentActionInfo LatentInfo;
-        LatentInfo.CallbackTarget = this;
-        LatentInfo.ExecutionFunction = FName("OnSingleLevelLoaded");
-        LatentInfo.Linkage = 0;
-        LatentInfo.UUID = i;
-
-        UGameplayStatics::LoadStreamLevel(this, FName(*LevelName), true, false, LatentInfo);
-    }
-}
-
-void UAGSDGameInstance::OnSingleLevelLoaded()
-{
-    LoadedLevelCount++;
-
-    UE_LOG(LogTemp, Log, TEXT("Level Loading Progress: %d / %d"), LoadedLevelCount, LoadingLevel.Num());
-
-    if (LoadedLevelCount >= LoadingLevel.Num())
-    {
         EndLoading();
     }
 }
@@ -124,8 +78,35 @@ void UAGSDGameInstance::EndLoading()
     {
         LoadingWidget->RemoveFromParent();
         LoadingWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("Loading UI Deleted."));
     }
     IsLoadingEnd = true;
+}
+
+void UAGSDGameInstance::LevelLoadingStart()
+{
+    IsLevelLoading = true;
+    UWorld* World = GetWorld();
+    if (World && GEngine && GEngine->GameViewport)
+    {
+        LoadingWidget = CreateWidget<UUserWidget>(World, LoadingWidgetClass);
+        if (LoadingWidget)
+        {
+            GEngine->GameViewport->AddViewportWidgetContent(LoadingWidget->TakeWidget(), 9999);
+            UE_LOG(LogTemp, Log, TEXT("Loading UI Added to GameViewport directly."));
+        }
+    }
+}
+
+void UAGSDGameInstance::LevelLoadingEnd()
+{
+    IsLevelLoading = false;
+    if (LoadingWidget)
+    {
+        GEngine->GameViewport->RemoveViewportWidgetContent(LoadingWidget->TakeWidget());
+        LoadingWidget = nullptr;
+        UE_LOG(LogTemp, Log, TEXT("Loading UI Deleted."));
+    }
 }
 
 void UAGSDGameInstance::Shutdown()

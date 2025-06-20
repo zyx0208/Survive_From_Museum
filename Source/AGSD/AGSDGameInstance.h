@@ -26,17 +26,17 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Loading")
     void FirstLoading();
 
-    //레벨 로딩 함수
-    UFUNCTION(BlueprintCallable, Category = "Loading")
-    void SecondLoading();
-
-    //레벨 로딩 함수 반복을 위한 카운터 함수
-    UFUNCTION(BlueprintCallable, Category = "Loading")
-    void OnSingleLevelLoaded();
-
     //로딩이 끝난 후에 호출되는 함수
     UFUNCTION(BlueprintCallable, Category = "Loading")
     void EndLoading();
+
+    //맵 전환 로딩 함수가 시작될 때
+    UFUNCTION(BlueprintCallable, Category = "Loading")
+    void LevelLoadingStart();
+
+    //맵 전환 로딩 함수가 끝날 때
+    UFUNCTION(BlueprintCallable, Category = "Loading")
+    void LevelLoadingEnd();
 
     // 게임 데이터 슬롯을 생성하는 함수
     UFUNCTION(BlueprintCallable, Category = "SaveGame")
@@ -94,8 +94,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Loading")
     TArray<TSoftClassPtr<AActor>> LoadingActor;
 
+    //액터 로딩이 끝났는지 확인하는 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     bool IsLoadingEnd;
+
+    //레벨 로딩이 끝났는지 확인하는 변수
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    bool IsLevelLoading;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -107,8 +112,4 @@ private:
     UUserWidget* LoadingWidget;
 
     FStreamableManager StreamableManager;
-
-    //액터는 배열을 쓰면 여러개의 로딩이 끝난 뒤 한번만 콜백 함수가 작동하지만
-    //레벨은 한개한개마다 불러오는 기능을 써서 콜백이 여러번 되기 때문에 이를 처리할 카운터가 필요
-    int32 LoadedLevelCount = 0;
 };
