@@ -73,4 +73,6 @@ public:
 
     int OriginalWeaponID;
     int TargetWeaponID;
+
+    bool Recheck=false;
 };

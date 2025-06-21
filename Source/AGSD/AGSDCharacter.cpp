@@ -931,15 +931,10 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         WeaponAscensionWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("WeaponAscensionWidget removed successfully."));
     }
-    else if (IsValid(ReinforceUIWidget1)) {
-        ReinforceUIWidget1->RemoveFromViewport();
-        ReinforceUIWidget1 = nullptr;
+    else if (IsValid(ReinforceUIWidget)) {
+        ReinforceUIWidget->RemoveFromViewport();
+        ReinforceUIWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("ReinforceUIWidget1 removed successfully."));
-    }
-    else if (IsValid(ReinforceUIWidget2)) {
-        ReinforceUIWidget2->RemoveFromViewport();
-        ReinforceUIWidget2 = nullptr;
-        UE_LOG(LogTemp, Log, TEXT("ReinforceUIWidget2 removed successfully."));
     }
 
     else
@@ -1703,16 +1698,10 @@ void AAGSDCharacter::Clear()
         {
             ClearWidget->AddToViewport();
         }
-        ReinforceUIWidget1 = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
-        if (ReinforceUIWidget1)
+        ReinforceUIWidget = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
+        if (ReinforceUIWidget)
         {
-            ReinforceUIWidget1->AddToViewport();
-            WeaponArray.Add(0);
-        }
-        ReinforceUIWidget2 = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
-        if (ReinforceUIWidget2)
-        {
-            ReinforceUIWidget2->AddToViewport();
+            ReinforceUIWidget->AddToViewport();
         }
     }
 

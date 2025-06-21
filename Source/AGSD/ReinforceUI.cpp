@@ -13,7 +13,7 @@ void UReinforceUI::NativeConstruct()
         AgreeButton->OnClicked.AddDynamic(this, &UReinforceUI::OnAgreeButtonClicked);
     }
 
-    if (WeaponDataTableBeta) {
+    if (WeaponDataTableBeta!=nullptr) {
         static const FString ContextString(TEXT("Weapon Data Context"));
         if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
         {
@@ -25,22 +25,19 @@ void UReinforceUI::NativeConstruct()
             FName RowName2 = FName(FString::FromInt(PlayerCharacter->WeaponArray[1]));
             FWeaponDataTableBetaStruct* WeaponData2 = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName2, ContextString, true);
 
-            if (UpgradeCheck(*WeaponData1)&&PlayerCharacter->WeaponArray.Num()==2){
+            if (UpgradeCheck(*WeaponData1)) {
                 ShowReinforce(*WeaponData1);
-                UE_LOG(LogTemp, Warning, TEXT("Weapon1 show"));
+                Recheck = true;
             }
-
-            else if(UpgradeCheck(*WeaponData2))
-            {
+            else if (UpgradeCheck(*WeaponData2)) {
                 ShowReinforce(*WeaponData2);
-                UE_LOG(LogTemp, Warning, TEXT("Weapon2 show"));
-            }
-
-            else {
-                CloseUI();
             }
             //DisplayWeaponImage(WeaponIcon1, WeaponIcon2);
         }
+    }
+    else {
+        UE_LOG(LogTemp, Warning, TEXT("NO DataTable"));
+        CloseUI();
     }
 }
 
@@ -63,7 +60,22 @@ void UReinforceUI::OnAgreeButtonClicked()
         TargetWeapon->bIsAcquired = true;
         UE_LOG(LogTemp, Warning, TEXT("WeaponReinforce"));
     }
-    CloseUI();
+    if (Recheck) {
+        Recheck = false;
+        AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+        FName RowName2 = FName(FString::FromInt(PlayerCharacter->WeaponArray[1]));
+        FWeaponDataTableBetaStruct* WeaponData2 = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName2, "Recheck", true);
+        if (UpgradeCheck(*WeaponData2)) {
+            ShowReinforce(*WeaponData2);
+        }
+        else {
+            CloseUI();
+        }
+    }
+    else
+    {
+        CloseUI();
+    }
 }
 
 bool UReinforceUI::UpgradeCheck(FWeaponDataTableBetaStruct WeaponData)
@@ -90,7 +102,7 @@ void UReinforceUI::ShowReinforce(FWeaponDataTableBetaStruct WeaponData)
     TargetWeaponID = WeaponData.UpgradeID;
 
     static const FString ContextString(TEXT("Weapon Data Context"));
-    TargetWeapon = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(FName(WeaponData.Sname), ContextString, true);
+    TargetWeapon = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(FName(FString::FromInt(WeaponData.IID)), ContextString, true);
 
     FWeaponDataTableBetaStruct* WeaponData1 = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName1, ContextString, true);
     UTexture2D* WeaponIcon2 = WeaponData1->WeaponIcon;

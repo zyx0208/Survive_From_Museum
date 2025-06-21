@@ -205,10 +205,7 @@ protected:
     TSubclassOf<UUserWidget> DamageTextWidgetClass;
 
     UPROPERTY()
-    UUserWidget* ReinforceUIWidget1;
-
-    UPROPERTY()
-    UUserWidget* ReinforceUIWidget2;
+    UUserWidget* ReinforceUIWidget;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> ReinforceUIWidgetClass;
