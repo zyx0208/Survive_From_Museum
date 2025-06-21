@@ -102,4 +102,8 @@ public:
     //승천 횟수
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0", ClampMax = "9"))
     int32 Ascension;
+
+    //강화 유무
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int UpgradeID;
 };

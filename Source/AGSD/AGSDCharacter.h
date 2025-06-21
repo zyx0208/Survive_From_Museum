@@ -204,6 +204,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> DamageTextWidgetClass;
 
+    UPROPERTY()
+    UUserWidget* ReinforceUIWidget1;
+
+    UPROPERTY()
+    UUserWidget* ReinforceUIWidget2;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> ReinforceUIWidgetClass;
+
     // 레벨업을 AAGSDCharacter_LevelUP에서 처리하도록 변경
     UPROPERTY()
     AAGSDCharacter_LevelUP* LevelUpHandler;
@@ -242,8 +251,6 @@ public:
 
     bool IsResurrection = false;
     bool bIs_Attacked_Invincible = false;
-
-
 
     // GameTimer 인스턴스
     UPROPERTY()
