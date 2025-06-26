@@ -10,6 +10,7 @@
 class UWrapBox;
 class UTextBlock;
 class UDataTable;
+class UButton;
 
 /**
  * 
@@ -21,6 +22,13 @@ class AGSD_API UPause_UI : public UUserWidget
 
 public:
     virtual void NativeConstruct() override;
+
+    UFUNCTION(BlueprintCallable)
+    void OpenDrawingBook();
+    UPROPERTY()
+    class UDrawingBook_UI* DrawingBookWidget;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UDrawingBook_UI> DrawingBookClass;
 
 protected:
     /** 액세서리 목록을 채우는 함수 */
@@ -41,6 +49,15 @@ protected:
     /** WrapBox 위젯 (바인딩 필요) */
     UPROPERTY(meta = (BindWidget))
     UWrapBox* AccessoryWrapBox;
+
+
+    /*Drawing UI*/
+    UPROPERTY(meta = (BindWidget))
+    UButton* DrawingBoxButton;
+
+    
+
+    
 
     // 퍼즈 UI TEXT
     UPROPERTY(meta = (BindWidget))

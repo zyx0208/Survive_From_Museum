@@ -3,9 +3,12 @@
 #include "Pause_UI.h"
 #include "AGSDCharacter.h"
 #include "Components/WrapBox.h"
+#include "Components/Button.h"
 #include "AccessoryData.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
+#include "DrawingBook_UI.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 
 void UPause_UI::NativeConstruct()
 {
@@ -16,6 +19,10 @@ void UPause_UI::NativeConstruct()
     if (AccessoryWrapBox && PlayerCharacter && AccessoryDataTable && AccessoryImageClass)
     {
         PopulateAccessoryIcons();
+    }
+    if (DrawingBoxButton)
+    {
+        DrawingBoxButton->OnClicked.AddDynamic(this, &UPause_UI::OpenDrawingBook);
     }
 
     if (HPText)
@@ -93,6 +100,28 @@ void UPause_UI::PopulateAccessoryIcons()
                 AccessoryWrapBox->AddChildToWrapBox(IconWidget);
             }
         }
+    }
+}
+
+void UPause_UI::OpenDrawingBook()
+{
+    if (!DrawingBookClass) return;
+
+    if (DrawingBookWidget && DrawingBookWidget->IsInViewport())
+    {
+        // 이미 열려있으면 중복 생성 방지
+        return;
+    }
+
+    // 기존 Pause UI 제거
+    RemoveFromParent();
+
+    // DrawingBook UI 생성 및 추가
+    DrawingBookWidget = CreateWidget<UDrawingBook_UI>(GetWorld(), DrawingBookClass);
+    if (DrawingBookWidget)
+    {
+        DrawingBookWidget->PauseWidgetRef = this; // 닫기 후 돌아올 수 있도록 참조 전달
+        DrawingBookWidget->AddToViewport();
     }
 }
 

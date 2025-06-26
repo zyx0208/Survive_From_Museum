@@ -8,6 +8,7 @@
 #include "AccessoryData.h"
 #include "AGSDCharacter.h"
 #include "AccessoryIcon_UI.h"
+#include "Pause_UI.h"
 
 void UDrawingBook_UI::NativeConstruct()
 {
@@ -22,9 +23,17 @@ void UDrawingBook_UI::NativeConstruct()
 
 void UDrawingBook_UI::CloseDrawingBook()
 {
-    if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
+    /*if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
         PlayerCharacter->ResumeGameAfterLevelUp();
+    }*/
+    RemoveFromParent(); // 현재 UI 제거
+
+    // Pause UI 복원
+    if (PauseWidgetRef)
+    {
+        PauseWidgetRef->AddToViewport();       
+        PauseWidgetRef->DrawingBookWidget = nullptr; // 재사용 방지를 위해 포인터 초기화
     }
 }
 

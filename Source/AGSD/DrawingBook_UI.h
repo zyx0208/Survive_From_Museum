@@ -37,6 +37,8 @@ public:
     int32 GetThemePriority(const FString& Theme);
     int32 GetRarityPriority(EAccessoryRarity Rarity);
 
+    UPROPERTY()
+    class UPause_UI* PauseWidgetRef;
 
 protected:
     //악세서리 아이콘 출력 함수

@@ -719,10 +719,10 @@ void AAGSDCharacter::Interaction()
         ShowStorageBoxUI();
         //UE_LOG(LogTemp, Log, TEXT("Box here"));
     }
-    else if (OverlapDrawingBook)
+    /*else if (OverlapDrawingBook)
     {
         ShowDrawingBookUI();
-    }
+    }*/
     else
     {
         TArray<AActor*> FoundNPC;
@@ -913,14 +913,14 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
         StorageBoxWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("StorageBoxWidget removed successfully."));
     }
-    else if (IsValid(DrawingBookWidget))
+    /*else if (IsValid(DrawingBookWidget))
     {
         DrawingBookWidget->RemoveFromViewport();
         DashCooldownWidget->AddToViewport();
         HealthBarWidget->AddToViewport();
         DrawingBookWidget = nullptr;
         UE_LOG(LogTemp, Log, TEXT("DrawingBookWidget removed successfully."));
-    }
+    }*/
     else if (IsValid(WeaponExchangeWidget)) {
         WeaponExchangeWidget->RemoveFromViewport();
         WeaponExchangeWidget = nullptr;
@@ -1244,12 +1244,13 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
             }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
-        if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
+        /*if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
         {
             OverlapDrawingBook = true;
             if (Book->InteractionWidget) Book->InteractionWidget->SetVisibility(true);
             if (OverlapDrawingBook) UE_LOG(LogTemp, Log, TEXT("OverLap DrawingBook"));
-        }
+        }*/
+
         if (ANPC1Class* npc = Cast<ANPC1Class>(OtherActor))
             if (npc->InteractionWidget) npc->InteractionWidget->SetVisibility(true);
     }
@@ -1277,11 +1278,11 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
             }
         }
         // 충돌한 오브젝트가 DrawingBook임을 확인
-        if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
+        /*if (ADrawingBook* Book = Cast<ADrawingBook>(OtherActor))
         {
             OverlapDrawingBook = false;
             if (Book->InteractionWidget) Book->InteractionWidget->SetVisibility(false);
-        }
+        }*/
         if (ANPC1Class* npc = Cast<ANPC1Class>(OtherActor))
             if (npc->InteractionWidget) npc->InteractionWidget->SetVisibility(false);
     }
@@ -1724,7 +1725,7 @@ void AAGSDCharacter::ShowStorageBoxUI()
     }
 }
 //도감 UI 출력
-void AAGSDCharacter::ShowDrawingBookUI()
+/*void AAGSDCharacter::ShowDrawingBookUI()
 {
     if (DrawingBookWidgetClass)
     {
@@ -1737,7 +1738,7 @@ void AAGSDCharacter::ShowDrawingBookUI()
             PauseGameForLevelUp();
         }
     }
-}
+}*/
 
 bool AAGSDCharacter::WeaponSwapCheck()
 {

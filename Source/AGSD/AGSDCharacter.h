@@ -178,8 +178,8 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> StorageBoxWidgetClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> DrawingBookWidgetClass;
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    //TSubclassOf<UUserWidget> DrawingBookWidgetClass;
 
     UPROPERTY()
     UUserWidget* WeaponExchangeWidget;
@@ -195,8 +195,8 @@ protected:
 
     UPROPERTY()
     UUserWidget* StorageBoxWidget;
-    UPROPERTY()
-    UUserWidget* DrawingBookWidget;
+    //UPROPERTY()
+    //UUserWidget* DrawingBookWidget;
 
     UPROPERTY()
     UUserWidget* DamageTextWidget;
@@ -540,13 +540,13 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool OverlapBox = false;
     //도감 오버랩 변수
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool OverlapDrawingBook = false;
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    //bool OverlapDrawingBook = false;
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     void ShowStorageBoxUI();
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    void ShowDrawingBookUI();
+    //UFUNCTION(BlueprintCallable, Category = "UI")
+    //void ShowDrawingBookUI();
 
     UFUNCTION()
     bool WeaponSwapCheck();
