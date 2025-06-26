@@ -40,6 +40,15 @@ public:
     UPROPERTY()
     class UPause_UI* PauseWidgetRef;
 
+    // 추가
+    UPROPERTY()
+    class UAccessoryDetail_UI* AccessoryDetailWidget;
+
+    // 이 함수는 AccessoryIconUI에서 접근할 수 있게 Public으로 선언
+    bool IsDetailOpen() const { return AccessoryDetailWidget != nullptr; }
+    void SetDetailWidget(UAccessoryDetail_UI* NewDetailWidget) { AccessoryDetailWidget = NewDetailWidget; }
+    void CloseDetailWidget();
+
 protected:
     //악세서리 아이콘 출력 함수
     void PopulateAccessoryIcons();

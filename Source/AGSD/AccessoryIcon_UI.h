@@ -34,4 +34,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> AccessoryDetailClass;
+
+    UPROPERTY()
+    class UDrawingBook_UI* DrawingBookRef;
+
+    void SetDrawingBookRef(UDrawingBook_UI* InRef) { DrawingBookRef = InRef; }
 };

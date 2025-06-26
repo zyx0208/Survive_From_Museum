@@ -9,6 +9,7 @@
 #include "AGSDCharacter.h"
 #include "AccessoryIcon_UI.h"
 #include "Pause_UI.h"
+#include "AccessoryDetail_UI.h"
 
 void UDrawingBook_UI::NativeConstruct()
 {
@@ -28,6 +29,8 @@ void UDrawingBook_UI::CloseDrawingBook()
         PlayerCharacter->ResumeGameAfterLevelUp();
     }*/
     RemoveFromParent(); // 현재 UI 제거
+   
+    CloseDetailWidget(); // Detail UI도 같이 닫기
 
     // Pause UI 복원
     if (PauseWidgetRef)
@@ -70,10 +73,11 @@ void UDrawingBook_UI::PopulateAccessoryIcons()
     {
         if (!Data) continue;
 
-        UAccessoryIcon_UI* IconWidget = CreateWidget<UAccessoryIcon_UI>(this, AccessoryIconClass); // 클래스 지정 필요
+        UAccessoryIcon_UI* IconWidget = CreateWidget<UAccessoryIcon_UI>(this, AccessoryIconClass);
         if (IconWidget)
         {
-            IconWidget->Init(Data); 
+            IconWidget->Init(Data);
+            IconWidget->SetDrawingBookRef(this); 
             AccessoryWrapBox->AddChild(IconWidget);
         }
     }
@@ -97,5 +101,14 @@ int32 UDrawingBook_UI::GetRarityPriority(EAccessoryRarity Rarity)
     case EAccessoryRarity::Rare: return 1;
     case EAccessoryRarity::Common: return 2;
     default: return 999;
+    }
+}
+
+void UDrawingBook_UI::CloseDetailWidget()
+{
+    if (AccessoryDetailWidget)
+    {
+        AccessoryDetailWidget->RemoveFromParent();
+        AccessoryDetailWidget = nullptr;
     }
 }

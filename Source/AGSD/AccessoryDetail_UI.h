@@ -32,6 +32,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     void CloseAccessoryDetail();
 
+    UPROPERTY()
+    class UDrawingBook_UI* DrawingBookRef;  //UI 상위 참조
+
+    void SetDrawingBookRef(UDrawingBook_UI* InRef) { DrawingBookRef = InRef; }
+
 protected:
     UPROPERTY(meta = (BindWidget))
     class UImage* AccessoryIconImage;

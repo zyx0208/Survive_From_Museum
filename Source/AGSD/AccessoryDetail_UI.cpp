@@ -2,6 +2,7 @@
 
 
 #include "AccessoryDetail_UI.h"
+#include "DrawingBook_UI.h"
 
 void UAccessoryDetail_UI::NativeConstruct()
 {
@@ -16,6 +17,11 @@ void UAccessoryDetail_UI::NativeConstruct()
 void UAccessoryDetail_UI::CloseAccessoryDetail()
 {
     RemoveFromParent();
+    // DetailUI가 닫힐 때 DrawingBookUI에 알리기
+    if (DrawingBookRef)
+    {
+        DrawingBookRef->SetDetailWidget(nullptr);
+    }
 }
 
 void UAccessoryDetail_UI::SetAccessory(const FAccessoryData& InData)
