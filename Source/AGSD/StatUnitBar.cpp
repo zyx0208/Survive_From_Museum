@@ -8,6 +8,6 @@ void UStatUnitBar::PlayBlink()
 {
     if (Blink)
     {
-        PlayAnimation(Blink, 0.f, 1, EUMGSequencePlayMode::Forward, 1.0f); // 마지막 1.0f는 속도
+        PlayAnimation(Blink, 0.f, 1, EUMGSequencePlayMode::Forward, 1.0f); 
     }
 }

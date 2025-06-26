@@ -49,6 +49,14 @@ void UStatBarWidget::InitializeStat(FText InStatName, float InValue, float InSta
         {
             StatIconImage->SetBrushFromTexture(SpeedStatIconTexture);
         }
+        else if (StatKey == TEXT("XPLevel"))
+        {
+            StatIconImage->SetBrushFromTexture(XPLevelIconTexture);
+        }
+        else if (StatKey == TEXT("XPRange"))
+        {
+            StatIconImage->SetBrushFromTexture(XPRangeIconTexture);
+        }
     }
 
     UpdateBarDisplay();
@@ -69,24 +77,38 @@ void UStatBarWidget::UpdateBarDisplay()
 
     float Delta = CurrentValue - StartOffset;
     int32 FullBars = FMath::FloorToInt(Delta / UnitValue);
-    float Remainder = FMath::Fmod(Delta, UnitValue) / UnitValue;
+    float Remainder = FMath::Abs(FMath::Fmod(Delta, UnitValue)) / UnitValue;
 
     // 색상 결정
     FLinearColor FillColor = FLinearColor::White;
     FString StatKey = StatName.ToString();
+    int32 TotalBars = 0;
 
-    if (StatKey == TEXT("Attack"))
-        FillColor = FLinearColor::Red;
-    else if (StatKey == TEXT("Defense"))
-        FillColor = FLinearColor::Blue;
-    else if (StatKey == TEXT("AS"))
-        FillColor = FLinearColor::Yellow;
-    else if (StatKey == TEXT("AR"))
-        FillColor = FLinearColor::Green;
-    else if (StatKey == TEXT("Speed"))
-        FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
-
-    int32 TotalBars = FullBars + (Remainder > 0.f ? 1 : 0); // 나머지 bar 포함
+    if(Delta >= 0.f)
+    { 
+        TotalBars = FullBars + (Remainder > 0.f ? 1 : 0); 
+        
+        if (StatKey == TEXT("Attack"))
+            FillColor = FLinearColor::Red;
+        else if (StatKey == TEXT("Defense"))
+            FillColor = FLinearColor::Blue;
+        else if (StatKey == TEXT("AS"))
+            FillColor = FLinearColor::Yellow;
+        else if (StatKey == TEXT("AR"))
+            FillColor = FLinearColor::Green;
+        else if (StatKey == TEXT("Speed"))
+            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+        else if(StatKey == TEXT("XPLevel"))
+            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+        else if (StatKey == TEXT("XPRange"))
+            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+    }
+    else
+    {
+        TotalBars = FMath::Abs(FullBars) + (Remainder > 0.f ? 1 : 0);
+        FillColor = FLinearColor::Black;
+    }
+   
 
     for (int32 i = 0; i < TotalBars; ++i)
     {

@@ -32,6 +32,10 @@ public:
     UTexture2D* ARStatIconTexture;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (ExposeOnSpawn))
     UTexture2D* SpeedStatIconTexture;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (ExposeOnSpawn))
+    UTexture2D* XPLevelIconTexture;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stat", meta = (ExposeOnSpawn))
+    UTexture2D* XPRangeIconTexture;
 
 
 protected:

@@ -22,6 +22,7 @@ void UPause_UI::NativeConstruct()
     }
     if (DrawingBoxButton)
     {
+        DrawingBoxButton->OnClicked.RemoveDynamic(this, &UPause_UI::OpenDrawingBook);
         DrawingBoxButton->OnClicked.AddDynamic(this, &UPause_UI::OpenDrawingBook);
     }
 

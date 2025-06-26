@@ -39,4 +39,10 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     UStatBarWidget* StatBar_Speed;
+
+    UPROPERTY(meta = (BindWidget))
+    UStatBarWidget* StatBar_XPLevel;
+
+    UPROPERTY(meta = (BindWidget))
+    UStatBarWidget* StatBar_XPRange;
 };
