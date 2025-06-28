@@ -50,7 +50,7 @@ void ADisposableItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, A
                 UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
                 if (AllEnemys.Num() > 0)
                 {
-                    for (int i = 0; i < FMath::Min(AllEnemys.Num(), 5); i++)
+                    for (int i = 0; i < AllEnemys.Num(); i++)
                     {
                         AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
                         if (Enemy)
@@ -60,8 +60,7 @@ void ADisposableItem::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, A
                             {
                                 if (FVector::Dist(GetActorLocation(), AllEnemys[i]->GetActorLocation()) <= BombRange)
                                 {
-                                    AIC->Died(Enemy->AttackType);
-                                    UE_LOG(LogTemp, Display, TEXT("Enemy is dead by Bomb."));
+                                    AIC->Attacked(Player->Attack * 3);
                                 }
                             }
                         }
