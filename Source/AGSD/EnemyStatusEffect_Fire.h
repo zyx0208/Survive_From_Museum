@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "EnemyStatusEffect.h"
+#include "Sound/SoundCue.h"
 #include "EnemyStatusEffect_Fire.generated.h"
 
 /**
@@ -23,4 +24,8 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float FireDamage = 1.0f;
+
+    //무기 공격 사운드
+    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    USoundCue* EffectSoundCue;
 };

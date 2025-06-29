@@ -28,7 +28,7 @@ void AProjectile_FireBall::WeaponHitEffect(AActor* OtherActor)
             {
                 AEnemyStatusEffect* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Fire>(FireEffect);
                 if (TestEffect) {
-                    TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepWorldTransform);
+                    TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepRelativeTransform);
                     //TestEffect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
                     //TestEffect->SetOwner(HitEnemyController);
                 }

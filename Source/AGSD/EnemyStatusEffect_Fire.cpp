@@ -3,6 +3,8 @@
 
 #include "EnemyStatusEffect_Fire.h"
 #include "Enemy1Class.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Enemy1AIController.h"
 
 AEnemyStatusEffect_Fire::AEnemyStatusEffect_Fire()
@@ -28,6 +30,9 @@ void AEnemyStatusEffect_Fire::TimePerEffect()
             AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
             if (IsValid(Enemy)) {
                 Enemy->Attacked(FireDamage);
+                if (EffectSoundCue) {
+                    UGameplayStatics::PlaySound2D(GetWorld(), EffectSoundCue);
+                }
             }
         }
         UE_LOG(LogTemp, Display, TEXT("Fire Damage!"));
