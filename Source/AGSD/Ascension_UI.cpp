@@ -14,17 +14,19 @@ void UAscension_UI::NativeConstruct()
     if (AgreeButton) {
         AgreeButton->OnClicked.AddDynamic(this, &UAscension_UI::OnAgreeButtonClicked);
     }
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+    if (PlayerCharacter) {
+        WeaponDataTableBeta = PlayerCharacter->WeaponDataTableRef;
+    }
+    
 
     if (WeaponDataTableBeta) {
         static const FString ContextString(TEXT("Weapon Data Context"));
-        if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
-        {
-            FName RowName = FName(PlayerCharacter->OverlapID);
-            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
-            UTexture2D* WeaponIcon1 = WeaponData->WeaponIcon;
+        FName RowName = FName(PlayerCharacter->OverlapID);
+        FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+        UTexture2D* WeaponIcon1 = WeaponData->WeaponIcon;
 
-            DisplayWeaponImage(WeaponIcon1);
-        }
+        DisplayWeaponImage(WeaponIcon1);
     }
 }
 
