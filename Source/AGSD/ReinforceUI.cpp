@@ -5,6 +5,7 @@
 #include "WeaponDataTableBeta.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DataTable.h"
+#include "AGSDGameInstance.h"
 #include "AGSDCharacter.h"
 
 void UReinforceUI::NativeConstruct()
@@ -12,7 +13,10 @@ void UReinforceUI::NativeConstruct()
     if (AgreeButton) {
         AgreeButton->OnClicked.AddDynamic(this, &UReinforceUI::OnAgreeButtonClicked);
     }
-
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (GI->Temp_SavingWeaponData) {
+        WeaponDataTableBeta = GI->Temp_SavingWeaponData;
+    }
     if (WeaponDataTableBeta!=nullptr) {
         static const FString ContextString(TEXT("Weapon Data Context"));
         if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))

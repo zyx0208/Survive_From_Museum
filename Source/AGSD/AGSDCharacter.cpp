@@ -197,15 +197,12 @@ void AAGSDCharacter::BeginPlay()
 
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
     if (GI) {
-        if (WeaponDataTableRef != GI->Temp_SavingWeaponData) {
-            GI->Temp_SavingWeaponData = WeaponDataTableRef;
-            UE_LOG(LogTemp, Log, TEXT("GI temp weapondata"));
+        WeaponDataTableRef = GI->Temp_SavingWeaponData;
+        UE_LOG(LogTemp, Log, TEXT("GI temp weapondata"));
         }
-        UE_LOG(LogTemp, Log, TEXT("NO GI temp weapondata"));
-    }
     else {
-        UE_LOG(LogTemp, Log, TEXT("Failed"));
-    }
+        UE_LOG(LogTemp, Log, TEXT("NO GI temp weapondata"));
+    }   
 
     if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
         WeaponArray[0] = GI->WeaponArray[0];
