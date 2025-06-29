@@ -196,6 +196,16 @@ void AAGSDCharacter::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
 
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (GI) {
+        if (WeaponDataTableRef != GI->Temp_SavingWeaponData) {
+            GI->Temp_SavingWeaponData = WeaponDataTableRef;
+            UE_LOG(LogTemp, Log, TEXT("GI temp weapondata"));
+        }
+        UE_LOG(LogTemp, Log, TEXT("NO GI temp weapondata"));
+    }
+    else {
+        UE_LOG(LogTemp, Log, TEXT("Failed"));
+    }
 
     if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
         WeaponArray[0] = GI->WeaponArray[0];
@@ -1199,16 +1209,19 @@ void AAGSDCharacter::WeaponTake()
 }
 void AAGSDCharacter::Debug()
 {
+    static const FString ContextString(TEXT("ResetWeaponData"));
+    TArray<FName> RowNames = WeaponDataTableRef->GetRowNames();
 
-    if (GetMesh()->DoesSocketExist(FName(TEXT("SubWeaponSocket"))))
+    for (FName RowName : RowNames)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, TEXT("Socket exists!"));
+        FWeaponDataTableBetaStruct* Weapon = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+        if (Weapon)
+        {
+            Weapon->Ascension += 1;
+
+            UE_LOG(LogTemp, Log, TEXT("WeaponAscension %s : %d"), *RowName.ToString(),Weapon->Ascension);
+        }
     }
-    else
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Socket does not exist!"));
-    }
-    SpawnSubWeapon(SubWeaponSelector);
 }
 void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

@@ -146,6 +146,7 @@ void UAGSDGameInstance::SaveGameData()
     SaveGameInstance->TalkingProgress = Temp_TalkingProgress;
     SaveGameInstance->BGMVolume = Temp_BGMVolume;
     SaveGameInstance->SFXVolume = Temp_SFXVolume;
+    SaveGameInstance->SavingWeaponData = Temp_SavingWeaponData;
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -175,6 +176,7 @@ void UAGSDGameInstance::LoadGameData()
         Temp_TalkingProgress = LoadedGame->TalkingProgress;
         Temp_BGMVolume = LoadedGame->BGMVolume;
         Temp_SFXVolume = LoadedGame->SFXVolume;
+        Temp_SavingWeaponData = LoadedGame->SavingWeaponData;
 
         // 예시: 불러온 데이터를 출력 (디버그용)
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %d"), Temp_StageProgress);
@@ -241,6 +243,8 @@ void UAGSDGameInstance::ResetWeaponDataTable()
             }
             //데이터 초기화
             Weapon->bIsAcquired = false;
+            Weapon->bIsReinforce = false;
+            Weapon->Ascension = 0;
 
             UE_LOG(LogTemp, Log, TEXT("ResetWeaponData: Reset %s"), *RowName.ToString());
         }
