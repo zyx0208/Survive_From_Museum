@@ -1175,6 +1175,9 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
 }
 void AAGSDCharacter::WeaponTake()
 {
+    if (!WeaponDataTableRef) {
+        UE_LOG(LogTemp, Log, TEXT("NO WeaponDatatable"));
+    }
     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
     FireRate = WeaponData->Frate;
     Numberofprojectile = WeaponData->Inumberofprojectile;
