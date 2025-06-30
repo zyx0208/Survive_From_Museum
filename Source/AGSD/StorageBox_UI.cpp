@@ -280,13 +280,13 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
     FString WeaponName;
     switch (ButtonIndex)
     {
-    case 0: WeaponName = TEXT("테니스라켓"); break;
-    case 1: WeaponName = TEXT("야구공"); break;
-    case 2: WeaponName = TEXT("망치"); break;
-    case 3: WeaponName = TEXT("여행자의 양손검"); break;
-    case 4: WeaponName = TEXT("여행자의 활"); break;
-    case 5: WeaponName = TEXT("파이어 플라워"); break;
-    case 6: WeaponName = TEXT("기관총"); break;
+    case 0: WeaponName = TEXT("연습용 라켓"); break;
+    case 1: WeaponName = TEXT("연습용 야구공"); break;
+    case 2: WeaponName = TEXT("자루 스매셔"); break;
+    case 3: WeaponName = TEXT("왕가의 장검"); break;
+    case 4: WeaponName = TEXT("바람의 숨결"); break;
+    case 5: WeaponName = TEXT("썬 플라워"); break;
+    case 6: WeaponName = TEXT("MTG-9000"); break;
     case 7: WeaponName = TEXT("차지빔"); break;
     default: WeaponName = TEXT("알 수 없음"); break;
     }

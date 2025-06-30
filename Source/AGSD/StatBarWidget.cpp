@@ -89,19 +89,19 @@ void UStatBarWidget::UpdateBarDisplay()
         TotalBars = FullBars + (Remainder > 0.f ? 1 : 0); 
         
         if (StatKey == TEXT("Attack"))
-            FillColor = FLinearColor::Red;
+            FillColor = FLinearColor::Green;
         else if (StatKey == TEXT("Defense"))
-            FillColor = FLinearColor::Blue;
+            FillColor = FLinearColor::Green;
         else if (StatKey == TEXT("AS"))
-            FillColor = FLinearColor::Yellow;
+            FillColor = FLinearColor::Green;
         else if (StatKey == TEXT("AR"))
             FillColor = FLinearColor::Green;
         else if (StatKey == TEXT("Speed"))
-            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+            FillColor = FLinearColor::Green;
         else if(StatKey == TEXT("XPLevel"))
-            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+            FillColor = FLinearColor::Green;
         else if (StatKey == TEXT("XPRange"))
-            FillColor = FLinearColor(0.5f, 0.8f, 1.0f);
+            FillColor = FLinearColor::Green;
     }
     else
     {

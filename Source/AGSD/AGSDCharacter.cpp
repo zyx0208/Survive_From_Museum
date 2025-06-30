@@ -1177,6 +1177,7 @@ void AAGSDCharacter::WeaponTake()
 {
     if (!WeaponDataTableRef) {
         UE_LOG(LogTemp, Log, TEXT("NO WeaponDatatable"));
+        return;
     }
     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
     FireRate = WeaponData->Frate;
