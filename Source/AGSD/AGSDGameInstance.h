@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "Damage_UI.h"
 #include "Engine/StreamableManager.h"
+#include "WeaponStruct.h"
 #include "AGSDGameInstance.generated.h"
 
 /**
@@ -66,6 +67,14 @@ public:
     float Temp_BGMVolume;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     float Temp_SFXVolume;
+
+    //각 무기 마다 저장하는 변수
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, int>SWeapon_Ascension;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, bool>SWeapon_Acquired;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, bool>SWeapon_Reinforced;
 
     //현재 진행 중인 스테이지 정보를 불러오기 위한 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")

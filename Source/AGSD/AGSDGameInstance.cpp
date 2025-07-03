@@ -125,6 +125,19 @@ void UAGSDGameInstance::CreateGameData()
     SaveGameInstance->TalkingProgress = 0;
     SaveGameInstance->BGMVolume = 1.0f;
     SaveGameInstance->SFXVolume = 1.0f;
+    if (WeaponDataTable) {
+        for (auto& Row : WeaponDataTable->GetRowMap())
+        {
+            FName WeaponID = Row.Key;
+            SaveGameInstance->SWeapon_Ascension.Add(WeaponID, 0);
+            SaveGameInstance->SWeapon_Acquired.Add(WeaponID, false);
+            SaveGameInstance->SWeapon_Reinforced.Add(WeaponID, false);
+            if (WeaponID == FName("4") || WeaponID == FName("5")) {
+                SaveGameInstance->SWeapon_Acquired.Add(WeaponID, true);
+            }
+
+        }
+    }
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -215,6 +228,23 @@ void UAGSDGameInstance::ResetGameData()
     UE_LOG(LogTemp, Warning, TEXT("Reset Complete."));
     UE_LOG(LogTemp, Warning, TEXT("Temp_StageProgress : %d"), Temp_StageProgress);
     UE_LOG(LogTemp, Warning, TEXT("Temp_TalkingProgress : %d"), Temp_TalkingProgress);
+
+
+    if (WeaponDataTable) {
+        return;
+    }
+    for (auto& Row : WeaponDataTable->GetRowMap())
+    {
+        FName WeaponID = Row.Key;
+        static const FString ContextString(TEXT("ResetWeaponData"));
+        FWeaponDataTableBetaStruct* Weapon = WeaponDataTable->FindRow<FWeaponDataTableBetaStruct>(WeaponID, ContextString, true);
+        UE_LOG(LogTemp, Log, TEXT("ID: %d Ascension: %d Acquired: %s Reinforced: %s"),
+            Weapon->IID,
+            Weapon->Ascension,
+            Weapon->bIsAcquired ? TEXT("true") : TEXT("false"),
+            Weapon->bIsReinforce ? TEXT("true") : TEXT("false"));
+    }
+    
 }
 
 void UAGSDGameInstance::ResetWeaponDataTable()

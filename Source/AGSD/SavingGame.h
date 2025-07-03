@@ -29,4 +29,12 @@ public:
     //무기 데이터테이블 정보(초기값: 야구공, 테니스 라켓 획득)
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="SaveData")
     UDataTable* SavingWeaponData;
+
+    //각 무기 마다 저장하는 변수
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, int>SWeapon_Ascension;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, bool>SWeapon_Acquired;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TMap<FName, bool>SWeapon_Reinforced;
 };
