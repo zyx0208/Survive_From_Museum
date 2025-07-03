@@ -14,9 +14,7 @@ void UReinforceUI::NativeConstruct()
         AgreeButton->OnClicked.AddDynamic(this, &UReinforceUI::OnAgreeButtonClicked);
     }
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
-    if (GI->Temp_SavingWeaponData) {
-        WeaponDataTableBeta = GI->Temp_SavingWeaponData;
-    }
+    /*
     if (WeaponDataTableBeta!=nullptr) {
         static const FString ContextString(TEXT("Weapon Data Context"));
         if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
@@ -42,7 +40,7 @@ void UReinforceUI::NativeConstruct()
     else {
         UE_LOG(LogTemp, Warning, TEXT("NO DataTable"));
         CloseUI();
-    }
+    }*/
 }
 
 void UReinforceUI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2)

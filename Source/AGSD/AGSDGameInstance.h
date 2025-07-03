@@ -66,8 +66,6 @@ public:
     float Temp_BGMVolume;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     float Temp_SFXVolume;
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
-    UDataTable* Temp_SavingWeaponData;
 
     //현재 진행 중인 스테이지 정보를 불러오기 위한 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")

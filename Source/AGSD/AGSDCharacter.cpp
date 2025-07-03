@@ -196,14 +196,7 @@ void AAGSDCharacter::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
 
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
-    if (GI) {
-        WeaponDataTableRef = GI->Temp_SavingWeaponData;
-        UE_LOG(LogTemp, Log, TEXT("GI temp weapondata"));
-        }
-    else {
-        UE_LOG(LogTemp, Log, TEXT("NO GI temp weapondata"));
-    }   
-
+    
     if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
         WeaponArray[0] = GI->WeaponArray[0];
         WeaponArray[1] = GI->WeaponArray[1];
@@ -1175,10 +1168,6 @@ void AAGSDCharacter::SpawnSubWeapon(TSubclassOf<ASubWeapon> SubWeapon)
 }
 void AAGSDCharacter::WeaponTake()
 {
-    if (!WeaponDataTableRef) {
-        UE_LOG(LogTemp, Log, TEXT("NO WeaponDatatable"));
-        return;
-    }
     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
     FireRate = WeaponData->Frate;
     Numberofprojectile = WeaponData->Inumberofprojectile;
