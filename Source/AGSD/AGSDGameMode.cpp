@@ -28,7 +28,7 @@ void AAGSDGameMode::BeginPlay()
     /*
     UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetGameInstance());
     */
-    ResetAccessoryData();
+    //ResetAccessoryData();
     /*
     if (GameInstance)
     {
@@ -63,7 +63,7 @@ void AAGSDGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
     */
 }
 
-void AAGSDGameMode::ResetAccessoryData()
+/*void AAGSDGameMode::ResetAccessoryData()
 {
     if (!AccessoryDataTable)
     {
@@ -85,4 +85,4 @@ void AAGSDGameMode::ResetAccessoryData()
             UE_LOG(LogTemp, Log, TEXT("ResetAccessoryData: Reset %s"), *RowName.ToString());
         }
     }    
-}
+}*/

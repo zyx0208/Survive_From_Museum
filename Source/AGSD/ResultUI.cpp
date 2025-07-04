@@ -37,7 +37,7 @@ void UResultUI::CloseResult()
     AAGSDGameMode* Gamemode = GetWorld() ? Cast<AAGSDGameMode>(GetWorld()->GetAuthGameMode<AAGSDGameMode>()) : nullptr;
     if (Gamemode)
     {
-        Gamemode->ResetAccessoryData();
+        //Gamemode->ResetAccessoryData();
     }
     else
     {
@@ -70,10 +70,14 @@ void UResultUI::PopulateAccessoryIcons()
     static const FString ContextString(TEXT("PopulateAccessotyIcons"));
     TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
 
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+    if (!PlayerCharacter) return;
+
     for (FName RowName : RowNames)
     {
         FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, ContextString, true);
-        if (Accessory && Accessory->bIsAcquired && Accessory->AccessoryIcon)
+
+        if (Accessory && PlayerCharacter->AcquiredAccessories.Contains(RowName) && Accessory->AccessoryIcon)
         {
             // 새로운 UImage 위젯 생성
             UImage* NewAccessoryImage = NewObject<UImage>(this);

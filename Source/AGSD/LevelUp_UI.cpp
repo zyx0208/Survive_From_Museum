@@ -61,6 +61,8 @@ void ULevelUp_UI::SelectRandomAccessories()
 
     TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
     TArray<FAccessoryData*> CommonItems, RareItems, LegendaryItems;
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+    bool tmpAcquiredAccessory = false;
 
     FString CurrentMapName = GetWorld()->GetMapName();
     CurrentMapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
@@ -69,7 +71,12 @@ void ULevelUp_UI::SelectRandomAccessories()
     for (FName RowName : RowNames)
     {
         FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT(""));
-       
+        
+        if (PlayerCharacter && PlayerCharacter->AcquiredAccessories.Contains(RowName))
+            tmpAcquiredAccessory = true;
+        else
+            tmpAcquiredAccessory = false;
+
         if (Accessory)
         {
             //Jaru, Elyon, JK, 
@@ -78,7 +85,7 @@ void ULevelUp_UI::SelectRandomAccessories()
             {
                 continue; // 조건이 맞지 않으면 스킵
             }
-            else if (Accessory->bIsRepetition || (!Accessory->bIsRepetition && !Accessory->bIsAcquired))
+            else if (Accessory->bIsRepetition || (!Accessory->bIsRepetition && !tmpAcquiredAccessory))
             {
                 switch (Accessory->Rarity)
                 {
@@ -222,10 +229,11 @@ void ULevelUp_UI::OnOption1Clicked()
         FName RowName = SelectedAccessories[0].RowName;
 
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
+        PlayerCharacter->AcquiredAccessories.Add(RowName);
 
-        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
+        //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
         UnableButtons();
-        AccessoryPtr->bIsAcquired = true;
+        //AccessoryPtr->bIsAcquired = true;
 	}
 }
 
@@ -236,9 +244,11 @@ void ULevelUp_UI::OnOption2Clicked()
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[1]);    
         FName RowName = SelectedAccessories[1].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
-        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
+        PlayerCharacter->AcquiredAccessories.Add(RowName);
+
+        //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
         UnableButtons();
-        AccessoryPtr->bIsAcquired = true;
+        //AccessoryPtr->bIsAcquired = true;
 	}
 }
 
@@ -249,9 +259,11 @@ void ULevelUp_UI::OnOption3Clicked()
 		PlayerCharacter->ApplyLevelUpOption(PlayerCharacter, SelectedAccessories[2]);
         FName RowName = SelectedAccessories[2].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
-        FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
+        PlayerCharacter->AcquiredAccessories.Add(RowName);
+
+        //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
         UnableButtons();
-        AccessoryPtr->bIsAcquired = true;
+        //AccessoryPtr->bIsAcquired = true;
 	}
 }
 

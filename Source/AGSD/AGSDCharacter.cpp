@@ -85,6 +85,8 @@ AAGSDCharacter::AAGSDCharacter()
 
 	PrimaryActorTick.bCanEverTick = true; // Tick 함수 활성화
 
+    AcquiredAccessories.Empty();    //획득 악세서리 초기화
+
     InitializeAccessoryList();  //획득한 악세서리 초기화
 
     IsResurrection = false;     //부활

@@ -52,8 +52,8 @@ struct FAccessoryData : public FTableRowBase
     FString Theme;
 
     // 획득 여부
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
-    bool bIsAcquired = false;
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    //bool bIsAcquired = false;
 
     // 중복 가능 여부
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
