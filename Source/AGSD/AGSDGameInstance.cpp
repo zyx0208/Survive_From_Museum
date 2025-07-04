@@ -16,6 +16,15 @@ void UAGSDGameInstance::Init()
 
     LoadGameData();
 
+    if (WeaponDataTable == nullptr) {
+        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL Set DataTable"));
+        WeaponDataTable = Cast<UDataTable>(StaticLoadObject(
+            UDataTable::StaticClass(),
+            nullptr,
+            TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'")
+        ));
+    }
+
     UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
     if (UserSettings)
     {
@@ -160,6 +169,10 @@ void UAGSDGameInstance::SaveGameData()
     SaveGameInstance->BGMVolume = Temp_BGMVolume;
     SaveGameInstance->SFXVolume = Temp_SFXVolume;
 
+    SaveGameInstance->SWeapon_Acquired = Temp_Acquired;
+    SaveGameInstance->SWeapon_Reinforced = Temp_Reinforced;
+    SaveGameInstance->SWeapon_Ascension = Temp_Ascension;
+
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
 
@@ -188,12 +201,25 @@ void UAGSDGameInstance::LoadGameData()
         Temp_TalkingProgress = LoadedGame->TalkingProgress;
         Temp_BGMVolume = LoadedGame->BGMVolume;
         Temp_SFXVolume = LoadedGame->SFXVolume;
+        Temp_Acquired = LoadedGame->SWeapon_Acquired;
+        Temp_Reinforced = LoadedGame->SWeapon_Reinforced;
+        Temp_Ascension = LoadedGame->SWeapon_Ascension;
+
 
         // 예시: 불러온 데이터를 출력 (디버그용)
+        /*
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %d"), Temp_StageProgress);
         UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %d"), Temp_TalkingProgress);
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %f"), Temp_BGMVolume);
         UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %f"), Temp_SFXVolume);
+        */
+        for (const TPair<FName, int>& Elem : Temp_Ascension)
+        {
+            FName WeaponID = Elem.Key;
+            int WeaponAscension = Elem.Value;
+
+            UE_LOG(LogTemp, Warning, TEXT("Loaded Ascension- WeaponID: %s Ascension: %d"), WeaponID, WeaponAscension);
+        }
     }
     else
     {
@@ -215,7 +241,7 @@ void UAGSDGameInstance::ResetGameData()
     // 임시 변수 초기화
     Temp_StageProgress = -1;
     Temp_TalkingProgress = 0;
-    ResetWeaponDataTable(); 
+    //ResetWeaponDataTable(); 
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -230,28 +256,47 @@ void UAGSDGameInstance::ResetGameData()
     UE_LOG(LogTemp, Warning, TEXT("Temp_TalkingProgress : %d"), Temp_TalkingProgress);
 
 
-    if (WeaponDataTable) {
-        return;
+    if (WeaponDataTable == nullptr) {
+        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL Set DataTable"));
+        WeaponDataTable = Cast<UDataTable>(StaticLoadObject(
+            UDataTable::StaticClass(),
+            nullptr,
+            TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'")
+        ));
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is OK"));
     }
     for (auto& Row : WeaponDataTable->GetRowMap())
     {
         FName WeaponID = Row.Key;
         static const FString ContextString(TEXT("ResetWeaponData"));
         FWeaponDataTableBetaStruct* Weapon = WeaponDataTable->FindRow<FWeaponDataTableBetaStruct>(WeaponID, ContextString, true);
-        UE_LOG(LogTemp, Log, TEXT("ID: %d Ascension: %d Acquired: %s Reinforced: %s"),
-            Weapon->IID,
-            Weapon->Ascension,
-            Weapon->bIsAcquired ? TEXT("true") : TEXT("false"),
-            Weapon->bIsReinforce ? TEXT("true") : TEXT("false"));
+        if (Weapon) {
+            UE_LOG(LogTemp, Log, TEXT("ID: %d Ascension: %d Acquired: %s Reinforced: %s"),
+                Weapon->IID,
+                Weapon->Ascension,
+                Weapon->bIsAcquired ? TEXT("true") : TEXT("false"),
+                Weapon->bIsReinforce ? TEXT("true") : TEXT("false"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Weapon row %s not found."), *WeaponID.ToString());
+        }
     }
-    
 }
 
 void UAGSDGameInstance::ResetWeaponDataTable()
 {
     if (!WeaponDataTable)
     {
-        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL"));
+        UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL Set DataTable"));
+        WeaponDataTable = Cast<UDataTable>(StaticLoadObject(
+            UDataTable::StaticClass(),
+            nullptr,
+            TEXT("/Game/AGSD/AGSD_Character/Weapon/SubWeaponDataTable.SubWeaponDataTable")
+        ));
         return;
     }
     

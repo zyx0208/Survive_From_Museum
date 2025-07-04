@@ -68,13 +68,14 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     float Temp_SFXVolume;
 
+
     //각 무기 마다 저장하는 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
-    TMap<FName, int>SWeapon_Ascension;
+    TMap<FName, int>Temp_Ascension;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
-    TMap<FName, bool>SWeapon_Acquired;
+    TMap<FName, bool>Temp_Acquired;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
-    TMap<FName, bool>SWeapon_Reinforced;
+    TMap<FName, bool>Temp_Reinforced;
 
     //현재 진행 중인 스테이지 정보를 불러오기 위한 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
