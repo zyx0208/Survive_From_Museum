@@ -6,6 +6,7 @@
 #include "WeaponDrop.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/DataTable.h"
+#include "AGSDGameInstance.h"
 #include "AGSDCharacter.h"
 void UAscension_UI::NativeConstruct()
 {
@@ -62,11 +63,17 @@ void UAscension_UI::OnAgreeButtonClicked()
     for (FName RowName : RowNames)
     {
         FWeaponDataTableBetaStruct* WeaponRow = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
-        if (!WeaponRow) return;
-        if (WeaponRow->IID == FCString::Atoi(*CurrentCharacter->OverlapID))
+        if (!WeaponRow) continue;
+        if (WeaponRow->IID-1 == FCString::Atoi(*CurrentCharacter->OverlapID))
         {
-            WeaponRow->Ascension += 1;
-            UE_LOG(LogTemp, Warning, TEXT("Weapon %s is now Ascension Ascension: %d"), *RowName.ToString(), WeaponRow->Ascension);
+            UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+            if (GI) {
+                if (GI->Temp_Ascension.Contains(FName(FString::FromInt(WeaponRow->IID-1)))) {
+                    int& WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID-1))];
+                    WeaponAscension += 1;
+                }
+                
+            }
         }
     }
 

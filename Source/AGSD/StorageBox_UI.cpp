@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "Engine/DataTable.h"
 #include "WeaponDataTableBeta.h"
+#include "AGSDGameInstance.h"
 #include "AGSDCharacter.h"
 
 void UStorageBox_UI::NativeConstruct()
@@ -59,6 +60,28 @@ void UStorageBox_UI::NativeConstruct()
     }
 
     // 데이터 테이블에서 무기 메쉬 가져오기
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (GI) {
+        static const FString ContextString(TEXT("Weapon Data Context"));
+        TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+
+        for (int32 i = 0; i < 8; i++)
+        {
+            // bIsAcquired 값이 false면 해당 버튼을 숨김
+            FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[WeaponIndexSetArray[i] - 1], ContextString, true);
+            if (!GI->Temp_Acquired[FName(FString::FromInt(i+4))] && ImageSlotButtons.IsValidIndex(i))
+            {
+                
+                ImageSlotButtons[i]->SetVisibility(ESlateVisibility::Hidden);
+                DisplayWeaponImage(i + 1, RockIcon);
+            }
+            else if (WeaponData->WeaponIcon) // 무기 아이콘 표시
+            {
+                DisplayWeaponImage(i + 1, WeaponData->WeaponIcon);
+            }
+        }
+    }
+    /*
     if (WeaponDataTableBeta)
     {
         static const FString ContextString(TEXT("Weapon Data Context"));
@@ -78,7 +101,7 @@ void UStorageBox_UI::NativeConstruct()
                 DisplayWeaponImage(i + 1, WeaponData->WeaponIcon);
             }
         }
-    }
+    }*/
     if (SelectedImageSlot1)
         SelectedImageSlot1->SetVisibility(ESlateVisibility::Hidden);
     if (SelectedImageSlot2)
@@ -298,15 +321,25 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
         int32 TargetIID = WeaponIndexSetArray[ButtonIndex];
 
         TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+
+        UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+        if (!GI) {
+            return;
+        }
+        TArray<bool> ReinforcedArray;
+        TArray<int> AscensionArray;
+        GI->Temp_Reinforced.GenerateValueArray(ReinforcedArray);
+        GI->Temp_Ascension.GenerateValueArray(AscensionArray);
         for (const FName& RowName : RowNames)
         {
+            
             FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
             if (WeaponData && WeaponData->IID == TargetIID)
             {
                 if (WeaponNameText)
                 {
-                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, WeaponData->Ascension);
-                    if (WeaponData->bIsReinforce)
+                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID-1]);
+                    if (ReinforcedArray[WeaponData->IID-1])
                         tempname = FString::Printf(TEXT("강화된 %s"), *tempname);
                     WeaponNameText->SetText(FText::FromString(tempname));
                     WeaponNameText->SetVisibility(ESlateVisibility::Visible);

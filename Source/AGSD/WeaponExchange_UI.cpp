@@ -8,6 +8,7 @@
 #include "Engine/DataTable.h"
 #include "WeaponDataTableBeta.h"
 #include "WeaponDrop.h"
+#include "AGSDGameInstance.h"
 #include "AGSDCharacter.h"
 
 void UWeaponExchange_UI::NativeConstruct()
@@ -158,13 +159,11 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
 
             if (WeaponData && WeaponData->IID == OverlapID) // IID 값 비교
             {
-                // 현재 bIsAcquired 값 확인
-                if (!WeaponData->bIsAcquired) // false인 경우
-                {
-                    WeaponData->bIsAcquired = true; // true로 변경
+                UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+                if (GI) {
+                    GI->Temp_Acquired.Add(FName(FString::FromInt(WeaponData->IID-1)), true);
+                    UE_LOG(LogTemp, Warning, TEXT("WeaponGet"));
 
-                    // 데이터 테이블 저장 (Unreal은 런타임에서 DataTable을 직접 수정할 수 없으므로, 이를 변수에 반영)
-                    UE_LOG(LogTemp, Display, TEXT("Weapon %d acquired and saved."), OverlapID);
                 }
                 break;
             }

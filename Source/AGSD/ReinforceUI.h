@@ -70,6 +70,7 @@ public:
     void ShowReinforce(FWeaponDataTableBetaStruct WeaponData);
 
     FWeaponDataTableBetaStruct* TargetWeapon;
+    FWeaponDataTableBetaStruct* OriginalWeapon;
 
     int OriginalWeaponID;
     int TargetWeaponID;
