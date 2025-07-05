@@ -161,7 +161,7 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
             {
                 UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
                 if (GI) {
-                    GI->Temp_Acquired.Add(FName(FString::FromInt(WeaponData->IID-1)), true);
+                    GI->Temp_Acquired.Add(FName(FString::FromInt(WeaponData->IID)), true);
                     UE_LOG(LogTemp, Warning, TEXT("WeaponGet"));
 
                 }

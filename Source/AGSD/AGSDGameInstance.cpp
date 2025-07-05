@@ -251,7 +251,13 @@ void UAGSDGameInstance::LoadGameData()
             FName WeaponID = Elem.Key;
             int WeaponAscension = Elem.Value;
 
-            UE_LOG(LogTemp, Warning, TEXT("Loaded Ascension- WeaponID: %s Ascension: %d"), WeaponID, WeaponAscension);
+            //UE_LOG(LogTemp, Warning, TEXT("Loaded Ascension- WeaponID: %s Ascension: %d"), WeaponID, WeaponAscension);
+        }
+
+        for (const TPair<FName, bool>& Elem : Temp_Acquired) {
+            FName WeaponID = Elem.Key;
+            bool WeaponAcquired = Elem.Value;
+            UE_LOG(LogTemp, Warning, TEXT("Acquired WeaponID: %s Acquired: %d"), WeaponID, WeaponAcquired);
         }
     }
     else

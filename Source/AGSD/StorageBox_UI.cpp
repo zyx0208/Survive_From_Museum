@@ -17,8 +17,8 @@ void UStorageBox_UI::NativeConstruct()
                                           ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button };
 
     // #무기업그레이드
-    WeaponIndexSetArray = { 4, 5, 9, 7, 10, 6, 8, 1 }; //무기 기초 배열(IID값)
-    UpgradeWeaponIndexSetArray = { 0, 0, 11, 12, 13, 0, 0, 0 };   //무기 업그레이드시 IID값 변경 설정
+    WeaponIndexSetArray = { 4, 5, 6, 7, 8, 9, 10, 1 }; //무기 기초 배열(IID값)
+    UpgradeWeaponIndexSetArray = { 0, 0, 0, 12, 0, 11, 13, 0};   //무기 업그레이드시 IID값 변경 설정
 
     UpdateWeaponIndexSetArray();
 
@@ -71,7 +71,6 @@ void UStorageBox_UI::NativeConstruct()
             FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowNames[WeaponIndexSetArray[i] - 1], ContextString, true);
             if (!GI->Temp_Acquired[FName(FString::FromInt(i+4))] && ImageSlotButtons.IsValidIndex(i))
             {
-                
                 ImageSlotButtons[i]->SetVisibility(ESlateVisibility::Hidden);
                 DisplayWeaponImage(i + 1, RockIcon);
             }
