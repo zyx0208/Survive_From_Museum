@@ -1181,7 +1181,14 @@ void AAGSDCharacter::WeaponTake()
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
 	WeaponType = WeaponData->WeaponType;
     RangeType = WeaponData->WeaponRangeType;
-    Ascension = WeaponData->Ascension;
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (GI) {
+        int32* pointerValue = GI->Temp_Ascension.Find(*WeaponID);
+        Ascension = *pointerValue;
+    }
+    else {
+        Ascension = 0;
+    }
 
     WeaponAnimType = WeaponData->WeaponAnimType;
     UAnimInstance* CurrentAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());

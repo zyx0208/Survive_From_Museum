@@ -337,7 +337,7 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
             {
                 if (WeaponNameText)
                 {
-                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID-1]);
+                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID]);
                     if (ReinforcedArray[WeaponData->IID-1])
                         tempname = FString::Printf(TEXT("강화된 %s"), *tempname);
                     WeaponNameText->SetText(FText::FromString(tempname));
