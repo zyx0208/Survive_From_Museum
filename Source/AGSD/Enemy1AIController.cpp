@@ -59,6 +59,17 @@ void AEnemy1AIController::AttackTypeB()
     GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector()), GetCharacter()->GetActorRotation());
     GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector() - GetCharacter()->GetActorRightVector()), GetCharacter()->GetActorRotation());
     GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + 200 * (GetCharacter()->GetActorForwardVector() + GetCharacter()->GetActorRightVector()), GetCharacter()->GetActorRotation());
+    if (IsRage)
+    {
+        Enemy->AttackCooltime = 3.0f;
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 0.3f))
+        {
+            //플레이어 구현이 완료되면 이 안에 코드를 수정
+            UE_LOG(LogTemp, Display, TEXT("Hit!"));
+            Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+        }
+    }
 }
 
 void AEnemy1AIController::AttackTypeC()
@@ -79,10 +90,22 @@ void AEnemy1AIController::AttackTypeD()
         BossCount = 0;
         FRotator EnemyRotator = GetCharacter()->GetActorRotation();
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
-        for (int i = 0; i < 16; i++)
+        if (IsRage)
         {
-            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
-            EnemyRotator.Yaw += 22.5f;
+            Enemy->DashCoolTime = 1.5f;
+            for (int i = 0; i < 16; i++)
+            {
+                GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+                EnemyRotator.Yaw += 22.5f;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), EnemyRotator);
+                EnemyRotator.Yaw += 45.0f;
+            }
         }
     }
     else
@@ -448,6 +471,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         IsFisrt = false;
         IsSavePlayerLocation = false;
         Enemy->IsAttacked = false;
+        IsRage = false;
         if (PlayerCharacter)
         {
             MoveToActor(PlayerCharacter, 999999999.0f, true, true, true, 0, true);
@@ -469,6 +493,12 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	{
 		TickSwitch = true;
 	}
+
+    //분노 상태
+    if ((Enemy->IsBoss) and (Enemy->CurrentHP / Enemy->MaxHP <= 0.5f))
+    {
+        IsRage = true;
+    }
 
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
