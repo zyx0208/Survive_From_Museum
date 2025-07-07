@@ -478,6 +478,9 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
         PlayerInputComponent->BindAction("Debug", IE_Pressed, this, &AAGSDCharacter::Debug);
         //일시정지 버튼 
         PlayerInputComponent->BindAction("GamePauseButton", IE_Pressed, this, &AAGSDCharacter::HandleEscape);
+
+        //스탯 토글 버튼
+        PlayerInputComponent->BindKey(EKeys::C, IE_Pressed, this, &AAGSDCharacter::ToggleStatPanelBox);
 	}
 	else
 	{
@@ -562,6 +565,15 @@ void AAGSDCharacter::UpdateCameraObstruction()
 void AAGSDCharacter::HandleEscape()
 {
     UE_LOG(LogTemp, Warning, TEXT("ESC pressed, Game Pause"));
+}
+
+// 스탯 토글 관리 함수
+void AAGSDCharacter::ToggleStatPanelBox()
+{
+    if (StatPanelWidget)
+    {
+        StatPanelWidget->ToggleStatBox();
+    }
 }
 
 void AAGSDCharacter::Dash()

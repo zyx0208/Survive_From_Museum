@@ -114,6 +114,7 @@ protected:
     void HandleEscape();
 		
     void PlayWalkingSound();
+    void ToggleStatPanelBox();
     bool IsWalking;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
