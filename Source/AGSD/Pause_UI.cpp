@@ -26,7 +26,7 @@ void UPause_UI::NativeConstruct()
         DrawingBoxButton->OnClicked.AddDynamic(this, &UPause_UI::OpenDrawingBook);
     }
 
-    if (HPText)
+    /*if (HPText)
     {
         FString HPString = FString::Printf(TEXT("체력 : %d / %d"), PlayerCharacter->CurrentHealth, PlayerCharacter->MaxHealth);
         HPText->SetText(FText::FromString(HPString));
@@ -70,7 +70,7 @@ void UPause_UI::NativeConstruct()
     {
         FString XPRString = FString::Printf(TEXT("경험치 획득 범위 : %.1f"), PlayerCharacter->XPRangeLevel);
         XPRangeText->SetText(FText::FromString(XPRString));
-    }
+    }*/
 }
 
 void UPause_UI::PopulateAccessoryIcons()

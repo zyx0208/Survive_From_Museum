@@ -60,7 +60,7 @@ protected:
     
 
     // 퍼즈 UI TEXT
-    UPROPERTY(meta = (BindWidget))
+    /*UPROPERTY(meta = (BindWidget))
     UTextBlock* HPText;
     UPROPERTY(meta = (BindWidget))
     UTextBlock* DefenseText;
@@ -77,7 +77,7 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UTextBlock* BounsXPText;
     UPROPERTY(meta = (BindWidget))
-    UTextBlock* XPRangeText;
+    UTextBlock* XPRangeText;*/
 
 
 };
