@@ -106,7 +106,7 @@ void UStatBarWidget::UpdateBarDisplay()
     else
     {
         TotalBars = FMath::Abs(FullBars) + (Remainder > 0.f ? 1 : 0);
-        FillColor = FLinearColor::Black;
+        FillColor = FLinearColor::Red;
     }
    
 
