@@ -8,6 +8,7 @@
 
 class UTextBlock;
 class UVerticalBox;
+class UImage;
 
 /**
  * 
@@ -75,4 +76,12 @@ protected:
     // Stat Text Vertical Box
     UPROPERTY(meta = (BindWidget))
     UVerticalBox* StatListBox2;
+
+    // Stat Image
+    UPROPERTY(meta = (BindWidget))
+    UImage* StatImage1;
+    UPROPERTY(meta = (BindWidget))
+    UImage* StatImage2;
+    UPROPERTY(meta = (BindWidget))
+    UImage* StatImage3;
 };

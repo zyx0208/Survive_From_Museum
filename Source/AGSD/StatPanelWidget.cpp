@@ -3,6 +3,7 @@
 
 #include "StatPanelWidget.h"
 #include "Components/VerticalBox.h"
+#include "Components/Image.h"
 #include "StatBarWidget.h"
 #include "AGSDCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -83,16 +84,57 @@ void UStatPanelWidget::ToggleStatBox()
 {
     if (!StatListBox2) return;
     if (!StatBar_Attack || !StatBar_Defense || !StatBar_AS || !StatBar_AR || !StatBar_Speed || !StatBar_XPLevel || !StatBar_XPRange) return;
+    if (!StatImage1 || !StatImage2 || !StatImage3) return;
 
+    const bool bIsBox1Visible = StatBar_Attack->GetVisibility() == ESlateVisibility::Visible;
     const bool bIsBox2Visible = StatListBox2->GetVisibility() == ESlateVisibility::Visible;
 
-    StatListBox2->SetVisibility(bIsBox2Visible ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+    if (bIsBox1Visible && !bIsBox2Visible) //아이콘 켜진상태
+    {
+        StatListBox2->SetVisibility(ESlateVisibility::Visible);
 
-    StatBar_Attack->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_Defense->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_AS->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_AR->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_Speed->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_XPLevel->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
-    StatBar_XPRange->SetVisibility(bIsBox2Visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+        StatBar_Attack->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_Defense->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_AS->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_AR->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_Speed->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_XPLevel->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_XPRange->SetVisibility(ESlateVisibility::Collapsed);
+
+        StatImage1->SetVisibility(ESlateVisibility::Visible);
+        StatImage2->SetVisibility(ESlateVisibility::Visible);
+        StatImage3->SetVisibility(ESlateVisibility::Visible);
+    }
+    else if (!bIsBox1Visible && bIsBox2Visible) //상세스탯 켜진상태
+    {
+        StatListBox2->SetVisibility(ESlateVisibility::Collapsed);
+
+        StatBar_Attack->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_Defense->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_AS->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_AR->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_Speed->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_XPLevel->SetVisibility(ESlateVisibility::Collapsed);
+        StatBar_XPRange->SetVisibility(ESlateVisibility::Collapsed);
+
+        StatImage1->SetVisibility(ESlateVisibility::Collapsed);
+        StatImage2->SetVisibility(ESlateVisibility::Collapsed);
+        StatImage3->SetVisibility(ESlateVisibility::Collapsed);
+    }
+    else if (!bIsBox1Visible && !bIsBox2Visible) //커진상태
+    {
+        StatListBox2->SetVisibility(ESlateVisibility::Collapsed);
+
+        StatBar_Attack->SetVisibility(ESlateVisibility::Visible);
+        StatBar_Defense->SetVisibility(ESlateVisibility::Visible);
+        StatBar_AS->SetVisibility(ESlateVisibility::Visible);
+        StatBar_AR->SetVisibility(ESlateVisibility::Visible);
+        StatBar_Speed->SetVisibility(ESlateVisibility::Visible);
+        StatBar_XPLevel->SetVisibility(ESlateVisibility::Visible);
+        StatBar_XPRange->SetVisibility(ESlateVisibility::Visible);
+
+        StatImage1->SetVisibility(ESlateVisibility::Visible);
+        StatImage2->SetVisibility(ESlateVisibility::Visible);
+        StatImage3->SetVisibility(ESlateVisibility::Visible);
+    }
 }
