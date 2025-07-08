@@ -194,6 +194,13 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> WeaponAscensionClass;
 
+    // 피격 UI 위젯 클래스 (에디터에서 설정)
+    UPROPERTY(EditAnywhere, Category = "UI")
+    TSubclassOf<UUserWidget> AttackedWidgetClass;
+
+    // 생성된 피격 UI 위젯 인스턴스
+    UUserWidget* AttackedWidgetInstance;
+
     UPROPERTY()
     UUserWidget* StorageBoxWidget;
     //UPROPERTY()
