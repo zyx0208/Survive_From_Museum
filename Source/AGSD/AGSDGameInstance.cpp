@@ -257,7 +257,13 @@ void UAGSDGameInstance::LoadGameData()
         for (const TPair<FName, bool>& Elem : Temp_Acquired) {
             FName WeaponID = Elem.Key;
             bool WeaponAcquired = Elem.Value;
-            UE_LOG(LogTemp, Warning, TEXT("Acquired WeaponID: %s Acquired: %d"), WeaponID, WeaponAcquired);
+            //UE_LOG(LogTemp, Warning, TEXT("Acquired WeaponID: %s Acquired: %d"), WeaponID, WeaponAcquired);
+        }
+
+        for (const TPair<FName, bool>& Elem : Temp_Reinforced) {
+            FName WeaponID = Elem.Key;
+            bool WeaponReinforced = Elem.Value;
+            UE_LOG(LogTemp, Warning, TEXT("WeaponID: %s Reinforced: %d"), WeaponID, WeaponReinforced);
         }
     }
     else

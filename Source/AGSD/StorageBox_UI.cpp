@@ -337,7 +337,7 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
             {
                 if (WeaponNameText)
                 {
-                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID]);
+                    FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID-1]);
                     if (ReinforcedArray[WeaponData->IID-1])
                         tempname = FString::Printf(TEXT("강화된 %s"), *tempname);
                     WeaponNameText->SetText(FText::FromString(tempname));
@@ -362,6 +362,12 @@ void UStorageBox_UI::UpdateWeaponIndexSetArray()
     static const FString ContextString(TEXT("UpdateWeaponIndexSetArray"));
     // 데이터 테이블의 모든 행 이름을 가져옵니다.
     TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+
+    TArray<bool> ReinforcedArray;
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    if (GI) {
+         GI->Temp_Reinforced.GenerateValueArray(ReinforcedArray);
+    }
     // WeaponIndexSetArray의 각 요소에 대해 확인
     for (int32 i = 0; i < WeaponIndexSetArray.Num(); i++)
     {
@@ -373,7 +379,7 @@ void UStorageBox_UI::UpdateWeaponIndexSetArray()
             if (WeaponData && WeaponData->IID == CurrentIID)
             {
                 // bIsReinforce가 true인 경우 해당 인덱스를 10으로 변경합니다.
-                if (WeaponData->bIsReinforce)
+                if (ReinforcedArray[WeaponData->IID-1])
                 {
                     WeaponIndexSetArray[i] = UpgradeWeaponIndexSetArray[i];
                     UE_LOG(LogTemp, Log, TEXT("WeaponIndexSetArray[%d] with IID %d is reinforced, updated to %d."), i, CurrentIID, UpgradeWeaponIndexSetArray[i]);
