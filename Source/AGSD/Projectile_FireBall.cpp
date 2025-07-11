@@ -4,6 +4,7 @@
 #include "Projectile_FireBall.h"
 #include "Enemy1AIController.h"
 #include "EnemyStatusEffect_Fire.h"
+#include "NiagaraComponent.h"
 #include "EnemyStatusEffect.h"
 AProjectile_FireBall::AProjectile_FireBall()
 {
@@ -31,6 +32,17 @@ void AProjectile_FireBall::WeaponHitEffect(AActor* OtherActor)
                     TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepRelativeTransform);
                     //TestEffect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
                     //TestEffect->SetOwner(HitEnemyController);
+                }
+                if (FireVFX) {
+                    UNiagaraComponent* FireVFXComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+                        FireVFX,
+                        HitEnemy->GetRootComponent(),
+                        NAME_None,
+                        FVector::ZeroVector,
+                        FRotator::ZeroRotator,
+                        EAttachLocation::KeepRelativeOffset,
+                        true
+                    );
                 }
             }
         }

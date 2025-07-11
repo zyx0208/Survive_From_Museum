@@ -6,6 +6,8 @@
 #include "Projectile_Beta.h"
 #include "EnemyStatusEffect.h"
 #include "EnemyStatusEffect_Fire.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Projectile_FireBall.generated.h"
 
 /**
@@ -28,4 +30,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float Duration = 5.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UNiagaraSystem* FireVFX;
 };
