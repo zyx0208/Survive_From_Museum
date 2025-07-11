@@ -76,6 +76,8 @@ void UAscension_UI::OnAgreeButtonClicked()
             }
         }
     }
-
+    if (CurrentCharacter->OverlapWeaponDrop) {
+        CurrentCharacter->OverlapWeaponDrop->DestroySelf();
+    }
     CloseUI();
 }

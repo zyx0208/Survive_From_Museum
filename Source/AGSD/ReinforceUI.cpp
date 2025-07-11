@@ -48,10 +48,12 @@ void UReinforceUI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* Weapo
 
 void UReinforceUI::CloseUI()
 {
+    /*
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
         PlayerCharacter->ResumeGameAfterLevelUp();
-    }
+    }*/
+    RemoveFromViewport();
 }
 
 void UReinforceUI::OnAgreeButtonClicked()
