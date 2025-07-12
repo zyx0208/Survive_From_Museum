@@ -108,6 +108,12 @@ void ASubWeapon::CreateProjectile()
                 if (Projectile)
                 {
                     Projectile->PlayerAttack = PlayerAttack;
+                    Projectile->SetActorEnableCollision(true);
+                    Projectile->SetActorTickEnabled(true);
+                    UE_LOG(LogTemp, Warning, TEXT("ActorEnableCollision: %s"),
+                        GetActorEnableCollision() ? TEXT("true") : TEXT("false"));
+                    UE_LOG(LogTemp, Warning, TEXT("ActorTickEnabled: %s"),
+                        IsActorTickEnabled() ? TEXT("true") : TEXT("false"));
                     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
                     if (WeaponData)
                     {

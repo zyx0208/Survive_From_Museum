@@ -16,7 +16,7 @@ class AGSD_API AProjectile_Boomerang : public AProjectile_Beta
 public:
     AProjectile_Boomerang();
     virtual void WeaponHitEffect(AActor* OtherActor) override;
-    //virtual void Tick(float DeltaTime) override;
+    virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 
     //float Radius;

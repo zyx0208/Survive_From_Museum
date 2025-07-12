@@ -73,6 +73,8 @@ void ASubWeapon_Boomerang::CreateProjectile()
                 if (Projectile)
                 {
                     Projectile->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+                    Projectile->SetActorEnableCollision(true);
+                    Projectile->SetActorTickEnabled(true);
                     FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
                     if (WeaponData)
                     {
