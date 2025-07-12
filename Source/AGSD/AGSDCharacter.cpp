@@ -1384,7 +1384,7 @@ void AAGSDCharacter::FireByType()
 void AAGSDCharacter::RapidFire()
 {
     FireCount = 0;
-    GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::RapidFireCount, 0.25f, true);
+    GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::RapidFireCount, 0.1f, true);
 }
 
 void AAGSDCharacter::RapidFireCount()
