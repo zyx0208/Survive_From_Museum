@@ -92,6 +92,8 @@ AAGSDCharacter::AAGSDCharacter()
     IsResurrection = false;     //부활
     bIs_Attacked_Invincible = false;    //피격시 무적
 
+    Guard = 0;      //악세서리 가드횟수 초기화
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
     GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAGSDCharacter::OnOverlapBegin);
@@ -1574,6 +1576,11 @@ void AAGSDCharacter::Attacked(float Damage)
 {
     if (bIsInvincible) // 무적 상태에서는 피해 무시
     {
+        return;
+    }
+    if (Guard > 0)      //가드가 있는경우 1회 공격무시
+    {
+        Guard--;
         return;
     }
     int32 fixed_Damge = (int32)(Damage) - (int32)(Damage * ((Defense - 100.0f) / 100.0f));

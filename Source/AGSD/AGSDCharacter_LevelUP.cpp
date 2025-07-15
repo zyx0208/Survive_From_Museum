@@ -163,6 +163,14 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             UE_LOG(LogTemp, Log, TEXT("피격시 5초 무적효과 적용"));
             Character->bIs_Attacked_Invincible = true;
         }
+        else if (Effect.Contains(TEXT("가드")))
+        {
+            FString ValueString = Effect.Mid(3).TrimStartAndEnd(); // " 7회"
+            ValueString.RemoveFromEnd(TEXT("회")); // "7"
+            int32 GuardCount = FCString::Atoi(*ValueString);
+            Character->Guard += GuardCount;
+            UE_LOG(LogTemp, Log, TEXT("가드효과 적용: %d회"), GuardCount);
+        }
         else
         {
             UE_LOG(LogTemp, Log, TEXT("ERROR Effect"));

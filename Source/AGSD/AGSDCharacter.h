@@ -257,6 +257,8 @@ public:
     bool IsResurrection = false;
     bool bIs_Attacked_Invincible = false;
 
+    int32 Guard = 0;      //악세서리 가드횟수
+
     UPROPERTY(BlueprintReadWrite)
     TArray<FName> AcquiredAccessories;  //획득 악세서리 RowName저장 배열
     // GameTimer 인스턴스
