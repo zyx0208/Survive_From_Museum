@@ -25,13 +25,13 @@ void UDashCooldown_UI::UpdateWeaponIcon()
             {
                 MainWeaponIcon->SetBrushFromTexture(WeaponIcon1);
                 SubWeaponIcon->SetBrushFromTexture(WeaponIcon2);
-                UE_LOG(LogTemp, Error, TEXT("MainWeaponIcon: %s"), mainicon ? TEXT("true") : TEXT("false"));
+                //UE_LOG(LogTemp, Error, TEXT("MainWeaponIcon: %s"), mainicon ? TEXT("true") : TEXT("false"));
             }
             else
             {
                 MainWeaponIcon->SetBrushFromTexture(WeaponIcon2);
                 SubWeaponIcon->SetBrushFromTexture(WeaponIcon1);
-                UE_LOG(LogTemp, Error, TEXT("MainWeaponIcon: %s"), mainicon ? TEXT("true") : TEXT("false"));
+                //UE_LOG(LogTemp, Error, TEXT("MainWeaponIcon: %s"), mainicon ? TEXT("true") : TEXT("false"));
             }
         }
     }

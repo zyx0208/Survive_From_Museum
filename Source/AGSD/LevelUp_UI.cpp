@@ -81,7 +81,8 @@ void ULevelUp_UI::SelectRandomAccessories()
         {
             //Jaru, Elyon, JK, 
             if ((Accessory->Theme == "Elyon" && CurrentMapName != "Level2Stage") || 
-                (Accessory->Theme == "JK" && CurrentMapName != "Level3Stage"))
+                (Accessory->Theme == "JK" && CurrentMapName != "Level3Stage") ||
+                (Accessory->Theme == "Togetherium" && CurrentMapName != "Level4Stage"))
             {
                 continue; // 조건이 맞지 않으면 스킵
             }

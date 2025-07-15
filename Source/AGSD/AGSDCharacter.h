@@ -254,9 +254,12 @@ public:
 	float BounsXPLevel;		// 업그레이드 옵션(획득 경험치 증가 옵션)
     float XPRangeLevel;     // 경험치 획득 반경
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     bool IsResurrection = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     bool bIs_Attacked_Invincible = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     int32 Guard = 0;      //악세서리 가드횟수
 
     UPROPERTY(BlueprintReadWrite)
