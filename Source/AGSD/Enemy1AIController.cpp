@@ -169,10 +169,87 @@ void AEnemy1AIController::AttackTypeF(int AttackNum)
     }
 }
 
+void AEnemy1AIController::AttackTypeG()
+{
+    /*
+    변수 n에 따라 다음 패턴을 사용
+    1 : 돌진 1회
+    2 : 돌진 2회 후 3초 기절
+    3 : 지뢰소환 패턴
+    4 : 점프찍기 패턴
+    */
+    IsSavePlayerLocation = false;
+    int n = FMath::RandRange(1, 4);
+    if (n == 1)
+    {
+        IsLaunchAttacking = true;
+        Stun(1.0f);
+        GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 1.0f, false);
+        Enemy->LaunchCharacter((PlayerLocation - Enemy->GetActorLocation()).GetSafeNormal() * 6000.0f, true, true);
+    }
+    else if (n == 2)
+    {
+        IsLaunchAttacking = true;
+        Stun(5.0f);
+        GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchDoubleAttackTimerEnd, 2.0f, false);
+        Enemy->LaunchCharacter((PlayerLocation - Enemy->GetActorLocation()).GetSafeNormal() * 6000.0f, true, true);
+        PlayerLocation = PlayerCharacter->GetActorLocation();
+    }
+    else if (n == 3)
+    {
+        if (Enemy->AttackEffect1)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 500.0f), GetCharacter()->GetActorRotation());
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() - (GetCharacter()->GetActorForwardVector() * 500.0f), GetCharacter()->GetActorRotation());
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorRightVector() * 500.0f), GetCharacter()->GetActorRotation());
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, GetCharacter()->GetActorLocation() - (GetCharacter()->GetActorRightVector() * 500.0f), GetCharacter()->GetActorRotation());
+        }
+    }
+    else if (n == 4)
+    {
+        Stun(0.5f);
+        GetCharacter()->SetActorLocation(PlayerLocation);
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if (FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= 300.0f)
+        {
+            Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+        }
+    }
+    else
+    {
+        //오류상황
+    }
+}
+
+void AEnemy1AIController::LaunchAttackTimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(LaunchAttackTimerHandle);
+    IsLaunchAttacking = false;
+}
+
+void AEnemy1AIController::LaunchDoubleAttackTimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(LaunchDoubleAttackTimerHandle);
+    GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 1.0f, false);
+    Enemy->LaunchCharacter((PlayerLocation - Enemy->GetActorLocation()).GetSafeNormal() * 9000.0f, true, true);
+}
+
+void AEnemy1AIController::AttackTypeH()
+{
+    
+}
+
 void AEnemy1AIController::Attacked(float damage)
 {
     if (IsFisrt)
     {
+        return;
+    }
+    if (Enemy->AttackType == -1)
+    {
+        IsLaunchAttacking = true;
+        GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 0.5f, false);
+        Enemy->LaunchCharacter((PlayerCharacter->GetActorLocation() - Enemy->GetActorLocation()).GetSafeNormal() * -1000.0f * damage, true, true);
         return;
     }
     FVector PawnLocation = Enemy->GetActorLocation();
@@ -194,9 +271,13 @@ void AEnemy1AIController::Attacked(float damage)
         }
         
         //체력이 0이하일 경우 죽음
-        if (Enemy->CurrentHP <= 0.0f)
+        if ((Enemy->CurrentHP <= 0.0f)&&(Enemy->IsDontDie == false))
         {
             Died(Enemy->AttackType);
+        }
+        else
+        {
+            Enemy->CurrentHP = 0;
         }
     }
 }
@@ -205,6 +286,13 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
 {
     if (IsFisrt)
     {
+        return;
+    }
+    if (Enemy->AttackType == -1)
+    {
+        IsLaunchAttacking = true;
+        GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 0.5f, false);
+        Enemy->LaunchCharacter((PlayerCharacter->GetActorLocation() - Enemy->GetActorLocation()).GetSafeNormal() * -1000.0f * damage, true, true);
         return;
     }
     FVector PawnLocation = Enemy->GetActorLocation();
@@ -284,9 +372,13 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     }
     UE_LOG(LogTemp, Display, TEXT("Damamge : %f CurrentHP : %d Actor : %s"), damage, Enemy->CurrentHP, *Enemy->GetName());
     //체력이 0이하일 경우 죽음
-    if (Enemy->CurrentHP <= 0.0f)
+    if ((Enemy->CurrentHP <= 0.0f) && (Enemy->IsDontDie == false))
     {
         Died(Enemy->AttackType);
+    }
+    else
+    {
+        Enemy->CurrentHP = 0;
     }
 }
 
@@ -472,6 +564,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         IsSavePlayerLocation = false;
         Enemy->IsAttacked = false;
         IsRage = false;
+        IsLaunchAttacking = false;
         if (PlayerCharacter)
         {
             MoveToActor(PlayerCharacter, 999999999.0f, true, true, true, 0, true);
@@ -580,7 +673,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
 		{
 			//공격 상호작용
 			StopMovement();
-            if ((!IsSavePlayerLocation) and (Enemy->AttackType == 6) and (BossCount == 2))
+            if (((!IsSavePlayerLocation) and (Enemy->AttackType == 6) and (BossCount == 2))||((Enemy->AttackType == 7)&&(!IsSavePlayerLocation)))
             {
                 IsSavePlayerLocation = true;
                 PlayerLocation = PlayerCharacter->GetActorLocation();
@@ -610,6 +703,12 @@ void AEnemy1AIController::Tick(float DeltaTime)
                     break;
                 case 6:
                     AttackTypeF(AttackNum_Temp);
+                    break;
+                case 7:
+                    AttackTypeG();
+                    break;
+                case 8:
+                    AttackTypeH();
                     break;
 				default://공격타입이 설정되지 않았을 경우
 					UE_LOG(LogTemp, Display, TEXT("Please seting the attack type."));

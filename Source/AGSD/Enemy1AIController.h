@@ -33,6 +33,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")int AttackNum_Temp;
     //분노 상태에 입장하기 위한 HP 퍼센트 수치
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")float RageHP;
+    //돌진 공격 중임을 확인하는 변수
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsLaunchAttacking;
 
     void KillCountCall(UWorld* World);
     //무적 관리를 위한 함수1
@@ -55,6 +57,13 @@ public:
     FTimerHandle Chanel5TimerHandle;
     //무적 해제를 위한 함수5
     void Chanel5TimerEnd();
+    //돌진 패턴을 위한 함수
+    FTimerHandle LaunchAttackTimerHandle;
+    //돌진 패턴1을 위한 함수
+    void LaunchAttackTimerEnd();
+    FTimerHandle LaunchDoubleAttackTimerHandle;
+    //돌진 패턴2을 위한 함수
+    void LaunchDoubleAttackTimerEnd();
 
     //공격받는 이펙트 관리를 위한 함수
     FTimerHandle AttackedEffectHandle;
@@ -98,6 +107,11 @@ private:
     virtual void AttackTypeE();
     //6번 공격 타입 : 거북이 보스
     virtual void AttackTypeF(int AttackNum);
+    //7번 공격 타입 : 테니스 보스
+    virtual void AttackTypeG();
+    //8번 공격 타입 : 야구공 보스
+    virtual void AttackTypeH();
+
     //적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수1
 	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);
     //적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수2

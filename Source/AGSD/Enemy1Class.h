@@ -61,7 +61,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDead = false;
     //보스인지 아닌지 확인하는 용도(스테이지 클리어 여부를 위함)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsBoss = false;
-
+    //특정 보스를 위한 변수이며, 해당 변수가 참일 경우 해당 캐릭터는 죽지 않음
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDontDie = false;
 
 protected:
 	// Called when the game starts or when spawned
