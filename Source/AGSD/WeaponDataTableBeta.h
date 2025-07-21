@@ -67,9 +67,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* WeaponAnimationMontage;
 
+    //무기 스켈레탈 메쉬 공격
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage* WeaponSkeletalAnimationMontage;
+
 	//무기 모양
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StaticMesh")
 	UStaticMesh* WeaponMesh;
+
+    //무기 스켈레탈 메쉬
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "StaticMesh")
+    USkeletalMesh* WeaponSkeletalMesh;
 
     //무기 공격 파티클
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

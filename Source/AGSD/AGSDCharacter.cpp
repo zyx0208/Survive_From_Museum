@@ -159,6 +159,11 @@ AAGSDCharacter::AAGSDCharacter()
 		}
 	}
 
+    if (!WeaponSkeletalMeshComponent) {
+        WeaponSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMeshComponent"));
+        WeaponSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+
     WalkingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("WalkingAudioComponent"));
     WalkingAudioComponent->SetupAttachment(RootComponent);
 

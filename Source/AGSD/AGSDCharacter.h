@@ -448,9 +448,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMeshComponent* WeaponMeshComponent;
 
+    //무기 스켈레탈 메쉬 컴포넌트
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USkeletalMeshComponent* WeaponSkeletalMeshComponent;
+
 	//무기 메쉬
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UStaticMesh* CurrentWeaponMesh;
+
+    //무기 스켈레탈 메쉬
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+    USkeletalMesh* CurrentSkeletalMesh;
 
     //무기 공격 사운드
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
