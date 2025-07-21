@@ -13,11 +13,16 @@ UCLASS()
 class AGSD_API ASubWeapon_Boomerang : public ASubWeapon
 {
 	GENERATED_BODY()
-	
+
 public:
     ASubWeapon_Boomerang();
 
-    virtual void BeginPlay() override;
+    virtual void BeginPlay() override
+    {
+        Super::BeginPlay();
+
+        CreateProjectile();
+    }
 
     virtual void Tick(float DeltaTime) override;
 

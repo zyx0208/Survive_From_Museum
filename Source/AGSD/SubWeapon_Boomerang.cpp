@@ -3,6 +3,7 @@
 
 #include "SubWeapon_Boomerang.h"
 #include "AGSDCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "WeaponDataTableBeta.h"
 
 ASubWeapon_Boomerang::ASubWeapon_Boomerang() {
@@ -11,13 +12,6 @@ ASubWeapon_Boomerang::ASubWeapon_Boomerang() {
     CurrentRotation = FRotator(0.0f, 0.0f, 0.0f);
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
     
-}
-
-void ASubWeapon_Boomerang::BeginPlay()
-{
-    Super::BeginPlay();
-
-    CreateProjectile();
 }
 
 void ASubWeapon_Boomerang::Tick(float DeltaTime)
@@ -67,7 +61,8 @@ void ASubWeapon_Boomerang::CreateProjectile()
 
                 // 총구위치 설정
                 MuzzleLocation = GetActorLocation() + FRotationMatrix(AdjustedRotation).TransformPosition(MuzzleOffset);
-                MuzzleLocation.Z = 90;
+                FVector AdjustVector = GetActorLocation();
+                MuzzleLocation.Z = AdjustVector.Z;
 
                 AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
                 if (Projectile)
