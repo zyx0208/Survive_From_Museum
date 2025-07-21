@@ -162,6 +162,7 @@ AAGSDCharacter::AAGSDCharacter()
     if (!WeaponSkeletalMeshComponent) {
         WeaponSkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMeshComponent"));
         WeaponSkeletalMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        WeaponSkeletalMeshComponent->SetupAttachment(WeaponMeshComponent);
     }
 
     WalkingAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("WalkingAudioComponent"));
@@ -1010,7 +1011,12 @@ void AAGSDCharacter::Fire()
             return;
         }
         PlayFireMontage(FireMontage);
-	}	
+	}
+    if (WeaponFireSequence && WeaponSkeletalMeshComponent->GetSkeletalMeshAsset()) {
+        WeaponSkeletalMeshComponent->PlayAnimation(WeaponFireSequence, false);
+        WeaponSkeletalMeshComponent->SetPlayRate(1.0f * AttackSpeedLevel);
+    }
+
 }
 void AAGSDCharacter::UpdateAttackCooldownProgress()
 {
@@ -1196,8 +1202,11 @@ void AAGSDCharacter::WeaponTake()
 
     FireMontage = WeaponData->WeaponAnimationMontage;
     CurrentWeaponMesh = WeaponData->WeaponMesh;
+    CurrentSkeletalMesh = WeaponData->WeaponSkeletalMesh;
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+    WeaponSkeletalMeshComponent->SetSkeletalMesh(CurrentSkeletalMesh);
+    WeaponFireSequence = WeaponData->WeaponSkeletalAnimSequence;
 	WeaponType = WeaponData->WeaponType;
     RangeType = WeaponData->WeaponRangeType;
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
