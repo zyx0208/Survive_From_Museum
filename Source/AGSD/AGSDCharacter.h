@@ -621,5 +621,40 @@ public:
     void InitializeAccessoryList(); /** 배열 초기화 함수 */
     
     void PlayingGetAccessoryRowName(FName RowName); /** RowName 추가 함수 */
+
+    //캐릭터 디버프
+public:
+    // 디버프 처리용 타이머 핸들
+    FTimerHandle SlowTimerHandle;
+    FTimerHandle StunTimerHandle;
+    FTimerHandle KnockbackControlHandle;
+
+    // 원래 속도 저장용
+    float OriginalWalkSpeed;
+
+    // 상태 플래그
+    bool bIsSlowed = false;
+    bool bIsStunned = false;
+    bool bIsKnockback = false;
+
+    // 디버프 적용 함수
+    UFUNCTION(BlueprintCallable, Category = "Debuff")
+    void SlowApply(float Duration);
+
+    UFUNCTION(BlueprintCallable, Category = "Debuff")
+    void StunApply(float Duration);
+
+    UFUNCTION(BlueprintCallable, Category = "Debuff")
+    void KnockbackApply(FVector Direction);
+
+    // 디버프 전용 사운드 (에디터에서 지정 가능)
+    UPROPERTY(EditAnywhere, Category = "Debuff|Sound")
+    USoundBase* SlowSound;
+
+    UPROPERTY(EditAnywhere, Category = "Debuff|Sound")
+    USoundBase* StunSound;
+
+    UPROPERTY(EditAnywhere, Category = "Debuff|Sound")
+    USoundBase* KnockbackSound;
 };
 
