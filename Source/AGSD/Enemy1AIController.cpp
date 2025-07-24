@@ -169,7 +169,7 @@ void AEnemy1AIController::AttackTypeF(int AttackNum)
     }
 }
 
-void AEnemy1AIController::AttackTypeG()
+void AEnemy1AIController::AttackTypeG(int AttackNum)
 {
     /*
     변수 n에 따라 다음 패턴을 사용
@@ -179,11 +179,11 @@ void AEnemy1AIController::AttackTypeG()
     4 : 점프찍기 패턴
     */
     IsSavePlayerLocation = false;
-    int n = FMath::RandRange(1, 4);
+    int n = AttackNum;
     if (n == 1)
     {
         IsLaunchAttacking = true;
-        Stun(1.0f);
+        Stun(1.5f);
         GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 1.0f, false);
         Enemy->LaunchCharacter((PlayerLocation - Enemy->GetActorLocation()).GetSafeNormal() * 6000.0f, true, true);
     }
@@ -275,7 +275,7 @@ void AEnemy1AIController::Attacked(float damage)
         {
             Died(Enemy->AttackType);
         }
-        else
+        else if(Enemy->CurrentHP <= 0.0f)
         {
             Enemy->CurrentHP = 0;
         }
@@ -376,7 +376,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     {
         Died(Enemy->AttackType);
     }
-    else
+    else if (Enemy->CurrentHP <= 0.0f)
     {
         Enemy->CurrentHP = 0;
     }
@@ -422,6 +422,17 @@ void AEnemy1AIController::Stun(float duration)
 void AEnemy1AIController::StunTimerEnd()
 {
     IsStun = false;
+}
+
+void AEnemy1AIController::Groggy(float duration)
+{
+    GetWorldTimerManager().SetTimer(GroggyTimer, this, &AEnemy1AIController::GroggyTimerEnd, duration, false);
+    IsGroggy = true;
+}
+
+void AEnemy1AIController::GroggyTimerEnd()
+{
+    IsGroggy = false;
 }
 
 void AEnemy1AIController::ShowDamage(float damage, FVector2D screenPosition)
@@ -601,11 +612,15 @@ void AEnemy1AIController::Tick(float DeltaTime)
             IsPlayingAnim = true;
             GetCharacter()->GetMesh()->bPauseAnims = false;
         }
-        if ((IsStun) or (Enemy->IsDead))
+        else if ((IsStun) or (Enemy->IsDead))
         {
             IsPlayingAnim = false;
             StopMovement();
             GetCharacter()->GetMesh()->bPauseAnims = true;
+        }
+        else if (IsGroggy)
+        {
+            StopMovement();
         }
 		else if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
 		{
@@ -677,7 +692,14 @@ void AEnemy1AIController::Tick(float DeltaTime)
             {
                 IsSavePlayerLocation = true;
                 PlayerLocation = PlayerCharacter->GetActorLocation();
-                AttackNum_Temp = FMath::RandRange(0, 1);
+                if (Enemy->AttackType == 6)
+                {
+                    AttackNum_Temp = FMath::RandRange(0, 1);
+                }
+                else if (Enemy->AttackType == 7)
+                {
+                    AttackNum_Temp = FMath::RandRange(1, 4);
+                }
             }
             Enemy->IsAttacking = true;
 			AttackCooltime_temp += DeltaTime;
@@ -705,7 +727,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
                     AttackTypeF(AttackNum_Temp);
                     break;
                 case 7:
-                    AttackTypeG();
+                    AttackTypeG(AttackNum_Temp);
                     break;
                 case 8:
                     AttackTypeH();

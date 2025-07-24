@@ -73,12 +73,21 @@ public:
     //스턴 상태를 나타내기 위한 함수
     UFUNCTION(BlueprintCallable, Category = "Test")
     void Stun(float duration);
+    //스턴 상태와 동일하지만, 애니메이션 등을 위한 다른 기절 효과
+    UFUNCTION(BlueprintCallable, Category = "Test")
+    void Groggy(float duration);
     //기절 시간을 관리하기 위한 타이머
     FTimerHandle StunTimer;
     //기절 해제를 관리하기 위한 함수
     void StunTimerEnd();
+    //그로기 시간을 관리하기 위한 타이머
+    FTimerHandle GroggyTimer;
+    //그로기 해제를 관리하기 위한 함수
+    void GroggyTimerEnd();
     //기절 상태인지를 나타내는 변수
-    bool IsStun;
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI") bool IsStun;
+    //스턴과 동일하게 기절 상태를 나타내지만, 애니메이션 등을 위한 다른 기절 효과
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI") bool IsGroggy;
 
     void ShowDamage(float damage, FVector2D screenPosition);
 
@@ -108,7 +117,7 @@ private:
     //6번 공격 타입 : 거북이 보스
     virtual void AttackTypeF(int AttackNum);
     //7번 공격 타입 : 테니스 보스
-    virtual void AttackTypeG();
+    virtual void AttackTypeG(int AttackNum);
     //8번 공격 타입 : 야구공 보스
     virtual void AttackTypeH();
 
