@@ -1884,3 +1884,73 @@ void AAGSDCharacter::PlayingGetAccessoryRowName(FName RowName)
 {
     GetAccessory.Add(RowName);
 }
+
+// 슬로우 적용
+void AAGSDCharacter::SlowApply(float Duration)
+{
+    if (bIsSlowed || !CharacterMovementComponent) return;
+
+    bIsSlowed = true;
+    OriginalWalkSpeed = CharacterMovementComponent->MaxWalkSpeed;
+    CharacterMovementComponent->MaxWalkSpeed *= 0.5f;
+
+    if (SlowSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, SlowSound, GetActorLocation());
+    }
+
+    GetWorldTimerManager().ClearTimer(SlowTimerHandle);
+    GetWorldTimerManager().SetTimer(SlowTimerHandle, FTimerDelegate::CreateLambda([this]()
+        {
+            CharacterMovementComponent->MaxWalkSpeed = OriginalWalkSpeed;
+            bIsSlowed = false;
+        }), Duration, false);
+}
+
+// 스턴 적용
+void AAGSDCharacter::StunApply(float Duration)
+{
+    if (bIsStunned) return;
+
+    bIsStunned = true;
+
+    DisableInput(Cast<APlayerController>(GetController()));
+
+    if (StunSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, StunSound, GetActorLocation());
+    }
+
+    GetWorldTimerManager().ClearTimer(StunTimerHandle);
+    GetWorldTimerManager().SetTimer(StunTimerHandle, FTimerDelegate::CreateLambda([this]()
+        {
+            EnableInput(Cast<APlayerController>(GetController()));
+            bIsStunned = false;
+        }), Duration, false);
+}
+
+// 넉백 적용
+void AAGSDCharacter::KnockbackApply(FVector Direction)
+{
+    if (bIsKnockback || !CharacterMovementComponent) return;
+
+    bIsKnockback = true;
+    DisableInput(Cast<APlayerController>(GetController()));
+
+    Direction.Normalize();
+    FVector KnockbackForce = Direction * 1200.0f;   //넉백량 조절
+    LaunchCharacter(KnockbackForce, true, true);
+
+    if (KnockbackSound)
+    {
+        UGameplayStatics::PlaySoundAtLocation(this, KnockbackSound, GetActorLocation());
+    }
+
+    // 넉백 제어 복구 시간은 넉백 거리, 세기 등에 따라 조절
+    GetWorldTimerManager().ClearTimer(KnockbackControlHandle);
+    GetWorldTimerManager().SetTimer(KnockbackControlHandle, FTimerDelegate::CreateLambda([this]()
+        {
+            EnableInput(Cast<APlayerController>(GetController()));
+            bIsKnockback = false;
+        }), 0.6f, false);
+}
