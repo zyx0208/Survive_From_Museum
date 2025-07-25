@@ -68,18 +68,7 @@ void AWeaponDrop::BeginPlay()
 {
 	Super::BeginPlay();
 
-    FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-    //무기 자료 찾으면 생성
-    if (WeaponData) {
-        CurrentWeaponMesh = WeaponData->WeaponMesh;
-        WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
-        WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    }
-
-    if (InteractionWidget && InteractionWidgetClass)
-    {
-        InteractionWidget->SetWidgetClass(InteractionWidgetClass);
-    }
+    SetMesh();
 }
 
 // Called every frame
@@ -96,6 +85,22 @@ void AWeaponDrop::Tick(float DeltaTime)
             FRotator LookAtRotation = FRotationMatrix::MakeFromX(ToCamera).Rotator();
             InteractionWidget->SetWorldRotation(LookAtRotation);
         }
+    }
+}
+
+void AWeaponDrop::SetMesh()
+{
+    FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
+    //무기 자료 찾으면 생성
+    if (WeaponData) {
+        CurrentWeaponMesh = WeaponData->WeaponMesh;
+        WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+        WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
+
+    if (InteractionWidget && InteractionWidgetClass)
+    {
+        InteractionWidget->SetWidgetClass(InteractionWidgetClass);
     }
 }
 

@@ -14,4 +14,10 @@ class AGSD_API AWeaponDrop3 : public AWeaponDrop
 {
 	GENERATED_BODY()
     AWeaponDrop3();
+    virtual void BeginPlay() override;
+public:
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    int MinID;
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    int MaxID;
 };

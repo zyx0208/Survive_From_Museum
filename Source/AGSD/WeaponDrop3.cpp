@@ -5,5 +5,13 @@
 
 AWeaponDrop3::AWeaponDrop3()
 {
-    WeaponID = "3";
+    
+}
+
+void AWeaponDrop3::BeginPlay()
+{
+    Super::BeginPlay();
+    WeaponIDInt = FMath::RandRange(MinID, MaxID);
+    WeaponID = FString::FromInt(WeaponIDInt);
+    SetMesh();
 }
