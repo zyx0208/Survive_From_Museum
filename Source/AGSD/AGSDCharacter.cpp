@@ -1360,6 +1360,9 @@ void AAGSDCharacter::StartFiring()
 void AAGSDCharacter::StopFiring()
 {
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
+    if (RangeType == ERangeType::ChargeBeam) {
+        StopCharging();
+    }
 }
 
 void AAGSDCharacter::FireByType()
@@ -1379,9 +1382,17 @@ void AAGSDCharacter::FireByType()
     case ERangeType::BiggerProjectile:
         BiggerProjectile();
         break;
+    case ERangeType::ChargeBeam:
+        ChargeFire();
+        break;
     default:
         break;
     }
+}
+
+void AAGSDCharacter::LockCharge()
+{
+    UE_LOG(LogTemp, Log, TEXT("LockCharge"));
 }
 
 void AAGSDCharacter::RapidFire()
@@ -1392,7 +1403,7 @@ void AAGSDCharacter::RapidFire()
 
 void AAGSDCharacter::RapidFireCount()
 {
-    CreateProjectile(0.0f,true);
+    CreateProjectile(0.0f,false);
     FireCount++;
     if (FireCount > Numberofprojectile-1) {
         GetWorldTimerManager().ClearTimer(RapidFireTimerHandle);
@@ -1403,16 +1414,52 @@ void AAGSDCharacter::SprayFire()
 {
     for (int i = 0; i < Numberofprojectile ; i++) {
         float AdjustYaw = (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
-        CreateProjectile(AdjustYaw,true);
+        CreateProjectile(AdjustYaw,false);
     }
 }
 
 void AAGSDCharacter::BiggerProjectile()
 {
-    CreateProjectile(0.0f,true);
+    CreateProjectile(0.0f,false);
 }
 
-void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool Bigger)
+void AAGSDCharacter::ChargeFire()
+{
+    if (Charge < 0.5f) {
+        CancelCharge();
+        return;
+    }
+    CreateProjectile(0.0f, true);
+}
+
+void AAGSDCharacter::Charging()
+{
+    Charge += ChargePerTime;
+    if (Charge >= 2.0f) {
+        Charge = 2.0f;
+    }
+}
+
+void AAGSDCharacter::StopCharging()
+{
+    UAnimInstance* ChargeAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+    if (ChargeAnimInstance && FireMontage)
+    {
+        ChargeAnimInstance->Montage_JumpToSection(FName("FireCharge"), FireMontage);
+    }
+}
+
+void AAGSDCharacter::CancelCharge()
+{
+    UAnimInstance* ChargeAnimInstance = Cast<UAnimInstance>(GetMesh()->GetAnimInstance());
+    if (ChargeAnimInstance && FireMontage)
+    {
+        ChargeAnimInstance->Montage_Stop(0.2f, FireMontage);
+    }
+    Charge = 0;
+}
+
+void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool ChargeFire)
 {
     if (ProjectileClass) {
         // 총구 방향
@@ -1438,10 +1485,12 @@ void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool Bigger)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
                 FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                if (Bigger) {
-                    Projectile->SetActorScale3D(FVector(AttackRangeLevel));
-                }
+                Projectile->SetActorScale3D(FVector(AttackRangeLevel));
                 Projectile->SetPlayerState(Attack, AttackRangeLevel, Ascension);
+                if (ChargeFire) {
+                    Projectile->SetPlayerState(Attack+Charge, AttackRangeLevel, Ascension);
+                    Projectile->SetActorScale3D(FVector(Charge));
+                }
                 Projectile->SetActorEnableCollision(true);
                 Projectile->SetActorTickEnabled(true);
                 if (WeaponData)
@@ -1457,6 +1506,7 @@ void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool Bigger)
             }
         }
     }
+    Charge = 0;
 }
 
 /*

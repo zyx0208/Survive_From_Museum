@@ -397,6 +397,9 @@ public:
     void FireByType();
 
     UFUNCTION()
+    void LockCharge();
+
+    UFUNCTION()
     void RapidFire();
     UFUNCTION()
     void RapidFireCount();
@@ -408,8 +411,24 @@ public:
     UFUNCTION()
     void BiggerProjectile();
 
+    UFUNCTION()
+    void ChargeFire();
+
+    UFUNCTION()
+    void Charging();
+
+    UFUNCTION()
+    void StopCharging();
+
+    UFUNCTION()
+    void CancelCharge();
+
+    float Charge = 0.1;
+
+    float ChargePerTime = 0.1f;
+
 	UFUNCTION()
-	void CreateProjectile(float AdjustedYaw, bool Bigger);
+	void CreateProjectile(float AdjustedYaw, bool Charge);
 
 	//무기 공격속도
 	float FireRate;
