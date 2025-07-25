@@ -1447,6 +1447,10 @@ void AAGSDCharacter::StopCharging()
     {
         ChargeAnimInstance->Montage_JumpToSection(FName("FireCharge"), FireMontage);
     }
+    if (WeaponFireSequence && WeaponSkeletalMeshComponent->GetSkeletalMeshAsset()) {
+        WeaponSkeletalMeshComponent->PlayAnimation(WeaponFireSequence, false);
+        WeaponSkeletalMeshComponent->Stop();
+    }
 }
 
 void AAGSDCharacter::CancelCharge()
@@ -1455,6 +1459,9 @@ void AAGSDCharacter::CancelCharge()
     if (ChargeAnimInstance && FireMontage)
     {
         ChargeAnimInstance->Montage_Stop(0.2f, FireMontage);
+    }
+    if (WeaponFireSequence && WeaponSkeletalMeshComponent->GetSkeletalMeshAsset()) {
+        WeaponSkeletalMeshComponent->Stop();
     }
     Charge = 0;
 }
