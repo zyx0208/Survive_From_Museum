@@ -84,6 +84,12 @@ public:
     FTimerHandle GroggyTimer;
     //그로기 해제를 관리하기 위한 함수
     void GroggyTimerEnd();
+
+    //보스 패턴 위한 타이머
+    FTimerHandle BossTimer;
+    //그로기 해제를 관리하기 위한 함수
+    void BossTimerEnd();
+
     //기절 상태인지를 나타내는 변수
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI") bool IsStun;
     //스턴과 동일하게 기절 상태를 나타내지만, 애니메이션 등을 위한 다른 기절 효과

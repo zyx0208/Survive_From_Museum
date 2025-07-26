@@ -177,6 +177,7 @@ void AEnemy1AIController::AttackTypeG(int AttackNum)
     2 : 돌진 2회 후 3초 기절
     3 : 지뢰소환 패턴
     4 : 점프찍기 패턴
+    5 : 기절 강공격
     */
     IsSavePlayerLocation = false;
     int n = AttackNum;
@@ -207,17 +208,27 @@ void AEnemy1AIController::AttackTypeG(int AttackNum)
     }
     else if (n == 4)
     {
-        Stun(0.5f);
+        Stun(1.5f);
         GetCharacter()->SetActorLocation(PlayerLocation);
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
         if (FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= 300.0f)
         {
             Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 4000.0f);
         }
+        GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+
     }
-    else
+    else if (n == 5)
     {
-        //오류상황
+        Stun(0.5f);
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
+        {
+            Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 1000.0f);
+            Cast<AAGSDCharacter>(PlayerCharacter)->StunApply(2.0f);
+        }
     }
 }
 
@@ -232,6 +243,23 @@ void AEnemy1AIController::LaunchDoubleAttackTimerEnd()
     GetWorldTimerManager().ClearTimer(LaunchDoubleAttackTimerHandle);
     GetWorldTimerManager().SetTimer(LaunchAttackTimerHandle, this, &AEnemy1AIController::LaunchAttackTimerEnd, 1.0f, false);
     Enemy->LaunchCharacter((PlayerLocation - Enemy->GetActorLocation()).GetSafeNormal() * 9000.0f, true, true);
+}
+
+void AEnemy1AIController::BossTimerEnd()
+{
+    GetWorldTimerManager().ClearTimer(LaunchDoubleAttackTimerHandle);
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorForwardVector() * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() - (GetCharacter()->GetActorForwardVector() * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + (GetCharacter()->GetActorRightVector() * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() - (GetCharacter()->GetActorRightVector() * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + ((GetCharacter()->GetActorForwardVector() + GetCharacter()->GetActorRightVector()) * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() - ((GetCharacter()->GetActorForwardVector() + GetCharacter()->GetActorRightVector()) * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() + ((GetCharacter()->GetActorForwardVector() - GetCharacter()->GetActorRightVector()) * 700.0f), GetCharacter()->GetActorRotation());
+    GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation() - ((GetCharacter()->GetActorForwardVector() - GetCharacter()->GetActorRightVector()) * 700.0f), GetCharacter()->GetActorRotation());
+    if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= 500.0f)&&(FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= 900.0f))
+    {
+        Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
+    }
 }
 
 void AEnemy1AIController::AttackTypeH()
@@ -607,7 +635,11 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
 	{
-        if (!IsStun and !IsPlayingAnim)
+        if (IsGroggy)
+        {
+            StopMovement();
+        }
+        else if (!IsStun and !IsPlayingAnim)
         {
             IsPlayingAnim = true;
             GetCharacter()->GetMesh()->bPauseAnims = false;
@@ -617,10 +649,6 @@ void AEnemy1AIController::Tick(float DeltaTime)
             IsPlayingAnim = false;
             StopMovement();
             GetCharacter()->GetMesh()->bPauseAnims = true;
-        }
-        else if (IsGroggy)
-        {
-            StopMovement();
         }
 		else if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) >= Enemy->AttackRange) and (!Enemy->IsAttacking)) //플레이어가 공격범위 밖에 있으면서 공격 중이 아닐 경우 
 		{
@@ -698,7 +726,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
                 }
                 else if (Enemy->AttackType == 7)
                 {
-                    AttackNum_Temp = FMath::RandRange(1, 4);
+                    AttackNum_Temp = FMath::RandRange(1, 5);
                 }
             }
             Enemy->IsAttacking = true;

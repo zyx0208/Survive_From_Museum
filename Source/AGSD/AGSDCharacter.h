@@ -652,8 +652,8 @@ public:
     float OriginalWalkSpeed;
 
     // 상태 플래그
-    bool bIsSlowed = false;
-    bool bIsStunned = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)bool bIsSlowed = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)bool bIsStunned = false;
     bool bIsKnockback = false;
 
     // 디버프 적용 함수
