@@ -214,7 +214,7 @@ void AEnemy1AIController::AttackTypeG(int AttackNum)
         if (FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= 300.0f)
         {
             Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
-            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 4000.0f);
+            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 4000.0f, 1200.0f);
         }
         GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
 
@@ -226,7 +226,7 @@ void AEnemy1AIController::AttackTypeG(int AttackNum)
         if ((FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f) and FVector::DotProduct(GetCharacter()->GetActorForwardVector(), (PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal()) > 0.7)//적이 공격범위 안에 있으면서, 전방에 있을 경우 공격 판정
         {
             Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
-            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 1000.0f);
+            Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 1000.0f, 1200.0f);
             Cast<AAGSDCharacter>(PlayerCharacter)->StunApply(2.0f);
         }
     }

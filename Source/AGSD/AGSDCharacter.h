@@ -664,7 +664,7 @@ public:
     void StunApply(float Duration);
 
     UFUNCTION(BlueprintCallable, Category = "Debuff")
-    void KnockbackApply(FVector Direction);
+    void KnockbackApply(FVector Direction, float Power);
 
     // 디버프 전용 사운드 (에디터에서 지정 가능)
     UPROPERTY(EditAnywhere, Category = "Debuff|Sound")

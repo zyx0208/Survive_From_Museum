@@ -1987,7 +1987,7 @@ void AAGSDCharacter::StunApply(float Duration)
 }
 
 // 넉백 적용
-void AAGSDCharacter::KnockbackApply(FVector Direction)
+void AAGSDCharacter::KnockbackApply(FVector Direction, float Power)
 {
     if (bIsKnockback || !CharacterMovementComponent) return;
 
@@ -1995,7 +1995,7 @@ void AAGSDCharacter::KnockbackApply(FVector Direction)
     DisableInput(Cast<APlayerController>(GetController()));
 
     Direction.Normalize();
-    FVector KnockbackForce = Direction * 1200.0f;   //넉백량 조절
+    FVector KnockbackForce = Direction * Power;   //넉백량 조절
     LaunchCharacter(KnockbackForce, true, true);
 
     if (KnockbackSound)
