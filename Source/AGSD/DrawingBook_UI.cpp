@@ -9,6 +9,7 @@
 #include "AGSDCharacter.h"
 #include "AccessoryIcon_UI.h"
 #include "Pause_UI.h"
+#include "MainLoby_UI.h"
 #include "AccessoryDetail_UI.h"
 
 void UDrawingBook_UI::NativeConstruct()
@@ -37,6 +38,11 @@ void UDrawingBook_UI::CloseDrawingBook()
     {
         PauseWidgetRef->AddToViewport();       
         PauseWidgetRef->DrawingBookWidget = nullptr; // 재사용 방지를 위해 포인터 초기화
+    }
+    if (MainWidgetRef)
+    {
+        MainWidgetRef->AddToViewport();
+        MainWidgetRef->DrawingBookWidget = nullptr;
     }
 }
 
@@ -86,10 +92,10 @@ void UDrawingBook_UI::PopulateAccessoryIcons()
 int32 UDrawingBook_UI::GetThemePriority(const FString& Theme)
 {
     if (Theme == TEXT("")) return 0;
-    if (Theme == TEXT("Jelda")) return 1;
-    if (Theme == TEXT("Mario")) return 2;
-    if (Theme == TEXT("will")) return 3;
-    if (Theme == TEXT("gal")) return 4;
+    if (Theme == TEXT("Elyon")) return 1;
+    if (Theme == TEXT("JK")) return 2;
+    if (Theme == TEXT("Togetherium")) return 3;
+    if (Theme == TEXT("SteelRoid")) return 4;
     return 999;
 }
 

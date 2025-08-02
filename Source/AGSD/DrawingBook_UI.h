@@ -40,6 +40,9 @@ public:
     UPROPERTY()
     class UPause_UI* PauseWidgetRef;
 
+    UPROPERTY()
+    class UMainLoby_UI* MainWidgetRef;
+
     // 추가
     UPROPERTY()
     class UAccessoryDetail_UI* AccessoryDetailWidget;
