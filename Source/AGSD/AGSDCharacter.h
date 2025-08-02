@@ -641,6 +641,11 @@ public:
     
     void PlayingGetAccessoryRowName(FName RowName); /** RowName 추가 함수 */
 
+    UPROPERTY(BlueprintReadOnly)
+    TArray<FName> KnowRowName;
+
+    void AccessoryKnowRowName(FName RowName);
+
     //캐릭터 디버프
 public:
     // 디버프 처리용 타이머 핸들

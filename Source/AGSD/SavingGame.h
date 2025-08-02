@@ -37,4 +37,8 @@ public:
     TMap<FName, bool>SWeapon_Acquired;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
     TMap<FName, bool>SWeapon_Reinforced;
+
+    //악세서리 저장 변수
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SaveData")
+    TArray<FName> SaveKnowAccessory;
 };

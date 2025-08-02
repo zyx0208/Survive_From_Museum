@@ -49,4 +49,7 @@ public:
 
     UPROPERTY(meta = (BindWidget))
     UImage* LegendaryEffect;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    UTexture2D* UnknowImage;
 };

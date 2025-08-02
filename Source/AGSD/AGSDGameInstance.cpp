@@ -147,6 +147,7 @@ void UAGSDGameInstance::CreateGameData()
 
         }
     }
+    SaveGameInstance->SaveKnowAccessory.Empty();
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -182,6 +183,11 @@ void UAGSDGameInstance::SaveGameData()
     SaveGameInstance->SWeapon_Acquired = Temp_Acquired;
     SaveGameInstance->SWeapon_Reinforced = Temp_Reinforced;
     SaveGameInstance->SWeapon_Ascension = Temp_Ascension;
+
+    //악세서리 획득정보 저장
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (PlayerCharacter)
+        SaveGameInstance->SaveKnowAccessory = PlayerCharacter->KnowRowName;
 
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");
@@ -265,6 +271,11 @@ void UAGSDGameInstance::LoadGameData()
             bool WeaponReinforced = Elem.Value;
             UE_LOG(LogTemp, Warning, TEXT("WeaponID: %s Reinforced: %d"), WeaponID, WeaponReinforced);
         }
+
+        //저장된 악세서리 획득정보 불러오기
+        AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        if (PlayerCharacter)
+            PlayerCharacter->KnowRowName = LoadedGame->SaveKnowAccessory;
     }
     else
     {
@@ -310,6 +321,12 @@ void UAGSDGameInstance::ResetGameData()
 
             }
         }
+    }
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (PlayerCharacter)
+    {
+        PlayerCharacter->KnowRowName.Empty();
+        SaveGameInstance->SaveKnowAccessory.Empty();
     }
     // 저장할 슬롯 이름
     FString SaveSlotName = TEXT("SaveSlot1");

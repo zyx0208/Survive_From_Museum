@@ -3,19 +3,52 @@
 
 #include "AccessoryIcon_UI.h"
 #include "AccessoryDetail_UI.h"
+#include "AGSDCharacter.h"
 #include "DrawingBook_UI.h"
+#include "Kismet/GameplayStatics.h"
 
 void UAccessoryIcon_UI::Init(FAccessoryData* InData)
 {
     if (!InData) return;
     AccessoryData = *InData;
-    if (IconImage && AccessoryData.AccessoryIcon)
+
+    bool bIsKnown = false;
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (PlayerCharacter)
     {
-        IconImage->SetBrushFromTexture(AccessoryData.AccessoryIcon);
+        bIsKnown = PlayerCharacter->KnowRowName.Contains(AccessoryData.RowName);
     }
+
+    if (IconImage)
+    {
+        if (bIsKnown)
+        {
+            if (AccessoryData.AccessoryIcon)
+            {
+                IconImage->SetBrushFromTexture(AccessoryData.AccessoryIcon);
+            }
+        }
+        else
+        {
+            // UnknowImage가 설정되어 있다면 비공개 이미지로 대체
+            if (UnknowImage)
+            {
+                IconImage->SetBrushFromTexture(UnknowImage);
+            }
+        }
+    }
+    // 버튼 활성화 여부
     if (IconButton)
     {
-        IconButton->OnClicked.AddDynamic(this, &UAccessoryIcon_UI::OnIconClicked);
+        if (bIsKnown)
+        {
+            IconButton->SetIsEnabled(true);
+            IconButton->OnClicked.AddDynamic(this, &UAccessoryIcon_UI::OnIconClicked);
+        }
+        else
+        {
+            IconButton->SetIsEnabled(false);  // 비활성화
+        }
     }
 
     // 효과 이미지 초기화: 모두 숨기기
@@ -23,32 +56,35 @@ void UAccessoryIcon_UI::Init(FAccessoryData* InData)
     if (RareEffect) RareEffect->SetVisibility(ESlateVisibility::Hidden);
     if (LegendaryEffect) LegendaryEffect->SetVisibility(ESlateVisibility::Hidden);
 
-    // Enum 기반으로 등급에 맞는 이미지 표시
-    switch (AccessoryData.Rarity)
+    if (bIsKnown)
     {
-    case EAccessoryRarity::Common:
-        if (CommonEffect)
+        // Enum 기반으로 등급에 맞는 이미지 표시
+        switch (AccessoryData.Rarity)
         {
-            CommonEffect->SetVisibility(ESlateVisibility::Visible);
-        }
-        break;
+        case EAccessoryRarity::Common:
+            if (CommonEffect)
+            {
+                CommonEffect->SetVisibility(ESlateVisibility::Visible);
+            }
+            break;
 
-    case EAccessoryRarity::Rare:
-        if (RareEffect)
-        {
-            RareEffect->SetVisibility(ESlateVisibility::Visible);
-        }
-        break;
+        case EAccessoryRarity::Rare:
+            if (RareEffect)
+            {
+                RareEffect->SetVisibility(ESlateVisibility::Visible);
+            }
+            break;
 
-    case EAccessoryRarity::Legendary:
-        if (LegendaryEffect)
-        {
-            LegendaryEffect->SetVisibility(ESlateVisibility::Visible);
-        }
-        break;
+        case EAccessoryRarity::Legendary:
+            if (LegendaryEffect)
+            {
+                LegendaryEffect->SetVisibility(ESlateVisibility::Visible);
+            }
+            break;
 
-    default:
-        break;
+        default:
+            break;
+        }
     }
 }
 

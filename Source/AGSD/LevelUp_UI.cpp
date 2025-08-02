@@ -82,7 +82,8 @@ void ULevelUp_UI::SelectRandomAccessories()
             //Jaru, Elyon, JK, 
             if ((Accessory->Theme == "Elyon" && CurrentMapName != "Level2Stage") || 
                 (Accessory->Theme == "JK" && CurrentMapName != "Level3Stage") ||
-                (Accessory->Theme == "Togetherium" && CurrentMapName != "Level4Stage"))
+                (Accessory->Theme == "Togetherium" && CurrentMapName != "Level4Stage") ||
+                (Accessory->Theme == "SteelRoid" && CurrentMapName != "Level5Stage"))
             {
                 continue; // 조건이 맞지 않으면 스킵
             }
@@ -231,6 +232,7 @@ void ULevelUp_UI::OnOption1Clicked()
 
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
+        PlayerCharacter->AccessoryKnowRowName(RowName);
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
         UnableButtons();
@@ -246,6 +248,7 @@ void ULevelUp_UI::OnOption2Clicked()
         FName RowName = SelectedAccessories[1].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
+        PlayerCharacter->AccessoryKnowRowName(RowName);
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
         UnableButtons();
@@ -261,6 +264,7 @@ void ULevelUp_UI::OnOption3Clicked()
         FName RowName = SelectedAccessories[2].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
+        PlayerCharacter->AccessoryKnowRowName(RowName);
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
         UnableButtons();
