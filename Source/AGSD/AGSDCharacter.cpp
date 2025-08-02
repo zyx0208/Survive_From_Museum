@@ -91,8 +91,8 @@ AAGSDCharacter::AAGSDCharacter()
 
     IsResurrection = false;     //부활
     bIs_Attacked_Invincible = false;    //피격시 무적
-
-    Guard = 0;      //악세서리 가드횟수 초기화
+    bGuard = false;//악세서리 가드횟수 초기화
+    Guard = 0;      
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);

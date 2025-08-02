@@ -259,6 +259,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     bool bIs_Attacked_Invincible = false;
 
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    bool bGuard = false;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
     int32 Guard = 0;      //악세서리 가드횟수
 
