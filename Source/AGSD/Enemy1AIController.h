@@ -35,6 +35,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")float RageHP;
     //돌진 공격 중임을 확인하는 변수
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AI")bool IsLaunchAttacking;
+    //해당 변수가 참일 경우 공격으로 인한 피해를 받지 않음
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsNotAttacked;
 
     void KillCountCall(UWorld* World);
     //무적 관리를 위한 함수1
@@ -84,6 +86,9 @@ public:
     FTimerHandle GroggyTimer;
     //그로기 해제를 관리하기 위한 함수
     void GroggyTimerEnd();
+    //그로기 상태를 강제 해제 하기 위한 함수
+    UFUNCTION(BlueprintCallable, Category = "Test")
+    void GroggyForceEnd();
 
     //보스 패턴 위한 타이머
     FTimerHandle BossTimer;

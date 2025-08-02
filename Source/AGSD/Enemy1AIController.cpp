@@ -273,6 +273,10 @@ void AEnemy1AIController::Attacked(float damage)
     {
         return;
     }
+    if (IsNotAttacked)
+    {
+        damage = 0.0f;
+    }
     if (Enemy->AttackType == -1)
     {
         IsLaunchAttacking = true;
@@ -315,6 +319,10 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
     if (IsFisrt)
     {
         return;
+    }
+    if (IsNotAttacked)
+    {
+        damage = 0.0f;
     }
     if (Enemy->AttackType == -1)
     {
@@ -463,6 +471,12 @@ void AEnemy1AIController::GroggyTimerEnd()
     IsGroggy = false;
 }
 
+void AEnemy1AIController::GroggyForceEnd()
+{
+    GetWorld()->GetTimerManager().ClearTimer(GroggyTimer);
+    AEnemy1AIController::GroggyTimerEnd();
+}
+
 void AEnemy1AIController::ShowDamage(float damage, FVector2D screenPosition)
 {
 
@@ -599,7 +613,7 @@ void AEnemy1AIController::Tick(float DeltaTime)
         Temp_Dead = false;
         IsStun = false;
         IsPlayingAnim = true;
-        IsFisrt = false;
+        IsNotAttacked = false;
         IsSavePlayerLocation = false;
         Enemy->IsAttacked = false;
         IsRage = false;
@@ -608,6 +622,9 @@ void AEnemy1AIController::Tick(float DeltaTime)
         {
             MoveToActor(PlayerCharacter, 999999999.0f, true, true, true, 0, true);
         }
+
+        //초기값 설정이 끝난 상태
+        IsFisrt = false;
 	}
     
     //테스트 중 죽는 경우를 테스트하기 위한 코드
