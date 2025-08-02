@@ -39,4 +39,14 @@ public:
     class UDrawingBook_UI* DrawingBookRef;
 
     void SetDrawingBookRef(UDrawingBook_UI* InRef) { DrawingBookRef = InRef; }
+
+    //각 등급별 버튼 이미지
+    UPROPERTY(meta = (BindWidget))
+    UImage* CommonEffect;
+
+    UPROPERTY(meta = (BindWidget))
+    UImage* RareEffect;
+
+    UPROPERTY(meta = (BindWidget))
+    UImage* LegendaryEffect;
 };

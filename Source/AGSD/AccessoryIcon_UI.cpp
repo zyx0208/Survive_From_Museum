@@ -17,7 +17,39 @@ void UAccessoryIcon_UI::Init(FAccessoryData* InData)
     {
         IconButton->OnClicked.AddDynamic(this, &UAccessoryIcon_UI::OnIconClicked);
     }
-    
+
+    // 효과 이미지 초기화: 모두 숨기기
+    if (CommonEffect) CommonEffect->SetVisibility(ESlateVisibility::Hidden);
+    if (RareEffect) RareEffect->SetVisibility(ESlateVisibility::Hidden);
+    if (LegendaryEffect) LegendaryEffect->SetVisibility(ESlateVisibility::Hidden);
+
+    // Enum 기반으로 등급에 맞는 이미지 표시
+    switch (AccessoryData.Rarity)
+    {
+    case EAccessoryRarity::Common:
+        if (CommonEffect)
+        {
+            CommonEffect->SetVisibility(ESlateVisibility::Visible);
+        }
+        break;
+
+    case EAccessoryRarity::Rare:
+        if (RareEffect)
+        {
+            RareEffect->SetVisibility(ESlateVisibility::Visible);
+        }
+        break;
+
+    case EAccessoryRarity::Legendary:
+        if (LegendaryEffect)
+        {
+            LegendaryEffect->SetVisibility(ESlateVisibility::Visible);
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 void UAccessoryIcon_UI::OnIconClicked()
