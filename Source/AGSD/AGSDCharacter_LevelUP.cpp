@@ -60,10 +60,10 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         }
         else if (Effect.Contains(TEXT("공격범위")))
         {
-            float RangeIncrease = 1.0f;
-            (Character->AttackRangeLevel == 3.0f) ? RangeIncrease == 0.0f : RangeIncrease == 1.0f;
+            FString ValueString = Effect.Mid(5).TrimStartAndEnd();
+            float RangeIncrease = FCString::Atof(*ValueString.Replace(TEXT("+"), TEXT("")).TrimStartAndEnd());
             Character->AttackRangeLevel += RangeIncrease;
-            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.0f Range %.0f"), RangeIncrease, Character->AttackRangeLevel);
+            UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Range %.1f"), RangeIncrease, Character->AttackRangeLevel);
         }
         else if (Effect.Contains(TEXT("최대체력")))
         {
