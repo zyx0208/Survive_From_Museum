@@ -25,4 +25,6 @@ protected:
 
     void RandmoStatApplyM(AAGSDCharacter* Character, int randomstat);
     void RandmoStatApplyP(AAGSDCharacter* Character, int randomstat);
+
+    bool NameSetCheck(AAGSDCharacter* Character, FString Name);
 };

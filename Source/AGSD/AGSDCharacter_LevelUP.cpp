@@ -23,7 +23,15 @@ void AAGSDCharacter_LevelUP::ApplyLevelUpOption(AAGSDCharacter* Character, const
         return;
     }
     UE_LOG(LogTemp, Log, TEXT("Selected Accessory: %s"), *SelectedAccessory.AccessoryName);
-    ApplyAccessoryEffect(Character, SelectedAccessory);
+    const FString& Name = SelectedAccessory.AccessoryName;
+    if (NameSetCheck(Character, Name))
+    {
+        UE_LOG(LogTemp, Log, TEXT("Check SetOption"));
+    }
+    else
+    {
+        ApplyAccessoryEffect(Character, SelectedAccessory);
+    }
 
     Character->ResumeGameAfterLevelUp();
 }
@@ -329,5 +337,69 @@ void AAGSDCharacter_LevelUP::RandmoStatApplyP(AAGSDCharacter* Character, int ran
     }
 
     
+}
+
+bool AAGSDCharacter_LevelUP::NameSetCheck(AAGSDCharacter* Character, FString Name)
+{
+    if (!Character)
+        return false;
+
+    if (Name == TEXT("스틸 슈트 프로토타입"))
+    {
+        Character->steel1 = true;
+        Character->Defense += 5.0f;
+        Character->SteelSet();
+        return true;
+    }
+    else if (Name == TEXT("스틸 핸드"))
+    {
+        Character->steel2 = true;
+        Character->Attack += 1.0f;
+        Character->SteelSet();
+        return true;
+    }
+    else if (Name == TEXT("스틸 부츠"))
+    {
+        Character->steel3 = true;
+        Character->SpeedLevel += 50.0f;
+        Character->SteelSet();
+        return true;
+    }
+    else if (Name == TEXT("스틸 슈트-Prime Model"))
+    {
+        Character->steelp1 = true;
+        Character->Defense += 10.0f;
+        Character->SteelPrimeSet();
+        return true;
+    }
+    else if (Name == TEXT("Arc Gauntlet"))
+    {
+        Character->steelp2 = true;
+        Character->Attack += 2.0f;
+        Character->SteelPrimeSet();
+        return true;
+    }
+    else if (Name == TEXT("Zero To Sixty-0"))
+    {
+        Character->steelp3 = true;
+        Character->SpeedLevel += 100.0f;
+        Character->SteelPrimeSet();
+        return true;
+    }
+    else if (Name == TEXT("마법공학 핵"))
+    {
+        Character->nuclear = true;
+        Character->AttackRangeLevel += 2.0f;
+        Character->NuclearSet();
+        return true;
+    }
+    else if (Name == TEXT("외계DNA샘플"))
+    {
+        Character->dna = true;
+        Character->NuclearSet();
+        return true;
+    }
+    else
+        return false;
 }
 

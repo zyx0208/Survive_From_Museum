@@ -92,7 +92,12 @@ AAGSDCharacter::AAGSDCharacter()
     IsResurrection = false;     //부활
     bIs_Attacked_Invincible = false;    //피격시 무적
     bGuard = false;//악세서리 가드횟수 초기화
-    Guard = 0;      
+    Guard = 0;     
+
+    //5스테이지 전용 세트옵션 bool값 초기화
+    steel1, steel2, steel3 = false;
+    steelp1, steelp2, steelp3 = false;
+    dna, nuclear = false;
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -2010,4 +2015,44 @@ void AAGSDCharacter::KnockbackApply(FVector Direction, float Power)
             EnableInput(Cast<APlayerController>(GetController()));
             bIsKnockback = false;
         }), 0.6f, false);
+}
+
+//5스테이지 전용 악세서리
+void AAGSDCharacter::SteelSet()
+{
+    if (steel1 && steel2 && steel3)
+    {
+        //세트 달성
+    }
+    else
+    {
+        //세트옵션 미달성
+        return;
+    }
+}
+
+void AAGSDCharacter::SteelPrimeSet()
+{
+    if (steelp1 && steelp2 && steelp3)
+    {
+        //세트 달성
+    }
+    else
+    {
+        //세트옵션 미달성
+        return;
+    }
+}
+
+void AAGSDCharacter::NuclearSet()
+{
+    if (dna && nuclear)
+    {
+        //세트 달성
+    }
+    else
+    {
+        //세트 미달성
+        return;
+    }
 }
