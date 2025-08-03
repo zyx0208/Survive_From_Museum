@@ -15,7 +15,6 @@ AEnemyStatusEffect::AEnemyStatusEffect()
 void AEnemyStatusEffect::BeginPlay()
 {
 	Super::BeginPlay();
-
     SetLifeSpan(Duration);
     GetWorldTimerManager().SetTimer(EffectTimer, this, &AEnemyStatusEffect::TimePerEffect ,1.0f, true);
 }
