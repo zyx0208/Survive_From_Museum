@@ -679,5 +679,18 @@ public:
 
     UPROPERTY(EditAnywhere, Category = "Debuff|Sound")
     USoundBase* KnockbackSound;
+
+
+public:
+    //5스테이지 전용 세트옵션 변수 및 함수
+    
+    void SteelSet();
+    void SteelPrimeSet();
+    void NuclearSet();
+
+    bool steel1, steel2, steel3 = false;
+    bool steelp1, steelp2, steelp3 = false;
+    bool dna, nuclear = false;
+
 };
 
