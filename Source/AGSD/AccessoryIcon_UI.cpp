@@ -13,10 +13,9 @@ void UAccessoryIcon_UI::Init(FAccessoryData* InData)
     AccessoryData = *InData;
 
     bool bIsKnown = false;
-    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (PlayerCharacter)
+    if (UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetWorld()->GetGameInstance()))
     {
-        bIsKnown = PlayerCharacter->KnowRowName.Contains(AccessoryData.RowName);
+        bIsKnown = GameInstance->TempAccessory.Contains(AccessoryData.RowName);
     }
 
     if (IconImage)

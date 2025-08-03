@@ -1942,19 +1942,6 @@ void AAGSDCharacter::PlayingGetAccessoryRowName(FName RowName)
     GetAccessory.Add(RowName);
 }
 
-void AAGSDCharacter::AccessoryKnowRowName(FName RowName)
-{
-    if (!KnowRowName.Contains(RowName))
-    {
-        KnowRowName.Add(RowName);
-        UE_LOG(LogTemp, Log, TEXT("Accessory Added: %s"), *RowName.ToString());
-    }
-    else
-    {
-        UE_LOG(LogTemp, Log, TEXT("Accessory Already Known: %s"), *RowName.ToString());
-    }
-}
-
 // 슬로우 적용
 void AAGSDCharacter::SlowApply(float Duration)
 {

@@ -92,6 +92,9 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     TArray<int> WeaponArray;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    TArray<FName> TempAccessory;
+
     //로딩 화면
     UPROPERTY(EditAnywhere, Category = "Loading")
     TSubclassOf<class UUserWidget> LoadingWidgetClass;

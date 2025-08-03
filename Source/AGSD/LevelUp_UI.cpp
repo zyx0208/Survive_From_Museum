@@ -6,6 +6,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "AGSDCharacter.h"
+#include "AGSDGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void ULevelUp_UI::NativeConstruct()
@@ -232,7 +233,12 @@ void ULevelUp_UI::OnOption1Clicked()
 
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
-        PlayerCharacter->AccessoryKnowRowName(RowName);
+
+        if (UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetWorld()->GetGameInstance()))
+        {
+            if(!GameInstance->TempAccessory.Contains(RowName))
+                GameInstance->TempAccessory.Add(RowName);
+        }
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption1Clicked"));
         UnableButtons();
@@ -248,7 +254,12 @@ void ULevelUp_UI::OnOption2Clicked()
         FName RowName = SelectedAccessories[1].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
-        PlayerCharacter->AccessoryKnowRowName(RowName);
+        
+        if (UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetWorld()->GetGameInstance()))
+        {
+            if (!GameInstance->TempAccessory.Contains(RowName))
+                GameInstance->TempAccessory.Add(RowName);
+        }
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption2Clicked"));
         UnableButtons();
@@ -264,7 +275,12 @@ void ULevelUp_UI::OnOption3Clicked()
         FName RowName = SelectedAccessories[2].RowName;
         PlayerCharacter->PlayingGetAccessoryRowName(RowName);
         PlayerCharacter->AcquiredAccessories.Add(RowName);
-        PlayerCharacter->AccessoryKnowRowName(RowName);
+        
+        if (UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetWorld()->GetGameInstance()))
+        {
+            if (!GameInstance->TempAccessory.Contains(RowName))
+                GameInstance->TempAccessory.Add(RowName);
+        }
 
         //FAccessoryData* AccessoryPtr = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("OnOption3Clicked"));
         UnableButtons();
