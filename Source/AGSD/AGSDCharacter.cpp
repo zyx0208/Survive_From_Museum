@@ -1390,6 +1390,9 @@ void AAGSDCharacter::FireByType()
     case ERangeType::ChargeBeam:
         ChargeFire();
         break;
+    case ERangeType::ComplexFire:
+        ComplexFire();
+        break;
     default:
         break;
     }
@@ -1435,6 +1438,22 @@ void AAGSDCharacter::ChargeFire()
         return;
     }
     CreateProjectile(0.0f, true);
+}
+
+void AAGSDCharacter::ComplexFire()
+{
+    FireCount = 0;
+    GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::ComplexFireCount, 0.1f, true);
+}
+
+void AAGSDCharacter::ComplexFireCount()
+{
+    FireCount++;
+    SprayFire();
+    if (FireCount > Numberofprojectile) {
+        
+        GetWorldTimerManager().ClearTimer(RapidFireTimerHandle);
+    }
 }
 
 void AAGSDCharacter::Charging()

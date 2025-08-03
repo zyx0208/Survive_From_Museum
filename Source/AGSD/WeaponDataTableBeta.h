@@ -24,7 +24,8 @@ enum class ERangeType : uint8
     RapidFire UMETA(DisplayName = "RapidFire"),
     SprayFire UMETA(DisplayName = "SprayFire"),
     BiggerProjectile UMETA(DisplayName = "BiggerProjectile"),
-    ChargeBeam UMETA(DisplayName = "ChargeBeam")
+    ChargeBeam UMETA(DisplayName = "ChargeBeam"),
+    ComplexFire UMETA(DisplayName = "ComplexFire")
 };
 
 USTRUCT(BlueprintType)

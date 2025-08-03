@@ -418,6 +418,12 @@ public:
     void ChargeFire();
 
     UFUNCTION()
+    void ComplexFire();
+
+    UFUNCTION()
+    void ComplexFireCount();
+
+    UFUNCTION()
     void Charging();
 
     UFUNCTION()
