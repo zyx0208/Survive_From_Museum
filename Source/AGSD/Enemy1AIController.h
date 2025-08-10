@@ -129,8 +129,8 @@ private:
     virtual void AttackTypeF(int AttackNum);
     //7번 공격 타입 : 테니스 보스
     virtual void AttackTypeG(int AttackNum);
-    //8번 공격 타입 : 야구공 보스
-    virtual void AttackTypeH();
+    //8번 공격 타입 : 드론 보스
+    virtual void AttackTypeH(int AttackNum);
 
     //적이 탐색이 됐는데 움직이지 않을 경우(버그)를 위한 변수1
 	FVector ChenkIsolated_1 = FVector(0.0f, 0.0f, 0.0f);
