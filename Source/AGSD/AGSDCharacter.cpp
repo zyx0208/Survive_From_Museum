@@ -1372,9 +1372,6 @@ void AAGSDCharacter::StopFiring()
 
 void AAGSDCharacter::FireByType()
 {
-    if (WeaponSoundCue != nullptr) {
-        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
-    }
 
     switch (RangeType)
     {
@@ -1396,6 +1393,7 @@ void AAGSDCharacter::FireByType()
     default:
         break;
     }
+
 }
 
 void AAGSDCharacter::LockCharge()
@@ -1406,7 +1404,11 @@ void AAGSDCharacter::LockCharge()
 void AAGSDCharacter::RapidFire()
 {
     FireCount = 0;
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::RapidFireCount, 0.1f, true);
+
 }
 
 void AAGSDCharacter::RapidFireCount()
@@ -1420,6 +1422,9 @@ void AAGSDCharacter::RapidFireCount()
 
 void AAGSDCharacter::SprayFire()
 {
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     for (int i = 0; i < Numberofprojectile ; i++) {
         float AdjustYaw = (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
         CreateProjectile(AdjustYaw,false);
@@ -1428,6 +1433,9 @@ void AAGSDCharacter::SprayFire()
 
 void AAGSDCharacter::BiggerProjectile()
 {
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     CreateProjectile(0.0f,false);
 }
 
@@ -1437,12 +1445,18 @@ void AAGSDCharacter::ChargeFire()
         CancelCharge();
         return;
     }
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     CreateProjectile(0.0f, true);
 }
 
 void AAGSDCharacter::ComplexFire()
 {
     FireCount = 0;
+    if (WeaponSoundCue != nullptr) {
+        UGameplayStatics::PlaySound2D(GetWorld(), WeaponSoundCue);
+    }
     GetWorldTimerManager().SetTimer(RapidFireTimerHandle, this, &AAGSDCharacter::ComplexFireCount, 0.1f, true);
 }
 
