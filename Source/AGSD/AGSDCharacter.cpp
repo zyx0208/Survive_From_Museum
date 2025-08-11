@@ -2056,10 +2056,20 @@ void AAGSDCharacter::SteelSet()
     if (steel1 && steel2 && steel3)
     {
         //세트 달성
+        Attack += 1.0f;
+        Defense += 5.0f;
+        SpeedLevel += 50.0f;
+        AttackSpeedLevel += 0.1f;
+        MaxHealth += 5;
+        CurrentHealth += 5;
     }
     else
     {
         //세트옵션 미달성
+        UE_LOG(LogTemp, Warning, TEXT("SteelSet 미달성 - 1: %s, 2: %s, 3: %s"),
+            steel1 ? TEXT("true") : TEXT("false"),
+            steel2 ? TEXT("true") : TEXT("false"),
+            steel3 ? TEXT("true") : TEXT("false"));
         return;
     }
 }
@@ -2069,10 +2079,20 @@ void AAGSDCharacter::SteelPrimeSet()
     if (steelp1 && steelp2 && steelp3)
     {
         //세트 달성
+        Attack += 2.0f;
+        Defense += 10.0f;
+        SpeedLevel += 100.0f;
+        AttackSpeedLevel += 0.2f;
+        MaxHealth += 10;
+        CurrentHealth += 10;
     }
     else
     {
         //세트옵션 미달성
+        UE_LOG(LogTemp, Warning, TEXT("SteelPrimeSet 미달성 - 1: %s, 2: %s, 3: %s"),
+            steelp1 ? TEXT("true") : TEXT("false"),
+            steelp2 ? TEXT("true") : TEXT("false"),
+            steelp3 ? TEXT("true") : TEXT("false"));
         return;
     }
 }
@@ -2081,11 +2101,27 @@ void AAGSDCharacter::NuclearSet()
 {
     if (dna && nuclear)
     {
-        //세트 달성
+        //세트 완성
+        FName RowName(TEXT("NewRow_83"));
+
+        PlayingGetAccessoryRowName(RowName);
+        AcquiredAccessories.Add(RowName);
+
+        if (UAGSDGameInstance* GameInstance = Cast<UAGSDGameInstance>(GetWorld()->GetGameInstance()))
+        {
+            if (!GameInstance->TempAccessory.Contains(RowName))
+                GameInstance->TempAccessory.Add(RowName);
+        }
+        AttackRangeLevel += 3.0f;
+        Attack += 2.0f;
+        SpeedLevel += 50.0f;
     }
     else
     {
         //세트 미달성
+        UE_LOG(LogTemp, Warning, TEXT("NuclearSet 미달성 - dna: %s, nuclear: %s"),
+            dna ? TEXT("true") : TEXT("false"),
+            nuclear ? TEXT("true") : TEXT("false"));
         return;
     }
 }
