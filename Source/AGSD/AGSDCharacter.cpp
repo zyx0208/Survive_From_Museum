@@ -477,6 +477,11 @@ void AAGSDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
         // InteractionAction
         EnhancedInputComponent->BindAction(InteractionAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::Interaction);
+
+        // PrimeSet "z"key Action
+        EnhancedInputComponent->BindAction(PrimeZAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::PrimeZ);
+        // PrimeSet "x"key Action
+        EnhancedInputComponent->BindAction(PrimeXAction, ETriggerEvent::Triggered, this, &AAGSDCharacter::PrimeX);
 		
 		// Firing
 		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAGSDCharacter::StartFiring);
@@ -2124,4 +2129,14 @@ void AAGSDCharacter::NuclearSet()
             nuclear ? TEXT("true") : TEXT("false"));
         return;
     }
+}
+
+void AAGSDCharacter::PrimeZ()
+{
+    if (!(steelp1 && steelp2 && steelp3)) return;
+}
+
+void AAGSDCharacter::PrimeX()
+{
+    if (!(steelp1 && steelp2 && steelp3)) return;
 }

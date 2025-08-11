@@ -78,6 +78,12 @@ class AAGSDCharacter : public ACharacter
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* InteractionAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* PrimeZAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* PrimeXAction;
+
 public:
 	AAGSDCharacter();
 	virtual void Tick(float DeltaTime) override;
@@ -698,5 +704,7 @@ public:
     bool steelp1, steelp2, steelp3 = false;
     bool dna, nuclear = false;
 
+    void PrimeZ();
+    void PrimeX();
 };
 
