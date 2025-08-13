@@ -2133,10 +2133,98 @@ void AAGSDCharacter::NuclearSet()
 
 void AAGSDCharacter::PrimeZ()
 {
+    // 세트 미완성 시 실행 안 함
     if (!(steelp1 && steelp2 && steelp3)) return;
+
+    // 쿨타임 중이면 실행 안 함
+    if (GetWorldTimerManager().IsTimerActive(PrimeZCooldownHandle))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("PrimeZ 사용 불가: 쿨타임 진행 중"));
+        return;
+    }
+
+    // 무적 시작
+    bIsInvincible = true;
+    UE_LOG(LogTemp, Log, TEXT("PrimeZ 발동 - 무적 시작"));
+
+    // 3초 뒤 무적 해제
+    GetWorldTimerManager().SetTimer(PrimeZDurationHandle, this, &AAGSDCharacter::EndPrimeZ, 3.0f, false);
+
+    // 30초 쿨타임 시작
+    GetWorldTimerManager().SetTimer(PrimeZCooldownHandle, this, &AAGSDCharacter::ResetPrimeZCooldown, 30.0f, false);
+}
+void AAGSDCharacter::EndPrimeZ()
+{
+    bIsInvincible = false;
+    UE_LOG(LogTemp, Log, TEXT("PrimeZ 종료 - 무적 해제"));
+}
+
+void AAGSDCharacter::ResetPrimeZCooldown()
+{
+    UE_LOG(LogTemp, Log, TEXT("PrimeZ 쿨타임 종료 - 다시 사용 가능"));
 }
 
 void AAGSDCharacter::PrimeX()
 {
-    if (!(steelp1 && steelp2 && steelp3)) return;
+    // 세트 미완성 시 미실행
+    if (!(steelp1 && steelp2 && steelp3)) {
+        UE_LOG(LogTemp, Warning, TEXT("[PrimeX] 조건 미달 - steelp1=%d, steelp2=%d, steelp3=%d"),
+            steelp1, steelp2, steelp3);
+        return;
+    }
+
+    // 쿨타임 중이면 미실행
+    if (GetWorldTimerManager().IsTimerActive(PrimeXCooldownHandle))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[PrimeX] 쿨타임 중 - 남은시간: %.2fs"),
+            GetWorldTimerManager().GetTimerRemaining(PrimeXCooldownHandle));
+        return;
+    }
+
+    if (!BombClass)
+    {
+        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: BombClass 미지정 (에디터에서 BP_Bomb 설정 필요)"));
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World) {
+        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: World == nullptr"));
+        return;
+    }
+
+    const FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 120.f + FVector(250, 0, 50);
+    const FRotator SpawnRotation = GetActorRotation();
+
+    FActorSpawnParameters Params;
+    Params.Owner = this;
+    Params.Instigator = this;
+    Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+    UE_LOG(LogTemp, Log, TEXT("[PrimeX] Spawn 요청 - Class=%s, Loc=%s, Rot=%s"),
+        *GetNameSafe(BombClass),
+        *SpawnLocation.ToCompactString(),
+        *SpawnRotation.ToCompactString());
+
+    AActor* SpawnedBomb = World->SpawnActor<AActor>(BombClass, SpawnLocation, SpawnRotation, Params);
+
+    if (SpawnedBomb)
+    {
+        const bool bValid = IsValid(SpawnedBomb);
+        UE_LOG(LogTemp, Log, TEXT("[PrimeX] Spawn 결과 - Ptr=%p, IsValid=%d, Name=%s"),
+            SpawnedBomb, bValid ? 1 : 0, *GetNameSafe(SpawnedBomb));
+
+        // 20초 쿨타임 시작
+        GetWorldTimerManager().SetTimer(PrimeXCooldownHandle, this, &AAGSDCharacter::ResetPrimeXCooldown, PrimeXCooldown, false);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: SpawnActor 반환값이 nullptr (충돌/클래스 문제 가능)"));
+    }
+
+}
+
+void AAGSDCharacter::ResetPrimeXCooldown()
+{
+    UE_LOG(LogTemp, Log, TEXT("PrimeX 쿨타임 종료 - 다시 사용 가능"));
 }

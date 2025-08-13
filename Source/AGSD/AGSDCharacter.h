@@ -700,11 +700,44 @@ public:
     void SteelPrimeSet();
     void NuclearSet();
 
-    bool steel1, steel2, steel3 = false;
-    bool steelp1, steelp2, steelp3 = false;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steel1 = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steel2 = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steel3 = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steelp1 = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steelp2 = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Steel")
+    bool steelp3 = false;
+
     bool dna, nuclear = false;
 
     void PrimeZ();
     void PrimeX();
+
+    FTimerHandle PrimeZDurationHandle;   // 무적 지속 타이머
+    FTimerHandle PrimeZCooldownHandle;   // 쿨타임 타이머
+
+    void EndPrimeZ();                    // 무적 해제 함수
+    void ResetPrimeZCooldown();          // 쿨타임 해제 함수
+
+    UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
+    TSubclassOf<AActor> BombClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
+    float PrimeXCooldown = 20.0f;
+
+    FTimerHandle PrimeXCooldownHandle;
+
+    void ResetPrimeXCooldown();
+
 };
 
