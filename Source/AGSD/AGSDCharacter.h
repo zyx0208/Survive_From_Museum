@@ -734,8 +734,6 @@ public:
     void EndPrimeZ();                    // 무적 해제 함수
     void ResetPrimeZCooldown();          // 쿨타임 해제 함수
 
-    UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
-    TSubclassOf<AActor> BombClass;
 
     // PrimeX/Z 총 쿨타임(초). PrimeX는 기존 PrimeXCooldown 사용
     UPROPERTY(EditDefaultsOnly, Category = "PrimeZ")
@@ -752,5 +750,16 @@ public:
 
     void TickPrimeZCooldownUI(); // 주기 호출
     void TickPrimeXCooldownUI(); // 주기 호출
+
+    // 폭발 이펙트 클래스 (에디터에서 BP_Explosion 같은 액터 블루프린트 할당)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+    TSubclassOf<AActor> BombEffect = nullptr;
+
+    // 이펙트 자동 소멸 시간(초)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+    float BombEffectLifeSpan = 2.0f;
+
+    // 스폰 헬퍼
+    void SpawnExplosionFX(const FVector& Center, bool bSnapToGround = true);
 };
 

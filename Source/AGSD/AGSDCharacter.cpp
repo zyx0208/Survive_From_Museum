@@ -53,6 +53,8 @@
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "NPC1Class.h"
+#include "Enemy1Class.h"
+#include "Enemy1AIController.h"
 
 
 
@@ -2156,7 +2158,7 @@ void AAGSDCharacter::PrimeZ()
     // 30초 쿨타임 시작
     GetWorldTimerManager().SetTimer(PrimeZCooldownHandle, this, &AAGSDCharacter::ResetPrimeZCooldown, PrimeZCooldownTotal, false);
 
-    // UI 즉시 0으로(막 썼음)
+    // UI 즉시 1으로(막 썼음)
     if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeZCooldown(1.0f);
     GetWorldTimerManager().SetTimer(PrimeZTickHandle, this, &AAGSDCharacter::TickPrimeZCooldownUI, 0.05f, true);
 
@@ -2170,7 +2172,7 @@ void AAGSDCharacter::EndPrimeZ()
 void AAGSDCharacter::ResetPrimeZCooldown()
 {
     UE_LOG(LogTemp, Log, TEXT("PrimeZ 쿨타임 종료 - 다시 사용 가능"));
-    // 마지막으로 1.0 보정 & 틱 타이머 정리
+    // 마지막으로 0.0 보정 & 틱 타이머 정리
     if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeZCooldown(0.0f);
     GetWorldTimerManager().ClearTimer(PrimeZTickHandle);
 }
@@ -2192,52 +2194,46 @@ void AAGSDCharacter::PrimeX()
         return;
     }
 
-    if (!BombClass)
+    UE_LOG(LogTemp, Log, TEXT("[PrimeX] 즉시 폭발 발동"));
+
+    // 즉시 폭발 로직 (기존Disposableitem.cpp OnOverlapBegin에서 복사)
+    TArray<AActor*> AllEnemys;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+
+    if (AllEnemys.Num() > 0)
     {
-        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: BombClass 미지정 (에디터에서 BP_Bomb 설정 필요)"));
-        return;
-    }
-
-    UWorld* World = GetWorld();
-    if (!World) {
-        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: World == nullptr"));
-        return;
-    }
-
-    const FVector SpawnLocation = GetActorLocation() + GetActorForwardVector() * 120.f + FVector(250, 0, 50);
-    const FRotator SpawnRotation = GetActorRotation();
-
-    FActorSpawnParameters Params;
-    Params.Owner = this;
-    Params.Instigator = this;
-    Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-    UE_LOG(LogTemp, Log, TEXT("[PrimeX] Spawn 요청 - Class=%s, Loc=%s, Rot=%s"),
-        *GetNameSafe(BombClass),
-        *SpawnLocation.ToCompactString(),
-        *SpawnRotation.ToCompactString());
-
-    AActor* SpawnedBomb = World->SpawnActor<AActor>(BombClass, SpawnLocation, SpawnRotation, Params);
-
-    if (SpawnedBomb)
-    {
-        const bool bValid = IsValid(SpawnedBomb);
-        UE_LOG(LogTemp, Log, TEXT("[PrimeX] Spawn 결과 - Ptr=%p, IsValid=%d, Name=%s"),
-            SpawnedBomb, bValid ? 1 : 0, *GetNameSafe(SpawnedBomb));
-
-        // 20초 쿨타임 시작
-        GetWorldTimerManager().SetTimer(PrimeXCooldownHandle, this, &AAGSDCharacter::ResetPrimeXCooldown, PrimeXCooldownTotal, false);
-        // UI 즉시 0으로(막 썼음)
-        if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeXCooldown(1.0f);
-        // 진행률 주기 갱신 타이머(50ms 간격)
-        GetWorldTimerManager().SetTimer(PrimeXTickHandle, this, &AAGSDCharacter::TickPrimeXCooldownUI, 0.05f, true);
+        for (int32 i = 0; i < AllEnemys.Num(); i++)
+        {
+            AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+            if (Enemy)
+            {
+                AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                if (AIC)
+                {
+                    // 캐릭터 위치 기준 거리 체크(폭발범위 3000.0f)
+                    if (FVector::Dist(GetActorLocation(), Enemy->GetActorLocation()) <= 3000.0f)
+                    {
+                        AIC->Attacked(Attack * 3); // 3배 공격력
+                    }
+                }
+            }
+        }
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 실패: SpawnActor 반환값이 nullptr (충돌/클래스 문제 가능)"));
+        UE_LOG(LogTemp, Display, TEXT("Enemy do not exist."));
     }
+    const FVector ExplosionCenter = GetActorLocation();
+    SpawnExplosionFX(ExplosionCenter, /*bSnapToGround=*/true);
 
+    // 20초 쿨타임 시작
+    GetWorldTimerManager().SetTimer(PrimeXCooldownHandle, this, &AAGSDCharacter::ResetPrimeXCooldown, PrimeXCooldownTotal, false);
+
+    // UI 갱신
+    if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeXCooldown(1.0f);
+    GetWorldTimerManager().SetTimer(PrimeXTickHandle, this, &AAGSDCharacter::TickPrimeXCooldownUI, 0.05f, true);
 }
+
 
 void AAGSDCharacter::ResetPrimeXCooldown()
 {
@@ -2278,5 +2274,53 @@ void AAGSDCharacter::TickPrimeXCooldownUI()
     if (DashCooldownWidget)
     {
         DashCooldownWidget->UpdatePrimeXCooldown(GetPrimeXCooldownPercent());
+    }
+}
+
+void AAGSDCharacter::SpawnExplosionFX(const FVector& Center, bool bSnapToGround)
+{
+    if (!BombEffect)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[PrimeX] 이펙트 미지정: BombEffect를 에디터에서 설정하세요."));
+        return;
+    }
+
+    UWorld* World = GetWorld();
+    if (!World) return;
+
+    // 스폰 위치: 기본은 Center. 필요 시 지면에 스냅
+    FVector SpawnLoc = Center;
+    if (bSnapToGround)
+    {
+        FHitResult Hit;
+        FVector Start = Center + FVector(0, 0, 150);
+        FVector End = Center - FVector(0, 0, 1000);
+        FCollisionQueryParams Params(SCENE_QUERY_STAT(PrimeX_EffectTrace), false, this);
+        if (World->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+        {
+            SpawnLoc = Hit.ImpactPoint;
+        }
+    }
+
+    FActorSpawnParameters SParams;
+    SParams.Owner = this;
+    SParams.Instigator = this;
+    SParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+    // 회전은 정면이 필요 없으면 ZeroRotator, 아니면 캐릭터 기준
+    const FRotator SpawnRot = FRotator::ZeroRotator;
+
+    AActor* FX = World->SpawnActor<AActor>(BombEffect, SpawnLoc, SpawnRot, SParams);
+    if (FX)
+    {
+        UE_LOG(LogTemp, Log, TEXT("[PrimeX] 폭발 이펙트 스폰: %s @ %s"), *GetNameSafe(FX), *SpawnLoc.ToCompactString());
+        if (BombEffectLifeSpan > 0.f)
+        {
+            FX->SetLifeSpan(BombEffectLifeSpan);
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("[PrimeX] 폭발 이펙트 스폰 실패 (클래스/콜리전 확인)"));
     }
 }
