@@ -723,8 +723,13 @@ public:
     void PrimeZ();
     void PrimeX();
 
-    FTimerHandle PrimeZDurationHandle;   // 무적 지속 타이머
-    FTimerHandle PrimeZCooldownHandle;   // 쿨타임 타이머
+    // 타이머 핸들: 쿨타임 종료/무적 지속/진행률 업데이트
+    FTimerHandle PrimeZCooldownHandle;
+    FTimerHandle PrimeZDurationHandle;
+    FTimerHandle PrimeZTickHandle;
+
+    FTimerHandle PrimeXCooldownHandle;
+    FTimerHandle PrimeXTickHandle;
 
     void EndPrimeZ();                    // 무적 해제 함수
     void ResetPrimeZCooldown();          // 쿨타임 해제 함수
@@ -732,12 +737,20 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
     TSubclassOf<AActor> BombClass;
 
-    UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
-    float PrimeXCooldown = 20.0f;
+    // PrimeX/Z 총 쿨타임(초). PrimeX는 기존 PrimeXCooldown 사용
+    UPROPERTY(EditDefaultsOnly, Category = "PrimeZ")
+    float PrimeZCooldownTotal = 30.f;
 
-    FTimerHandle PrimeXCooldownHandle;
+    UPROPERTY(EditDefaultsOnly, Category = "PrimeX")
+    float PrimeXCooldownTotal = 20.0f;
 
     void ResetPrimeXCooldown();
 
+    // 진행률 계산 & UI 반영 헬퍼
+    float GetPrimeZCooldownPercent() const;
+    float GetPrimeXCooldownPercent() const;
+
+    void TickPrimeZCooldownUI(); // 주기 호출
+    void TickPrimeXCooldownUI(); // 주기 호출
 };
 

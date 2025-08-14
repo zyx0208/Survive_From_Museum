@@ -66,3 +66,19 @@ void UDashCooldown_UI::UpdateAttackCooldown(float CooldownPercentage)
     }
 }
 
+void UDashCooldown_UI::UpdatePrimeZCooldown(float CooldownPercentage)
+{
+    if (PrimeZCooldownBar)
+    {
+        PrimeZCooldownBar->SetPercent(CooldownPercentage);
+    }
+}
+
+void UDashCooldown_UI::UpdatePrimeXCooldown(float CooldownPercentage)
+{
+    if (PrimeXCooldownBar)
+    {
+        PrimeXCooldownBar->SetPercent(CooldownPercentage);
+    }
+}
+

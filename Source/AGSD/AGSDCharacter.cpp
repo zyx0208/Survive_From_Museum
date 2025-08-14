@@ -251,6 +251,8 @@ void AAGSDCharacter::BeginPlay()
         if (DashCooldownWidget)
         {
             DashCooldownWidget->AddToViewport();
+            DashCooldownWidget->UpdatePrimeZCooldown(0.0f);
+            DashCooldownWidget->UpdatePrimeXCooldown(0.0f);
             UpdateDashCooldownUI();
             UpdateSwapWeaponIcon();
         }
@@ -738,6 +740,7 @@ void AAGSDCharacter::UpdateDashCooldownUI()
             }
         }
     }
+
 }
 
 void AAGSDCharacter::Interaction()
@@ -2151,7 +2154,12 @@ void AAGSDCharacter::PrimeZ()
     GetWorldTimerManager().SetTimer(PrimeZDurationHandle, this, &AAGSDCharacter::EndPrimeZ, 3.0f, false);
 
     // 30초 쿨타임 시작
-    GetWorldTimerManager().SetTimer(PrimeZCooldownHandle, this, &AAGSDCharacter::ResetPrimeZCooldown, 30.0f, false);
+    GetWorldTimerManager().SetTimer(PrimeZCooldownHandle, this, &AAGSDCharacter::ResetPrimeZCooldown, PrimeZCooldownTotal, false);
+
+    // UI 즉시 0으로(막 썼음)
+    if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeZCooldown(1.0f);
+    GetWorldTimerManager().SetTimer(PrimeZTickHandle, this, &AAGSDCharacter::TickPrimeZCooldownUI, 0.05f, true);
+
 }
 void AAGSDCharacter::EndPrimeZ()
 {
@@ -2162,6 +2170,9 @@ void AAGSDCharacter::EndPrimeZ()
 void AAGSDCharacter::ResetPrimeZCooldown()
 {
     UE_LOG(LogTemp, Log, TEXT("PrimeZ 쿨타임 종료 - 다시 사용 가능"));
+    // 마지막으로 1.0 보정 & 틱 타이머 정리
+    if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeZCooldown(0.0f);
+    GetWorldTimerManager().ClearTimer(PrimeZTickHandle);
 }
 
 void AAGSDCharacter::PrimeX()
@@ -2215,7 +2226,11 @@ void AAGSDCharacter::PrimeX()
             SpawnedBomb, bValid ? 1 : 0, *GetNameSafe(SpawnedBomb));
 
         // 20초 쿨타임 시작
-        GetWorldTimerManager().SetTimer(PrimeXCooldownHandle, this, &AAGSDCharacter::ResetPrimeXCooldown, PrimeXCooldown, false);
+        GetWorldTimerManager().SetTimer(PrimeXCooldownHandle, this, &AAGSDCharacter::ResetPrimeXCooldown, PrimeXCooldownTotal, false);
+        // UI 즉시 0으로(막 썼음)
+        if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeXCooldown(1.0f);
+        // 진행률 주기 갱신 타이머(50ms 간격)
+        GetWorldTimerManager().SetTimer(PrimeXTickHandle, this, &AAGSDCharacter::TickPrimeXCooldownUI, 0.05f, true);
     }
     else
     {
@@ -2227,4 +2242,41 @@ void AAGSDCharacter::PrimeX()
 void AAGSDCharacter::ResetPrimeXCooldown()
 {
     UE_LOG(LogTemp, Log, TEXT("PrimeX 쿨타임 종료 - 다시 사용 가능"));
+    if (DashCooldownWidget) DashCooldownWidget->UpdatePrimeXCooldown(0.0f);
+    GetWorldTimerManager().ClearTimer(PrimeXTickHandle);
+}
+
+float AAGSDCharacter::GetPrimeZCooldownPercent() const
+{
+    // 0 = 준비완료, 1 = 막 사용
+    if (!GetWorldTimerManager().IsTimerActive(PrimeZCooldownHandle)) return 0.0f;
+
+    const float Remaining = GetWorldTimerManager().GetTimerRemaining(PrimeZCooldownHandle);
+    const float Total = FMath::Max(0.01f, PrimeZCooldownTotal);
+    return 0.0f + (Remaining / Total);
+}
+
+float AAGSDCharacter::GetPrimeXCooldownPercent() const
+{
+    if (!GetWorldTimerManager().IsTimerActive(PrimeXCooldownHandle)) return 0.0f;
+
+    const float Remaining = GetWorldTimerManager().GetTimerRemaining(PrimeXCooldownHandle);
+    const float Total = FMath::Max(0.01f, PrimeXCooldownTotal);
+    return 0.0f + (Remaining / Total);
+}
+
+void AAGSDCharacter::TickPrimeZCooldownUI()
+{
+    if (DashCooldownWidget)
+    {
+        DashCooldownWidget->UpdatePrimeZCooldown(GetPrimeZCooldownPercent());
+    }
+}
+
+void AAGSDCharacter::TickPrimeXCooldownUI()
+{
+    if (DashCooldownWidget)
+    {
+        DashCooldownWidget->UpdatePrimeXCooldown(GetPrimeXCooldownPercent());
+    }
 }

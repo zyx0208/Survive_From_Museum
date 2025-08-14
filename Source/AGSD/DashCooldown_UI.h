@@ -22,6 +22,9 @@ public:
     void UpdateWeaponIcon();
     void UpdateSwapWeapon();
 
+    void UpdatePrimeZCooldown(float CooldownPercentage);
+    void UpdatePrimeXCooldown(float CooldownPercentage);
+
     /** 무기 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTableBeta;
@@ -40,6 +43,12 @@ protected:
     class UProgressBar* DashCooldownBar;*/
     UPROPERTY(meta=(BindWidget))
     class UProgressBar* AttackCooldownBar;
+
+    UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+    class UProgressBar* PrimeZCooldownBar;
+
+    UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+    class UProgressBar* PrimeXCooldownBar;
 
 private:
     bool mainicon = true;
