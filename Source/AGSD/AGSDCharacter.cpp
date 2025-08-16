@@ -282,32 +282,9 @@ void AAGSDCharacter::BeginPlay()
     // 현재 맵 이름 확인
     FString CurrentMapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
     
-    /*
-    // GameTimer 생성 및 초기화
-    if (CurrentMapName == "stage1")
-    {
-        InGameTimer = NewObject<UGameTimer>();
-        if (InGameTimer)
-        {
-            InGameTimer->TimeSet(120.0f); // 60초 타이머 설정
-            UE_LOG(LogTemp, Warning, TEXT("GameTimer successfully created."));
-        }
-        else
-        {
-            UE_LOG(LogTemp, Error, TEXT("Failed to create GameTimer."));
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("GameTimer not started. Current map: %s"), *CurrentMapName);
-    }
-    */
+   
     AnimInstance = GetMesh()->GetAnimInstance();
-    /*
-    if (AnimInstance) {
-        UE_LOG(LogTemp, Warning, TEXT("No Anim"));
-    }
-    */
+    
     // 레벨업 처리 핸들러 생성
     LevelUpHandler = NewObject<AAGSDCharacter_LevelUP>(this);
 
@@ -380,35 +357,16 @@ void AAGSDCharacter::Tick(float DeltaTime)
 			// 충돌된 지점의 Z 좌표를 사용하여 마우스 위치를 조정
 			FVector AdjustedMouseLocation = HitResult.Location;
 
-			// 캐릭터와 마우스 사이의 선을 디버그 선으로 그리기
-			//DrawDebugLine(GetWorld(), CharacterLocation, AdjustedMouseLocation, FColor::Green, false, -1.0f, 0, 2.0f);
-            /*if (MouseIndicator)
-            {
-                FVector DecalLocation = AdjustedMouseLocation + FVector(0.f, 0.f, 5.f);
-                MouseIndicator->SetActorLocation(DecalLocation);
-            }*/
 			//라인트레이스 위치와 방향 저장
 			TraceHitLocation = HitResult.Location;
 			TraceHitDirection = (HitResult.Location - CharacterLocation).GetSafeNormal();
             FRotator NewActorRotation = GetActorRotation();
             NewActorRotation.Yaw = TraceHitDirection.Rotation().Yaw;
             SetActorRotation(NewActorRotation);
-            //PlayerController->SetControlRotation(NewActorRotation);
-			// 로그로 충돌된 위치 출력 (디버깅 용도)
-			//UE_LOG(LogTemp, Log, TEXT("Character Location: %s, Adjusted Mouse Location: %s"), *CharacterLocation.ToString(), *AdjustedMouseLocation.ToString());
 			
 		}
 	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Failed to get the mouse position in world space."));
-	}
-    /*
-    if (InGameTimer && InGameTimer->TimeEnd)
-    {
-        Clear();
-    }
-    */
+
     for (int32 i = MagnetField.Num() - 1; i >= 0; i--) // 역순으로 루프
     {
         AXPOrb* XPOrb = MagnetField[i];
@@ -451,9 +409,6 @@ void AAGSDCharacter::Tick(float DeltaTime)
         }
     }
 
-    //충돌 디버깅
-    //ECollisionResponse CurrentResponse = GetCapsuleComponent()->GetCollisionResponseToChannel(ECC_Pawn);
-    //UE_LOG(LogTemp, Warning, TEXT("Current Collision Response to ECC_Pawn: %d"), (int32)CurrentResponse);
 
 }
 
@@ -1079,35 +1034,6 @@ void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage)
     //AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, Montage);
 }
 
-/*
-void AAGSDCharacter::OnMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-    if (Montage != CurrentMontage)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Montage was interrupted or not the expected montage."));
-        return;
-    }
-
-    if (CurrentCount < RepeatCount)
-    {
-        CurrentCount++;
-        UE_LOG(LogTemp, Display, TEXT("%d 번째 발사"), CurrentCount);
-        PlayFireMontage(Montage, RepeatCount);
-        /* 반복 재생
-        CurrentCount++;
-        AnimInstance->Montage_Play(Montage, 1.0f * RepeatFire * AttackSpeedLevel);
-        UE_LOG(LogTemp, Display, TEXT("%d 번째 발사"), CurrentCount);
-        OnMontageEnded(Montage, false);
-    }
-    else
-    {
-        // 반복 종료
-        CurrentCount = 0;
-        UE_LOG(LogTemp, Display, TEXT("Montage playback completed %d times."), RepeatCount);
-    }
-}
-*/
-
 void AAGSDCharacter::ShowWeaponExchangeUI()
 {
     int Overlap = FCString::Atoi(*OverlapID);
@@ -1153,17 +1079,6 @@ void AAGSDCharacter::WeaponSwap() {
         CurrentWeaponSlot = !CurrentWeaponSlot;
 	}
     
-
-    /*
-	FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-	FireRate = WeaponData->Frate;
-	Numberofprojectile = WeaponData->Inumberofprojectile;
-	ProjectileClass = WeaponData->WeaponProjectile;
-	FireMontage = WeaponData->WeaponAnimationMontage;
-	CurrentWeaponMesh = WeaponData->WeaponMesh;
-	WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Rate: %f"), FireRate));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Weapon Projectile: %i"), Numberofprojectile));*/
 }
 
 void AAGSDCharacter::UpdateSwapWeaponIcon()
@@ -1564,133 +1479,7 @@ void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool ChargeFire)
     Charge = 0;
 }
 
-/*
-void AAGSDCharacter::CreateProjectile()
-{
 
-    // 발사
-    if (!WeaponType) {
-        if (ProjectileClass)
-        {
-            // 총구 방향
-            FRotator MuzzleRotation = TraceHitDirection.Rotation();
-            MuzzleRotation.Pitch = 0;
-            MuzzleRotation.Roll = 0;
-
-            // 총구위치 설정
-            MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            //MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-            MuzzleLocation.Z = CharacterLocation.Z;
-
-            //MuzzleLocation.Normalize();
-
-            MuzzleRotation.Pitch += 0.0f;
-
-            // 탄환 생성
-            UWorld* World = GetWorld();
-            if (World)
-            {
-                FActorSpawnParameters SpawnParams;
-                SpawnParams.Owner = this;
-                SpawnParams.Instigator = GetInstigator();
-                //탄환숫자만큼 발사반복
-                for (int i = 0; i < Numberofprojectile; i++) {
-                    AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-                    float AdjustedYaw = MuzzleRotation.Yaw + (i - (Numberofprojectile - 1) / 2.0f) * SpreadAngle;
-                    FRotator AdjustedRotation = FRotator(MuzzleRotation.Pitch, AdjustedYaw, MuzzleRotation.Roll);
-                    if (Projectile)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
-                        FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                        Projectile->SetPlayerState(Attack, AttackRangeLevel);
-                        Projectile->SetActorEnableCollision(true);
-                        Projectile->SetActorTickEnabled(true);
-                        if (WeaponData)
-                        {
-                            //탄환에서 메쉬,마테리얼,데미지,속도,사거리 설정
-                            //Projectile->SetProjectileMeshAndMarterial(WeaponData->ProjectileMesh, WeaponData->ProjectileMaterial);
-                            //Projectile->SetProjectileSpeedDamageAndRange(WeaponData->Fspeedofprojectile, WeaponData->Fdamage, WeaponData->Frange);
-                            // 탄환 방향설정
-                            FVector LaunchDirection = AdjustedRotation.Vector();
-                            Projectile->FireInDirection(LaunchDirection);
-                        }
-
-                    }
-                    //파티클 생성
-                    if (WeaponParticle) {
-                        SpawnParticle(MuzzleLocation, AdjustedRotation);
-                    }
-                }
-
-            }
-        }
-    }
-    else {
-        if (ProjectileClass)
-        {
-
-
-            // 총구 위치
-            MuzzleOffset.Set(0.1f, 0.0f, 0.0f);
-
-            // 총구 방향
-            FRotator MuzzleRotation = TraceHitDirection.Rotation();
-            MuzzleRotation.Pitch = 0;
-            MuzzleRotation.Roll = 0;
-
-            // 총구위치 설정
-            MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-            MuzzleLocation.Z = CharacterLocation.Z + GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-
-
-            MuzzleRotation.Pitch += 0.0f;
-
-            // 탄환 생성
-            UWorld* World = GetWorld();
-            if (World)
-            {
-                FActorSpawnParameters SpawnParams;
-                SpawnParams.Owner = this;
-                SpawnParams.Instigator = GetInstigator();
-                float LeftRight = 5.0f;
-                //탄환숫자만큼 발사반복
-                for (int i = 0; i < Numberofprojectile; i++) {
-                    if (i % 2 == 1) {
-                        MuzzleOffset.Y = -1 * LeftRight;
-
-                    }
-                    else if (i != 0 && i % 2 == 0) {
-                        MuzzleOffset.Y = 1 * LeftRight;
-                        LeftRight += 5.0f;
-                    }
-                    MuzzleLocation = CharacterLocation + FTransform(MuzzleRotation).TransformVector(MuzzleOffset);
-                    AProjectile_Beta* Projectile = World->SpawnActor<AProjectile_Beta>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
-                    if (Projectile)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("Fire"));
-                        FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(*WeaponID), TEXT("Weapon Lookup"));
-                        Projectile->SetPlayerState(Attack, AttackRangeLevel);
-                        Projectile->SetActorEnableCollision(true);
-                        Projectile->SetActorTickEnabled(true);
-                        if (WeaponData)
-                        {
-                            // 탄환 방향설정
-                            FVector LaunchDirection = MuzzleRotation.Vector();
-                            Projectile->FireInDirection(LaunchDirection);
-                        }
-
-                    }
-                    //파티클 생성
-                    if (WeaponParticle) {
-                        SpawnParticle(MuzzleLocation, MuzzleRotation);
-                    }
-                }
-
-            }
-        }
-    }
-}
-*/
 void AAGSDCharacter::Attacked(float Damage)
 {
     if (bIsInvincible) // 무적 상태에서는 피해 무시
@@ -2024,6 +1813,11 @@ void AAGSDCharacter::StunApply(float Duration)
     if (StunSound)
     {
         UGameplayStatics::PlaySoundAtLocation(this, StunSound, GetActorLocation());
+    }
+
+    if (StunMontage) {
+        UE_LOG(LogTemp, Warning, TEXT("stunmontage"));
+        PlayAnimMontage(StunMontage, Duration/StunMontage->GetPlayLength());
     }
 
     GetWorldTimerManager().ClearTimer(StunTimerHandle);

@@ -541,6 +541,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
 	UAnimMontage* FireMontage;
 
+    //기절 애니메이션
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage* StunMontage;
     //무기 애니메이션
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
     UAnimSequence* WeaponFireSequence;
