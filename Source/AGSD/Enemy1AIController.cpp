@@ -263,9 +263,38 @@ void AEnemy1AIController::BossTimerEnd()
             Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
         }
     }
-    else if (Enemy->AttackType == 8)
+    else if ((Enemy->AttackType == 8)&&(AttackNum_Temp == 1))
     {
-        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation());
+    }
+    else if ((Enemy->AttackType == 8) && (AttackNum_Temp == 3))
+    {
+        if (IsRage)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 90.0f, 0.0f));
+        }
+        else
+        {
+            if (BossCount == 0)
+            {
+                GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 90.0f, 0.0f));
+            }
+            else
+            {
+                GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+            }
+        }
+    }
+    else if ((Enemy->AttackType == 8) && (AttackNum_Temp == 4))
+    {
+        Groggy(1.0f);
+        GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+    }
+    else if ((Enemy->AttackType == 8) && (AttackNum_Temp == 5))
+    {
+        Groggy(1.0f);
+        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
     }
 }
 
@@ -283,29 +312,79 @@ void AEnemy1AIController::AttackTypeH(int AttackNum)
     if (n == 1)
     {
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation());
+        if (IsRage)
+        {
+            Groggy(1.0f);
+            GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+        }
     }
     else if (n == 2)
     {
         GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect2, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
-        if (FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.2f)
+        if (FVector::Dist(PlayerCharacter->GetActorLocation(), GetCharacter()->GetActorLocation()) <= Enemy->AttackRange * 1.0f)
         {
             Cast<AAGSDCharacter>(PlayerCharacter)->KnockbackApply((PlayerCharacter->GetActorLocation() - GetCharacter()->GetActorLocation()).GetSafeNormal() * 1000.0f, 1200.0f);
+            if (IsRage)
+            {
+                Cast<AAGSDCharacter>(PlayerCharacter)->StunApply(2.0f);
+            }
             Cast<AAGSDCharacter>(PlayerCharacter)->Attacked(Enemy->AttackDamage);
         }
     }
     else if (n == 3)
     {
-        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect1, PlayerCharacter->GetActorLocation(), PlayerCharacter->GetActorRotation());
-        Groggy(1.0f);
-        GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+        if (IsRage)
+        {
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 90.0f, 0.0f));
+            Groggy(1.0f);
+            GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+        }
+        else
+        {
+            if (FMath::RandRange(0, 1))
+            {
+                BossCount = 0;
+                GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+                Groggy(1.0f);
+                GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+            }
+            else
+            {
+                BossCount = 1;
+                GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect3, PlayerCharacter->GetActorLocation(), FRotator(0.0f, 90.0f, 0.0f));
+                Groggy(1.0f);
+                GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+            }
+        }
     }
     else if (n == 4)
     {
-        GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if (IsRage)
+        {
+            Groggy(1.0f);
+            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+            GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+        }
+        else
+        {
+            Groggy(1.0f);
+            GetWorld()->SpawnActor<AActor>(Enemy->EnemyProjectile, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        }
     }
     else if (n == 5)
     {
-        GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        if (IsRage)
+        {
+            Groggy(2.0f);
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+            GetWorldTimerManager().SetTimer(BossTimer, this, &AEnemy1AIController::BossTimerEnd, 1.0f, false);
+        }
+        else
+        {
+            Groggy(1.0f);
+            GetWorld()->SpawnActor<AActor>(Enemy->AttackEffect4, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
+        }
     }
 }
 
@@ -783,7 +862,11 @@ void AEnemy1AIController::Tick(float DeltaTime)
                 {
                     AttackNum_Temp = FMath::RandRange(0, 1);
                 }
-                else if ((Enemy->AttackType == 7)&&(Enemy->AttackType == 8))
+                else if (Enemy->AttackType == 7)
+                {
+                    AttackNum_Temp = FMath::RandRange(1, 5);
+                }
+                else if (Enemy->AttackType == 8)
                 {
                     AttackNum_Temp = FMath::RandRange(1, 5);
                 }
