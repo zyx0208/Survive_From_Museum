@@ -32,6 +32,14 @@
 
 #include "AGSDCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class EBuffType : uint8
+{
+    Revive UMETA(DisplayName = "Revive"),
+    Seven UMETA(DisplayName = "Seven"),
+    Star UMETA(DisplayName = "Star")
+};
+
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -556,6 +564,16 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
     UNiagaraSystem* WeaponParticle;
 
+    //캐릭터 버프 파티클
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
+    UNiagaraSystem* ReviveParticle;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
+    UNiagaraSystem* SevenParticle;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
+    UNiagaraSystem* StarParticle;
+
     //보조무기 추가용
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     ASubWeapon* SubWeaponSlot;
@@ -764,5 +782,11 @@ public:
 
     // 스폰 헬퍼
     void SpawnExplosionFX(const FVector& Center, bool bSnapToGround = true);
+
+    // 악세서리 효과 넣기
+    void SpawnBuffVFX(EBuffType BuffType, float Duration);
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem* ApplyVFX;
 };
 

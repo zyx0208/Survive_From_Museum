@@ -184,6 +184,8 @@ AAGSDCharacter::AAGSDCharacter()
     XPAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("XPAudioComponent"));
     XPAudioComponent->SetupAttachment(RootComponent);
 
+
+
 	FireRate = 1.0f;
 	Numberofprojectile = 1;
 	SpreadAngle = 25.0f;
@@ -2116,5 +2118,45 @@ void AAGSDCharacter::SpawnExplosionFX(const FVector& Center, bool bSnapToGround)
     else
     {
         UE_LOG(LogTemp, Error, TEXT("[PrimeX] 폭발 이펙트 스폰 실패 (클래스/콜리전 확인)"));
+    }
+}
+
+void AAGSDCharacter::SpawnBuffVFX(EBuffType BuffType, float Duration)
+{
+    
+    switch (BuffType)
+    {
+    case EBuffType::Revive:
+        if (ReviveParticle) {
+            ApplyVFX = ReviveParticle;
+        }
+        break;
+    case EBuffType::Seven:
+        if (SevenParticle) {
+            ApplyVFX = SevenParticle;
+        }
+        break;
+    case EBuffType::Star:
+        if (StarParticle) {
+            ApplyVFX = StarParticle;
+        }
+        break;
+    default:
+        break;
+    }
+
+    if (ApplyVFX) {
+        UNiagaraComponent* VFXComp = UNiagaraFunctionLibrary::SpawnSystemAttached(ApplyVFX,GetMesh(),NAME_None,FVector::ZeroVector,FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset,
+            true);
+        VFXComp->RegisterComponent();
+        
+        VFXComp->AttachToComponent(RootComponent, FAttachmentTransformRules(
+            EAttachmentRule::KeepRelative,
+            EAttachmentRule::KeepWorld,
+            EAttachmentRule::KeepRelative,
+            false));
+        VFXComp->SetAsset(ApplyVFX);
+        VFXComp->SetAbsolute(false, true, false);
+        VFXComp->Activate();
     }
 }

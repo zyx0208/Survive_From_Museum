@@ -149,6 +149,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             // 부활 및 잠시 무적
             UE_LOG(LogTemp, Log, TEXT("부활 및 1초 무적효과 적용"));
             Character->IsResurrection = true;
+            Character->SpawnBuffVFX(EBuffType::Revive, 0.0f);
         }
         else if (Effect.Contains(TEXT("랜덤+")))
         {
@@ -169,6 +170,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         else if (Effect.Contains(TEXT("피격시 5초 무적")))
         {
             UE_LOG(LogTemp, Log, TEXT("피격시 5초 무적효과 적용"));
+            Character->SpawnBuffVFX(EBuffType::Star, 0.0f);
             Character->bIs_Attacked_Invincible = true;
         }
         else if (Effect.Contains(TEXT("가드")))
@@ -177,6 +179,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             ValueString.RemoveFromEnd(TEXT("회")); // "7"
             int32 GuardCount = FCString::Atoi(*ValueString);
             Character->Guard += GuardCount;
+            Character->SpawnBuffVFX(EBuffType::Seven, 0.0f);
             UE_LOG(LogTemp, Log, TEXT("가드효과 적용: %d회"), GuardCount);
         }
         else
