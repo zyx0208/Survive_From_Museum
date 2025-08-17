@@ -1491,6 +1491,18 @@ void AAGSDCharacter::Attacked(float Damage)
     if (Guard > 0)      //가드가 있는경우 1회 공격무시
     {
         Guard--;
+        if (Guard <= 0) {
+            TArray<UActorComponent*> TaggedComps = GetComponentsByTag(UNiagaraComponent::StaticClass(), FName("Seven"));
+
+            for (UActorComponent* Comp : TaggedComps)
+            {
+                if (UNiagaraComponent* NiagaraComp = Cast<UNiagaraComponent>(Comp))
+                {
+                    NiagaraComp->DestroyComponent();
+                }
+            }
+
+        }
         return;
     }
     int32 fixed_Damge = (int32)(Damage) - (int32)(Damage * ((Defense - 100.0f) / 100.0f));
@@ -1565,6 +1577,7 @@ void AAGSDCharacter::Attacked(float Damage)
     //피격시 무적(데미지는 받고 이후 5초간 무적 / 60초 쿨타임)
     if (Invincibility_Cooldown && bIs_Attacked_Invincible)
     {
+        SpawnBuffVFX(EBuffType::Star, 5.0f);
         float tempcooldown = 5.0f;
         bIsInvincible = true;
         GetWorldTimerManager().SetTimer(
@@ -1574,6 +1587,15 @@ void AAGSDCharacter::Attacked(float Damage)
     {        
         if (IsResurrection) //부활
         {
+            TArray<UActorComponent*> TaggedComps = GetComponentsByTag(UNiagaraComponent::StaticClass(), FName("Revive"));
+
+            for (UActorComponent* Comp : TaggedComps)
+            {
+                if (UNiagaraComponent* NiagaraComp = Cast<UNiagaraComponent>(Comp))
+                {
+                    NiagaraComp->DestroyComponent();
+                }
+            }
             IsResurrection = false;
             CurrentHealth = 10;
             bIsInvincible = true;       // 무적 상태 설정
@@ -2155,6 +2177,21 @@ void AAGSDCharacter::SpawnBuffVFX(EBuffType BuffType, float Duration)
             EAttachmentRule::KeepWorld,
             EAttachmentRule::KeepRelative,
             false));
+        switch (BuffType)
+        {
+        case EBuffType::Revive:
+            VFXComp->ComponentTags.Add("Revive");
+            break;
+        case EBuffType::Seven:
+            VFXComp->ComponentTags.Add("Seven");
+            break;
+        case EBuffType::Star:
+            VFXComp->ComponentTags.Add("Star");
+            break;
+        default:
+            break;
+        }
+        
         VFXComp->SetAsset(ApplyVFX);
         VFXComp->SetAbsolute(false, true, false);
         VFXComp->Activate();

@@ -170,7 +170,6 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         else if (Effect.Contains(TEXT("피격시 5초 무적")))
         {
             UE_LOG(LogTemp, Log, TEXT("피격시 5초 무적효과 적용"));
-            Character->SpawnBuffVFX(EBuffType::Star, 0.0f);
             Character->bIs_Attacked_Invincible = true;
         }
         else if (Effect.Contains(TEXT("가드")))
