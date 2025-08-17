@@ -55,6 +55,7 @@
 #include "NPC1Class.h"
 #include "Enemy1Class.h"
 #include "Enemy1AIController.h"
+#include "TrapChest.h"
 
 
 
@@ -732,6 +733,15 @@ void AAGSDCharacter::Interaction()
             }
         }
     }
+
+    //5stage 전용 상자 상호작용
+    if (ATrapChest* Chest = FindNearbyTrapChest())
+    {
+        UE_LOG(LogTemp, Log, TEXT("TrapChest here"));
+        Chest->Interact(this);   // 확률/문 처리 전부 Chest가 담당
+        return;
+    }
+    else UE_LOG(LogTemp, Log, TEXT("TrapChest missing"));
 }
 
 void AAGSDCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -2196,4 +2206,27 @@ void AAGSDCharacter::SpawnBuffVFX(EBuffType BuffType, float Duration)
         VFXComp->SetAbsolute(false, true, false);
         VFXComp->Activate();
     }
+}
+
+ATrapChest* AAGSDCharacter::FindNearbyTrapChest() const
+{
+    TArray<AActor*> OverlappingActors;
+    GetCapsuleComponent()->GetOverlappingActors(OverlappingActors, ATrapChest::StaticClass());
+
+    ATrapChest* Best = nullptr;
+    float BestDistSq = MAX_flt;
+
+    for (AActor* A : OverlappingActors)
+    {
+        if (ATrapChest* Chest = Cast<ATrapChest>(A))
+        {
+            const float DistSq = FVector::DistSquared(Chest->GetActorLocation(), GetActorLocation());
+            if (DistSq < BestDistSq)
+            {
+                Best = Chest;
+                BestDistSq = DistSq;
+            }
+        }
+    }
+    return Best;
 }

@@ -46,6 +46,7 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class AAGSDCharacter_LevelUP;
+class ATrapChest;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -788,5 +789,8 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
     UNiagaraSystem* ApplyVFX;
+
+    // 5stage 전용 상자 주변 탐색(겹치는 Chest 중 가장 가까운 것 리턴)
+    ATrapChest* FindNearbyTrapChest() const;
 };
 
