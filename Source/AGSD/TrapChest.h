@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
+#include "TrapTimerWidget.h" 
 #include "TrapChest.generated.h"
+
 
 UCLASS()
 class AGSD_API ATrapChest : public AActor
@@ -48,12 +50,26 @@ protected:
 
     virtual void OnConstruction(const FTransform& Transform) override;
 
+    UPROPERTY(EditAnywhere, Category = "Trap|UI")
+    TSubclassOf<UTrapTimerWidget> TimerWidgetClass;
+
+    UPROPERTY()
+    UTrapTimerWidget* TimerWidgetInstance = nullptr;
+
 private:
     // 문 보이기/숨기기 + 충돌 토글
     void SetActorActiveWithCollision(AActor* Target, bool bActive);
 
     // 문 삭제 타이머 핸들/포인터
     FTimerHandle DoorDestroyHandle;
+    FTimerHandle DoorTickHandle;
+
+    // 문 파괴 예정 시간(월드 초 단위)
+    float DoorEndTimeSeconds = 0.f;
+
+    // 문 카운트다운 갱신
+    void UpdateDoorCountdown();
+
     TWeakObjectPtr<AActor> PendingDoor;
 
 };

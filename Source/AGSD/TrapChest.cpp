@@ -103,21 +103,72 @@ void ATrapChest::Interact(AAGSDCharacter* Character)
         UE_LOG(LogTemp, Log, TEXT("[TrapChest] DoorActor ACTIVATED: %s"), *DoorActor->GetName());
 
         PendingDoor = DoorActor;
+        DoorEndTimeSeconds = GetWorld()->GetTimeSeconds() + TrapDuration;
+
+        if (!TimerWidgetInstance && TimerWidgetClass)
+        {
+            if (Character)
+            {
+                if (APlayerController* PC = Cast<APlayerController>(Character->GetController()))
+                {
+                    // 멀티플레이/리플리케이션 환경에서 "해당 로컬 클라이언트"에서만 UI 생성
+                    if (PC->IsLocalController())
+                    {
+                        TimerWidgetInstance = CreateWidget<UTrapTimerWidget>(PC, TimerWidgetClass);
+                        if (TimerWidgetInstance)
+                        {
+                            // 화면에 추가
+                            TimerWidgetInstance->AddToViewport();
+                        }
+                        else
+                        {
+                            UE_LOG(LogTemp, Warning, TEXT("[TrapChest] Failed to create TimerWidgetInstance (PC=%s)"),
+                                *PC->GetName());
+                        }
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Verbose, TEXT("[TrapChest] PC is not local, skip creating UI."));
+                    }
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("[TrapChest] Character has no PlayerController."));
+                }
+            }
+        }
+        UpdateDoorCountdown();
+        GetWorldTimerManager().SetTimer(
+            DoorTickHandle,
+            this,
+            &ATrapChest::UpdateDoorCountdown,
+            0.1f,
+            true
+        );
 
         GetWorldTimerManager().SetTimer(
             DoorDestroyHandle,
             FTimerDelegate::CreateLambda([this]()
                 {
+                    // 파괴 직전, UI 제거
+                    if (TimerWidgetInstance)
+                    {
+                        TimerWidgetInstance->RemoveFromParent();
+                        TimerWidgetInstance = nullptr;
+                    }
+
                     if (PendingDoor.IsValid())
                     {
-                        UE_LOG(LogTemp, Log, TEXT("[TrapChest] DoorActor DESTROY: %s"),
-                            *PendingDoor->GetName());
+                        UE_LOG(LogTemp, Log, TEXT("[TrapChest] DoorActor DESTROY: %s"), *PendingDoor->GetName());
                         PendingDoor->Destroy();
                     }
                     else
                     {
                         UE_LOG(LogTemp, Warning, TEXT("[TrapChest] DoorActor destroy skipped (no longer valid)."));
                     }
+
+                    // 갱신 타이머도 정리
+                    GetWorldTimerManager().ClearTimer(DoorTickHandle);
                     PendingDoor.Reset();
                 }),
             TrapDuration,
@@ -136,5 +187,32 @@ void ATrapChest::OnConstruction(const FTransform& Transform)
     if (InteractionArea)
     {
         InteractionArea->SetSphereRadius(InteractionRadius, true);
+    }
+}
+
+void ATrapChest::UpdateDoorCountdown()
+{
+    if (!TimerWidgetInstance)
+    {
+        // 위젯이 없다면 갱신 중단
+        GetWorldTimerManager().ClearTimer(DoorTickHandle);
+        return;
+    }
+
+    const float Now = GetWorld()->GetTimeSeconds();
+    float Remaining = DoorEndTimeSeconds - Now;
+
+    // 올림하여 "3.9 -> 4초" 식으로 표기
+    int32 Seconds = FMath::Max(0, FMath::CeilToInt(Remaining));
+
+    TimerWidgetInstance->SetSeconds(Seconds);
+
+    if (Remaining <= 0.f)
+    {
+        // 안전장치: 파괴 타이머 콜백에서 위젯 제거가 이뤄지지만,
+        // 여기서도 제거 시도하여 UI 잔존 방지
+        TimerWidgetInstance->RemoveFromParent();
+        TimerWidgetInstance = nullptr;
+        GetWorldTimerManager().ClearTimer(DoorTickHandle);
     }
 }
