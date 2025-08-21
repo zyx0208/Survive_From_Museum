@@ -178,6 +178,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             ValueString.RemoveFromEnd(TEXT("회")); // "7"
             int32 GuardCount = FCString::Atoi(*ValueString);
             Character->Guard += GuardCount;
+            Character->bGuard = true;
             Character->SpawnBuffVFX(EBuffType::Seven, 0.0f);
             UE_LOG(LogTemp, Log, TEXT("가드효과 적용: %d회"), GuardCount);
         }
