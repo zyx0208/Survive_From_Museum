@@ -19,6 +19,9 @@ public:
 	ATrapChest();
     void Interact(class AAGSDCharacter* Character);
 
+    UFUNCTION(BlueprintCallable)
+    void TrapSpawnMonster();
+
 protected:
     virtual void BeginPlay() override;
 
@@ -55,6 +58,8 @@ protected:
 
     UPROPERTY()
     UTrapTimerWidget* TimerWidgetInstance = nullptr;
+
+    
 
 private:
     // 문 보이기/숨기기 + 충돌 토글

@@ -1812,6 +1812,22 @@ void AAGSDCharacter::PlayingGetAccessoryRowName(FName RowName)
 {
     GetAccessory.Add(RowName);
 }
+/*디버프 적용 함수 모음*/
+void AAGSDCharacter::UpdateControlLock()
+{
+    if (APlayerController* PC = Cast<APlayerController>(GetController()))
+    {
+        const bool bShouldLock = bIsStunned || bIsKnockback; // 필요 시 다른 상태 추가
+        if (bShouldLock)
+        {
+            DisableInput(PC);
+        }
+        else
+        {
+            EnableInput(PC);
+        }
+    }
+}
 
 // 슬로우 적용
 void AAGSDCharacter::SlowApply(float Duration)
@@ -1838,9 +1854,10 @@ void AAGSDCharacter::SlowApply(float Duration)
 // 스턴 적용
 void AAGSDCharacter::StunApply(float Duration)
 {
-    if (bIsStunned) return;
+    if (bIsStunned) { GetWorldTimerManager().ClearTimer(StunTimerHandle); }
 
     bIsStunned = true;
+    UpdateControlLock();
 
     DisableInput(Cast<APlayerController>(GetController()));
 
@@ -1857,8 +1874,8 @@ void AAGSDCharacter::StunApply(float Duration)
     GetWorldTimerManager().ClearTimer(StunTimerHandle);
     GetWorldTimerManager().SetTimer(StunTimerHandle, FTimerDelegate::CreateLambda([this]()
         {
-            EnableInput(Cast<APlayerController>(GetController()));
             bIsStunned = false;
+            UpdateControlLock();
         }), Duration, false);
 }
 
@@ -1868,7 +1885,7 @@ void AAGSDCharacter::KnockbackApply(FVector Direction, float Power)
     if (bIsKnockback || !CharacterMovementComponent) return;
 
     bIsKnockback = true;
-    DisableInput(Cast<APlayerController>(GetController()));
+    UpdateControlLock();
 
     Direction.Normalize();
     FVector KnockbackForce = Direction * Power;   //넉백량 조절
@@ -1883,7 +1900,7 @@ void AAGSDCharacter::KnockbackApply(FVector Direction, float Power)
     GetWorldTimerManager().ClearTimer(KnockbackControlHandle);
     GetWorldTimerManager().SetTimer(KnockbackControlHandle, FTimerDelegate::CreateLambda([this]()
         {
-            EnableInput(Cast<APlayerController>(GetController()));
+            UpdateControlLock();
             bIsKnockback = false;
         }), 0.6f, false);
 }

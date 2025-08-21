@@ -714,6 +714,8 @@ public:
     UPROPERTY(EditAnywhere, Category = "Debuff|Sound")
     USoundBase* KnockbackSound;
 
+    void UpdateControlLock();
+
 
 public:
     //5스테이지 전용 세트옵션 변수 및 함수

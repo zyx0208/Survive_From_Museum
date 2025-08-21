@@ -138,6 +138,9 @@ void ATrapChest::Interact(AAGSDCharacter* Character)
             }
         }
         UpdateDoorCountdown();
+
+        TrapSpawnMonster();
+
         GetWorldTimerManager().SetTimer(
             DoorTickHandle,
             this,
@@ -215,4 +218,8 @@ void ATrapChest::UpdateDoorCountdown()
         TimerWidgetInstance = nullptr;
         GetWorldTimerManager().ClearTimer(DoorTickHandle);
     }
+}
+void ATrapChest::TrapSpawnMonster()
+{
+    //몬스터 소환용 블루프린트 전용 함수
 }
