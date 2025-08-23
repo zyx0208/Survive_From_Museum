@@ -42,9 +42,18 @@ void AProjectile_Hammer::WeaponHitEffect(AActor* OtherActor)
             EnemyComp->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block); // 필요 시
 
             FTimerHandle TimerHandle;
-            GetWorld()->GetTimerManager().SetTimer(TimerHandle, [=]()
+            TWeakObjectPtr<UCapsuleComponent> WeakEnemyComp = EnemyComp;
+
+            GetWorld()->GetTimerManager().SetTimer(TimerHandle, [WeakEnemyComp]()
                 {
-                    EnemyComp->SetCollisionProfileName(TEXT("Enemy"));
+                    if (WeakEnemyComp.IsValid())
+                    {
+                        WeakEnemyComp->SetCollisionProfileName(TEXT("Enemy"));
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Warning, TEXT("EnemyComp no longer valid when timer fired"));
+                    }
                 }, 0.2f, false);
         }
         

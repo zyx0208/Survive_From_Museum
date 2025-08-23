@@ -7,7 +7,7 @@
 #include "GameFramework/PlayerController.h"
 
 UGameTimer::UGameTimer() {
-    //InitTime = 10.0f;
+    InitTime = 10.0f;
     TimeEnd = false;
 }
 

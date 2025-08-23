@@ -257,7 +257,7 @@ void UAGSDGameInstance::LoadGameData()
             FName WeaponID = Elem.Key;
             int WeaponAscension = Elem.Value;
 
-            //UE_LOG(LogTemp, Warning, TEXT("Loaded Ascension- WeaponID: %s Ascension: %d"), WeaponID, WeaponAscension);
+            UE_LOG(LogTemp, Warning, TEXT("Loaded Ascension- WeaponID: %s Ascension: %d"), *WeaponID.ToString(), WeaponAscension);
         }
 
         for (const TPair<FName, bool>& Elem : Temp_Acquired) {
@@ -269,7 +269,7 @@ void UAGSDGameInstance::LoadGameData()
         for (const TPair<FName, bool>& Elem : Temp_Reinforced) {
             FName WeaponID = Elem.Key;
             bool WeaponReinforced = Elem.Value;
-            UE_LOG(LogTemp, Warning, TEXT("WeaponID: %s Reinforced: %d"), WeaponID, WeaponReinforced);
+            //UE_LOG(LogTemp, Warning, TEXT("WeaponID: %s Reinforced: %d"), WeaponID, WeaponReinforced);
         }
 
         //획득한 악세서리 정보 불러오기

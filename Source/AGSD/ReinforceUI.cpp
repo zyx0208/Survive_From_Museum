@@ -90,9 +90,9 @@ void UReinforceUI::OnAgreeButtonClicked()
 
 bool UReinforceUI::UpgradeCheck(FWeaponDataTableBetaStruct WeaponData)
 {
-    int WeaponUpgradeID = WeaponData.UpgradeID;
-
-    if (WeaponUpgradeID != 0) {
+    FString ReinforceStageName = UGameplayStatics::GetCurrentLevelName(this, true);
+    UE_LOG(LogTemp, Warning ,TEXT("%s // %s"), *WeaponData.ReinforceStage, *ReinforceStageName);
+    if (WeaponData.ReinforceStage == ReinforceStageName) {
         return true;
     }
     return false;
