@@ -572,6 +572,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
     UNiagaraSystem* SevenParticle;
 
+    int32 SevenParticleID;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Particle")
     UNiagaraSystem* StarParticle;
 

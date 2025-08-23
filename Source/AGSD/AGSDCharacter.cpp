@@ -1513,6 +1513,17 @@ void AAGSDCharacter::Attacked(float Damage)
             }
 
         }
+        else {
+            TArray<UActorComponent*> TaggedComps = GetComponentsByTag(UNiagaraComponent::StaticClass(), FName("Seven"));
+
+            for (UActorComponent* Comp : TaggedComps)
+            {
+                if (UNiagaraComponent* NiagaraComp = Cast<UNiagaraComponent>(Comp))
+                {
+                    NiagaraComp->SetVariableInt("User.VisibleCount", Guard-1);
+                }
+            }
+        }
         return;
     }
     int32 fixed_Damge = (int32)(Damage) - (int32)(Damage * ((Defense - 100.0f) / 100.0f));
@@ -2183,6 +2194,7 @@ void AAGSDCharacter::SpawnBuffVFX(EBuffType BuffType, float Duration)
     case EBuffType::Seven:
         if (SevenParticle) {
             ApplyVFX = SevenParticle;
+            SevenParticleID = 7;
         }
         break;
     case EBuffType::Star:
