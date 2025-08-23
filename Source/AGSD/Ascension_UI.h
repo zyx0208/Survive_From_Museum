@@ -34,7 +34,10 @@ public:
     class UButton* AgreeButton;
 
     UPROPERTY(meta = (BindWidget))
-    UImage* ImageSlot1;
+    class UImage* ImageSlot1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* TextBlock1;
 
     /** 무기 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
@@ -42,4 +45,7 @@ public:
 
     UFUNCTION()
     void OnAgreeButtonClicked();
+
+    UFUNCTION()
+    void DisplayTextBlock(UTextBlock* textBlock);
 };

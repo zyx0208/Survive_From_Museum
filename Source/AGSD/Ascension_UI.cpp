@@ -28,6 +28,7 @@ void UAscension_UI::NativeConstruct()
         UTexture2D* WeaponIcon1 = WeaponData->WeaponIcon;
 
         DisplayWeaponImage(WeaponIcon1);
+        DisplayTextBlock(TextBlock1);
     }
 }
 
@@ -80,4 +81,44 @@ void UAscension_UI::OnAgreeButtonClicked()
         CurrentCharacter->OverlapWeaponDrop->DestroySelf();
     }
     CloseUI();
+}
+
+void UAscension_UI::DisplayTextBlock(UTextBlock* textBlock)
+{
+    if (!WeaponDataTableBeta) return;
+
+    //캐릭터 무기 교체(무기 강화)
+    AAGSDCharacter* CurrentCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    if (!CurrentCharacter) return;
+
+    // 무기 강화(데이터 테이블 변화) 
+    static const FString ContextString(TEXT("ReinforceWeapon"));
+    TArray<FName> RowNames = WeaponDataTableBeta->GetRowNames();
+
+    for (FName RowName : RowNames)
+    {
+        FWeaponDataTableBetaStruct* WeaponRow = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+        if (!WeaponRow) continue;
+        if (WeaponRow->IID - 1 == FCString::Atoi(*CurrentCharacter->OverlapID))
+        {
+            UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+            if (GI) {
+                if (GI->Temp_Ascension.Contains(FName(FString::FromInt(WeaponRow->IID - 1)))) {
+                    int& WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID - 1))];
+                    WeaponAscension += 1;
+                }
+
+                FFormatNamedArguments Args;
+                Args.Add(TEXT("Name"), FText::FromString(WeaponRow->Sname));
+
+                Args.Add(TEXT("Ascension1"), GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID - 1))]);
+                Args.Add(TEXT("Ascension2"), GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID - 1))]+1);
+
+                if (textBlock) {
+                    textBlock->SetText(FText::Format(NSLOCTEXT("MynameSpace","AscensionFormat","{Name}+{Ascension1}이(가) {Name}+{Ascension2}로 강화됩니다."),Args));
+                }
+            }
+        }
+    }
+    
 }
