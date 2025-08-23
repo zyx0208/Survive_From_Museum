@@ -744,6 +744,19 @@ void AAGSDCharacter::Interaction()
     else UE_LOG(LogTemp, Log, TEXT("TrapChest missing"));
 }
 
+bool AAGSDCharacter::CheckReinforce()
+{
+    FWeaponDataTableBetaStruct* WeaponData1 = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(FString::FromInt(WeaponArray[0])), TEXT("Weapon Lookup"));
+    FWeaponDataTableBetaStruct* WeaponData2 = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(FString::FromInt(WeaponArray[1])), TEXT("Weapon Lookup"));
+    if (WeaponData1 && WeaponData2) {
+        FString ReinforceStageName = GetLevel()->GetOuter()->GetName();
+        if (WeaponData1->ReinforceStage == ReinforceStageName || WeaponData2->ReinforceStage == ReinforceStageName) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void AAGSDCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     Super::EndPlay(EndPlayReason);
@@ -1716,10 +1729,12 @@ void AAGSDCharacter::Clear()
         {
             ClearWidget->AddToViewport();
         }
-        ReinforceUIWidget = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
-        if (ReinforceUIWidget)
-        {
-            ReinforceUIWidget->AddToViewport();
+        if (CheckReinforce()) {
+            ReinforceUIWidget = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
+            if (ReinforceUIWidget)
+            {
+                ReinforceUIWidget->AddToViewport();
+            }
         }
     }
 

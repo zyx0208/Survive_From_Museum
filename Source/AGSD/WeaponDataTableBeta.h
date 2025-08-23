@@ -120,4 +120,8 @@ public:
     //강화 유무
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int UpgradeID;
+
+    //강화되는 스테이지
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString ReinforceStage;
 };
