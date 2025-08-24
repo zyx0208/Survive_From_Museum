@@ -1926,8 +1926,8 @@ void AAGSDCharacter::KnockbackApply(FVector Direction, float Power)
     GetWorldTimerManager().ClearTimer(KnockbackControlHandle);
     GetWorldTimerManager().SetTimer(KnockbackControlHandle, FTimerDelegate::CreateLambda([this]()
         {
-            UpdateControlLock();
             bIsKnockback = false;
+            UpdateControlLock();            
         }), 0.6f, false);
 }
 
