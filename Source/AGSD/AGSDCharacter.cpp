@@ -220,6 +220,7 @@ void AAGSDCharacter::BeginPlay()
     if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
         WeaponArray[0] = GI->WeaponArray[0];
         WeaponArray[1] = GI->WeaponArray[1];
+        UE_LOG(LogTemp, Log, TEXT("%d %d 게임시작"), WeaponArray[0], WeaponArray[1]);
     }
 
 	if (WeaponDataTableRef)

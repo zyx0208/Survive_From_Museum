@@ -76,4 +76,6 @@ public:
     int TargetWeaponID;
 
     bool Recheck=false;
+
+    bool WeaponArraySlot=false;
 };

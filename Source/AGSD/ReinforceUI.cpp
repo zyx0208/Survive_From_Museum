@@ -31,6 +31,7 @@ void UReinforceUI::NativeConstruct()
                 Recheck = true;
             }
             else if (UpgradeCheck(*WeaponData2)) {
+                WeaponArraySlot = true;
                 ShowReinforce(*WeaponData2);
             }
             //DisplayWeaponImage(WeaponIcon1, WeaponIcon2);
@@ -59,6 +60,7 @@ void UReinforceUI::CloseUI()
 void UReinforceUI::OnAgreeButtonClicked()
 {
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
     if (GI) {
         
         if (OriginalWeapon != nullptr && TargetWeapon != nullptr) {
@@ -67,12 +69,26 @@ void UReinforceUI::OnAgreeButtonClicked()
             GI->Temp_Acquired.Add(FName(FString::FromInt(OriginalWeapon->IID)), true);
             GI->Temp_Acquired.Add(FName(FString::FromInt(TargetWeapon->IID)), true);
             UE_LOG(LogTemp, Warning, TEXT("WeaponReinforce"));
+
         }
         
     }
+
+    if (!WeaponArraySlot) {
+        PlayerCharacter->WeaponArray[0] = TargetWeapon->IID;
+        GI->WeaponArray[0] = TargetWeapon->IID;
+        UE_LOG(LogTemp, Log, TEXT("%d 강화"),GI->WeaponArray[0]);
+        WeaponArraySlot = true;
+    }
+    else {
+        PlayerCharacter->WeaponArray[1] = TargetWeapon->IID;
+        GI->WeaponArray[1] = TargetWeapon->IID;
+        UE_LOG(LogTemp, Log, TEXT("%d 강화"), GI->WeaponArray[1]);
+    }
+
     if (Recheck) {
         Recheck = false;
-        AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
+        
         FName RowName2 = FName(FString::FromInt(PlayerCharacter->WeaponArray[1]));
         FWeaponDataTableBetaStruct* WeaponData2 = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName2, "Recheck", true);
         if (UpgradeCheck(*WeaponData2)) {
