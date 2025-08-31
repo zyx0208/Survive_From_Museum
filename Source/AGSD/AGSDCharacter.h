@@ -641,7 +641,7 @@ public:
     bool NoSwap = false;
 
     //디버그
-    UFUNCTION()
+    UFUNCTION(BlueprintCallable, Category = "Camera")
     void Debug();
     
     //오버랩
@@ -799,5 +799,11 @@ public:
 
     // 5stage 전용 상자 주변 탐색(겹치는 Chest 중 가장 가까운 것 리턴)
     ATrapChest* FindNearbyTrapChest() const;
+
+
+    //카메라 무빙
+    UFUNCTION(BlueprintCallable, Category = "Camera")
+    void TestCameraMove(AActor* MoveToCamera);
+    
 };
 

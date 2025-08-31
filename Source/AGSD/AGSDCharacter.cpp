@@ -138,6 +138,7 @@ AAGSDCharacter::AAGSDCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+    FollowCamera->PrimaryComponentTick.bTickEvenWhenPaused = true;
 
     // 자석 범위 콜리전 컴포넌트 생성
     MagnetSphere = CreateDefaultSubobject<USphereComponent>(TEXT("MagnetSphere"));
@@ -1192,7 +1193,17 @@ void AAGSDCharacter::WeaponTake()
 }
 void AAGSDCharacter::Debug()
 {
-    SpawnSubWeapon(SubWeaponSelector);
+    UE_LOG(LogTemp, Warning, TEXT("FunctionStart"));
+    TArray<AActor*> FoundCameras;
+    UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("TargetCamera"), FoundCameras);
+    if (FoundCameras.Num() > 0)
+    {
+        TestCameraMove(FoundCameras[0]);
+    }
+    else {
+        UE_LOG(LogTemp, Warning, TEXT("Can't Find Camera"));
+    }
+    
 }
 void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -2274,4 +2285,11 @@ ATrapChest* AAGSDCharacter::FindNearbyTrapChest() const
         }
     }
     return Best;
+}
+
+void AAGSDCharacter::TestCameraMove(AActor* MoveToCamera)
+{
+    UE_LOG(LogTemp, Warning, TEXT("TestCameraMoveStart"));
+    APlayerController* PlayerController = Cast<APlayerController>(Controller);
+    PlayerController->SetViewTargetWithBlend(MoveToCamera, 0.0f);
 }
