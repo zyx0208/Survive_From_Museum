@@ -309,7 +309,7 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
     case 4: WeaponName = TEXT("MTG-9000"); break;
     case 5: WeaponName = TEXT("자루 스매셔"); break;
     case 6: WeaponName = TEXT("바람의 숨결"); break;
-    case 7: WeaponName = TEXT("차지빔"); break;
+    case 7: WeaponName = TEXT("플라즈마 리펄서"); break;
     default: WeaponName = TEXT("알 수 없음"); break;
     }
     
