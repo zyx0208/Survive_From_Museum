@@ -38,9 +38,6 @@ public:
 
 protected:
     UPROPERTY(meta = (BindWidget))
-    class UTextBlock* ResultScoreText;
-
-    UPROPERTY(meta = (BindWidget))
     class UWrapBox* AccessoryWrapBox;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
