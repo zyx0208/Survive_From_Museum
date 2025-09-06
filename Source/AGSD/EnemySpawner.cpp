@@ -10,6 +10,7 @@
 #include "Blueprint/UserWidget.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
+#include <cmath>
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -31,7 +32,8 @@ void AEnemySpawner::BeginPlay()
     Patton2Spawn = false;
     Patton3Spawn = false;
     Patton4Spawn = false;
-    Patton5Spawn = false;
+    WaveLevel = 0;
+    NumOfSpawn = 0;
     NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 }
 
@@ -49,7 +51,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
@@ -78,36 +80,28 @@ void AEnemySpawner::Tick(float DeltaTime)
                     }
                 }
             }
-            //50초 마다 패턴 변화
-            else if (TotalTime >= 250.0f)
+            //60초 마다 패턴 변화
+            else if (TotalTime >= 240.0f)
             {
-                SpawnTime = 10.0f / 13;
-                SpawnNum = 1;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 3;
+                WaveLevel = 3;
+                NumOfSpawn = 0;
             }
-            else if (TotalTime >= 200.0f)
+            else if (TotalTime >= 120.0f)
             {
-                SpawnTime = 10.0f / 11;
+                SpawnTime = (250.0f - TotalTime) / 30.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
             }
-            else if (TotalTime >= 150.0f)
+            else if (TotalTime >= 0.0f)
             {
-                SpawnTime = 10.0f / 9;
+                //SpawnTime = 5.0 * std::exp(-0.05 * TotalTime) + 1.0;
+                SpawnTime = (130.0f - TotalTime) / 20.0f;
                 SpawnNum = 1;
-            }
-            else if (TotalTime >= 100.0f)
-            {
-                SpawnTime = 10.0f / 7;
-                SpawnNum = 1;
-            }
-            else if (TotalTime >= 50.0f)
-            {
-                SpawnTime = 10.0f / 5;
-                SpawnNum = 1;
-            }
-            else
-            {
-                SpawnTime = 10.0f / 3;
-                SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
             }
         }
         if (TempTime >= SpawnTime and !BossRound)
@@ -115,7 +109,13 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                TempEnemyCounter = 0;
+                //기본 소환 범위 인덱스[>=1]
+                TempEnemyCounter = 1;
+                //정예 소환 범위 인덱스[==0](1%)
+                if (FMath::RandRange(0, 99) == 0)
+                {
+                    TempEnemyCounter = 0;
+                }
                 for (int j = 0; j < 10; j++)
                 {
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation()
@@ -132,6 +132,7 @@ void AEnemySpawner::Tick(float DeltaTime)
                     }
                 }
             }
+            NumOfSpawn++;
         }
         break;
 
@@ -142,7 +143,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
@@ -171,30 +172,12 @@ void AEnemySpawner::Tick(float DeltaTime)
                     }
                 }
             }
-            //50초 마다 패턴 변화
-            else if (TotalTime >= 250.0f)
+            //60초 마다 패턴 변화
+            else if (TotalTime >= 240.0f)
             {
-                SpawnTime = 10.0f / 13;
-                SpawnNum = 1;
-                if (!Patton5Spawn)
-                {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
-                    Patton5Spawn = true;
-                    if (Patton5)
-                    {
-                        GetWorld()->SpawnActor<AActor>(Patton5,
-                            PlayerCharacter->GetActorLocation(),
-                            FRotator::ZeroRotator);
-                    }
-                }
-            }
-            else if (TotalTime >= 200.0f)
-            {
-                SpawnTime = 10.0f / 11;
-                SpawnNum = 1;
                 if (!Patton4Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton4 Spawn."));
                     Patton4Spawn = true;
                     if (Patton4)
                     {
@@ -203,14 +186,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 150.0f)
-            {
-                SpawnTime = 10.0f / 9;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 3;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 180.0f)
+            {
                 if (!Patton3Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton3 Spawn."));
                     Patton3Spawn = true;
                     if (Patton3)
                     {
@@ -219,14 +204,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 100.0f)
-            {
-                SpawnTime = 10.0f / 7;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 120.0f)
+            {
                 if (!Patton2Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton2 Spawn."));
                     Patton2Spawn = true;
                     if (Patton2)
                     {
@@ -235,11 +222,13 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 50.0f)
-            {
-                SpawnTime = 10.0f / 5;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 60.0f)
+            {
                 if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -251,11 +240,17 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else
-            {
-                SpawnTime = 10.0f / 3;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 0.0f)
+            {
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
             }
         }
         if (TempTime >= SpawnTime and !BossRound)
@@ -263,7 +258,13 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                TempEnemyCounter = FMath::RandRange(0, 1);
+                //기본 소환 범위 인덱스[>=2]
+                TempEnemyCounter = FMath::RandRange(2, 4);
+                //정예 소환 범위 인덱스[==0](1%)
+                if (FMath::RandRange(0, 99) == 0)
+                {
+                    TempEnemyCounter = FMath::RandRange(0, 1);
+                }
                 for (int j = 0; j < 10; j++)
                 {
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
@@ -318,30 +319,12 @@ void AEnemySpawner::Tick(float DeltaTime)
                     }
                 }
             }
-            //50초 마다 패턴 변화
-            else if (TotalTime >= 250.0f)
+            //60초 마다 패턴 변화
+            else if (TotalTime >= 240.0f)
             {
-                SpawnTime = 10.0f / 13;
-                SpawnNum = 1;
-                if (!Patton5Spawn)
-                {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
-                    Patton5Spawn = true;
-                    if (Patton5)
-                    {
-                        GetWorld()->SpawnActor<AActor>(Patton5,
-                            PlayerCharacter->GetActorLocation(),
-                            FRotator::ZeroRotator);
-                    }
-                }
-            }
-            else if (TotalTime >= 200.0f)
-            {
-                SpawnTime = 10.0f / 11;
-                SpawnNum = 1;
                 if (!Patton4Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton4 Spawn."));
                     Patton4Spawn = true;
                     if (Patton4)
                     {
@@ -350,14 +333,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 150.0f)
-            {
-                SpawnTime = 10.0f / 9;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 3;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 180.0f)
+            {
                 if (!Patton3Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton3 Spawn."));
                     Patton3Spawn = true;
                     if (Patton3)
                     {
@@ -366,14 +351,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 100.0f)
-            {
-                SpawnTime = 10.0f / 7;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 120.0f)
+            {
                 if (!Patton2Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton2 Spawn."));
                     Patton2Spawn = true;
                     if (Patton2)
                     {
@@ -382,11 +369,13 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 50.0f)
-            {
-                SpawnTime = 10.0f / 5;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 60.0f)
+            {
                 if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -398,11 +387,17 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else
-            {
-                SpawnTime = 10.0f / 3;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 0.0f)
+            {
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
             }
         }
         if (TempTime >= SpawnTime and !BossRound)
@@ -410,7 +405,13 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                TempEnemyCounter = FMath::RandRange(0, 1);
+                //기본 소환 범위 인덱스[>=2]
+                TempEnemyCounter = FMath::RandRange(2, 3);
+                //정예 소환 범위 인덱스[==0](1%)
+                if (FMath::RandRange(0, 99) == 0)
+                {
+                    TempEnemyCounter = FMath::RandRange(0, 1);
+                }
                 for (int j = 0; j < 10; j++)
                 {
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
@@ -436,7 +437,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
@@ -465,30 +466,12 @@ void AEnemySpawner::Tick(float DeltaTime)
                     }
                 }
             }
-            //50초 마다 패턴 변화
-            else if (TotalTime >= 250.0f)
+            //60초 마다 패턴 변화
+            else if (TotalTime >= 240.0f)
             {
-                SpawnTime = 10.0f / 13;
-                SpawnNum = 1;
-                if (!Patton5Spawn)
-                {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
-                    Patton5Spawn = true;
-                    if (Patton5)
-                    {
-                        GetWorld()->SpawnActor<AActor>(Patton5,
-                            PlayerCharacter->GetActorLocation(),
-                            FRotator::ZeroRotator);
-                    }
-                }
-            }
-            else if (TotalTime >= 200.0f)
-            {
-                SpawnTime = 10.0f / 11;
-                SpawnNum = 1;
                 if (!Patton4Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton4 Spawn."));
                     Patton4Spawn = true;
                     if (Patton4)
                     {
@@ -497,14 +480,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 150.0f)
-            {
-                SpawnTime = 10.0f / 9;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 3;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 180.0f)
+            {
                 if (!Patton3Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton3 Spawn."));
                     Patton3Spawn = true;
                     if (Patton3)
                     {
@@ -513,14 +498,16 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 100.0f)
-            {
-                SpawnTime = 10.0f / 7;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 120.0f)
+            {
                 if (!Patton2Spawn)
                 {
-                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    UE_LOG(LogTemp, Display, TEXT("Patton2 Spawn."));
                     Patton2Spawn = true;
                     if (Patton2)
                     {
@@ -529,11 +516,13 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else if (TotalTime >= 50.0f)
-            {
-                SpawnTime = 10.0f / 5;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 60.0f)
+            {
                 if (!Patton1Spawn)
                 {
                     UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
@@ -545,11 +534,17 @@ void AEnemySpawner::Tick(float DeltaTime)
                             FRotator::ZeroRotator);
                     }
                 }
-            }
-            else
-            {
-                SpawnTime = 10.0f / 3;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 0.0f)
+            {
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
             }
         }
         if (TempTime >= SpawnTime and !BossRound)
@@ -557,7 +552,13 @@ void AEnemySpawner::Tick(float DeltaTime)
             TempTime = 0.0f;
             if (Enemys.Num() > 0)
             {
-                TempEnemyCounter = FMath::RandRange(0, 1);
+                //기본 소환 범위 인덱스[>=2]
+                TempEnemyCounter = FMath::RandRange(2, 3);
+                //정예 소환 범위 인덱스[==0](1%)
+                if (FMath::RandRange(0, 99) == 0)
+                {
+                    TempEnemyCounter = FMath::RandRange(0, 1);
+                }
                 for (int j = 0; j < 10; j++)
                 {
                     FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
@@ -575,6 +576,152 @@ void AEnemySpawner::Tick(float DeltaTime)
             }
         }
         break;
+        case 5:
+            if (PlayerCharacter)
+            {
+                TempTime += DeltaTime;
+                TotalTime += DeltaTime;
+
+                //보스라운드
+                if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+                {
+                    if (!BossRound)
+                    {
+                        BossRound = true;
+                        //모든 적 캐릭터 강제 삭제
+                        TArray<AActor*> AllEnemys;
+                        UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy1Class::StaticClass(), AllEnemys);
+                        for (int i = 0; i < AllEnemys.Num(); i++)
+                        {
+                            AEnemy1Class* Enemy = Cast<AEnemy1Class>(AllEnemys[i]);
+                            if (Enemy)
+                            {
+                                AEnemy1AIController* AIC = Cast<AEnemy1AIController>(Enemy->GetController());
+                                if (AIC)
+                                {
+                                    AIC->Died(-1);
+                                }
+                            }
+                        }
+                        //보스 몹 소환 및 플레이어 이동
+                        GetWorld()->SpawnActor<AActor>(Boss, BossSpawnPoint, FRotator::ZeroRotator);
+                        PlayerCharacter->SetActorLocation(PlayerSpawnPoint);
+                        if (BossTextUI)
+                        {
+                            CreateWidget<UUserWidget>(GetWorld(), BossTextUI)->AddToViewport();
+                        }
+                    }
+                }
+                //60초 마다 패턴 변화
+                else if (TotalTime >= 240.0f)
+                {
+                    if (!Patton4Spawn)
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Patton4 Spawn."));
+                        Patton4Spawn = true;
+                        if (Patton4)
+                        {
+                            GetWorld()->SpawnActor<AActor>(Patton4,
+                                PlayerCharacter->GetActorLocation(),
+                                FRotator::ZeroRotator);
+                        }
+                    }
+                    SpawnTime = (310.0f - TotalTime) / 50.0f;
+                    SpawnNum = 1;
+                    WaveLevel = 3;
+                    NumOfSpawn = 0;
+                }
+                else if (TotalTime >= 180.0f)
+                {
+                    if (!Patton3Spawn)
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Patton3 Spawn."));
+                        Patton3Spawn = true;
+                        if (Patton3)
+                        {
+                            GetWorld()->SpawnActor<AActor>(Patton3,
+                                PlayerCharacter->GetActorLocation(),
+                                FRotator::ZeroRotator);
+                        }
+                    }
+                    SpawnTime = (310.0f - TotalTime) / 50.0f;
+                    SpawnNum = 1;
+                    WaveLevel = 2;
+                    NumOfSpawn = 0;
+                }
+                else if (TotalTime >= 120.0f)
+                {
+                    if (!Patton2Spawn)
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Patton2 Spawn."));
+                        Patton2Spawn = true;
+                        if (Patton2)
+                        {
+                            GetWorld()->SpawnActor<AActor>(Patton2,
+                                PlayerCharacter->GetActorLocation(),
+                                FRotator::ZeroRotator);
+                        }
+                    }
+                    SpawnTime = (310.0f - TotalTime) / 50.0f;
+                    SpawnNum = 1;
+                    WaveLevel = 2;
+                    NumOfSpawn = 0;
+                }
+                else if (TotalTime >= 60.0f)
+                {
+                    if (!Patton1Spawn)
+                    {
+                        UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                        Patton1Spawn = true;
+                        if (Patton1)
+                        {
+                            GetWorld()->SpawnActor<AActor>(Patton1,
+                                PlayerCharacter->GetActorLocation(),
+                                FRotator::ZeroRotator);
+                        }
+                    }
+                    SpawnTime = (310.0f - TotalTime) / 50.0f;
+                    SpawnNum = 1;
+                    WaveLevel = 1;
+                    NumOfSpawn = 0;
+                }
+                else if (TotalTime >= 0.0f)
+                {
+                    SpawnTime = (310.0f - TotalTime) / 50.0f;
+                    SpawnNum = 1;
+                    WaveLevel = 1;
+                    NumOfSpawn = 0;
+                }
+            }
+            if (TempTime >= SpawnTime and !BossRound)
+            {
+                TempTime = 0.0f;
+                if (Enemys.Num() > 0)
+                {
+                    //기본 소환 범위 인덱스[>=2]
+                    TempEnemyCounter = FMath::RandRange(2, 4);
+                    //정예 소환 범위 인덱스[==0](1%)
+                    if (FMath::RandRange(0, 99) == 0)
+                    {
+                        TempEnemyCounter = FMath::RandRange(0, 1);
+                    }
+                    for (int j = 0; j < 10; j++)
+                    {
+                        FVector EnemySpawnLocation = PlayerCharacter->GetActorLocation() + FVector(FMath::FRandRange(-1.0f, 1.0f), FMath::FRandRange(-1.0f, 1.0f), 0.0f).GetSafeNormal() * FMath::FRandRange(InnerCircleRange, OuterCircleRange);
+                        FNavLocation NavEnemySpawnLocation;
+                        if (NavSys->ProjectPointToNavigation(EnemySpawnLocation, NavEnemySpawnLocation, FVector(500.f, 500.f, 500.f)))
+                        {
+                            GetWorld()->SpawnActor<AActor>(Enemys[TempEnemyCounter], NavEnemySpawnLocation.Location + FVector(0, 0, 100.0f), FRotator::ZeroRotator);
+                            break;
+                        }
+                        else
+                        {
+                            UE_LOG(LogTemp, Display, TEXT("[%d]Can't Find NaviMash for Spawn : %s"), j, *EnemySpawnLocation.ToString());
+                        }
+                    }
+                }
+            }
+            break;
     default: //스테이지가 설정되지 않았을 경우
         UE_LOG(LogTemp, Display, TEXT("Setting Stage Number."));
         break;

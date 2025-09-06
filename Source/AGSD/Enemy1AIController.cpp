@@ -624,6 +624,7 @@ void AEnemy1AIController::Died(int64 num)
 	{
     case 1: //일반 몬스터(공격타입 1, 3번) : [무기 : 1%] [경험치 : 80%] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
 	case 3: 
+    case 5:
         //킬 카운트
 		UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
         if (World)
