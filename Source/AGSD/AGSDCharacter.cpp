@@ -2291,5 +2291,19 @@ void AAGSDCharacter::TestCameraMove(AActor* MoveToCamera)
 {
     UE_LOG(LogTemp, Warning, TEXT("TestCameraMoveStart"));
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
-    PlayerController->SetViewTargetWithBlend(MoveToCamera, 0.0f);
+    TWeakObjectPtr<APlayerController> WeakPlayerController;
+    WeakPlayerController = PlayerController;
+    if (WeakPlayerController.IsValid()) {
+        UE_LOG(LogTemp, Warning, TEXT("IsValid"));
+        UGameplayStatics::SetGamePaused(GetWorld(), false);
+        UE_LOG(LogTemp, Warning, TEXT("GetPaused"));
+        WeakPlayerController->SetViewTargetWithBlend(MoveToCamera, 0.0f);
+        FTimerHandle CameraTimer;
+        GetWorld()->GetTimerManager().SetTimer(CameraTimer, [WeakPlayerController]()
+            {
+                //WeakPlayerController->SetPause(true);
+            }, 0.5f, false);
+    }
 }
+
+

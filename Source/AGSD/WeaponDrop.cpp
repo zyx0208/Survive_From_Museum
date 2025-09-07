@@ -96,6 +96,12 @@ void AWeaponDrop::SetMesh()
         CurrentWeaponMesh = WeaponData->WeaponMesh;
         WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
         WeaponMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        if (WeaponMeshComponent->DoesSocketExist(FName("DropScale"))) {
+            FTransform SocketTransform = WeaponMeshComponent->GetSocketTransform(FName("DropScale"), RTS_World);
+            FVector SocketScale = SocketTransform.GetScale3D();
+            WeaponMeshComponent->SetWorldScale3D(SocketScale);
+        }
+        
     }
 
     if (InteractionWidget && InteractionWidgetClass)
