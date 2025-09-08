@@ -89,22 +89,8 @@ void UAccessoryIcon_UI::Init(FAccessoryData* InData)
 
 void UAccessoryIcon_UI::OnIconClicked()
 {
-    // Detail 창이 이미 켜져 있으면 무시
-    if (DrawingBookRef && DrawingBookRef->IsDetailOpen())
+    if (DrawingBookRef)
     {
-        return;
-    }
-    UAccessoryDetail_UI* Detail = CreateWidget<UAccessoryDetail_UI>(GetWorld(), AccessoryDetailClass);
-    if (Detail)
-    {
-        Detail->SetAccessory(AccessoryData);
-        Detail->SetDrawingBookRef(DrawingBookRef);
-        Detail->AddToViewport(100);
-
-        // DrawingBook에 등록 (닫을 수 있게)
-        if (DrawingBookRef)
-        {
-            DrawingBookRef->SetDetailWidget(Detail);
-        }
+        DrawingBookRef->ShowAccessoryDetail(AccessoryData);
     }
 }

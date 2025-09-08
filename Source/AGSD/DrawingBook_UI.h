@@ -50,13 +50,13 @@ public:
     // 이 함수는 AccessoryIconUI에서 접근할 수 있게 Public으로 선언
     bool IsDetailOpen() const { return AccessoryDetailWidget != nullptr; }
     void SetDetailWidget(UAccessoryDetail_UI* NewDetailWidget) { AccessoryDetailWidget = NewDetailWidget; }
-    void CloseDetailWidget();
+
+    UFUNCTION(BlueprintCallable)
+    void ShowAccessoryDetail(const FAccessoryData& InData);
 
 protected:
     //악세서리 아이콘 출력 함수
     void PopulateAccessoryIcons();
-    
-
 
     /** 악세서리 데이터 테이블 */
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
@@ -64,4 +64,13 @@ protected:
 
     UPROPERTY(meta = (BindWidget))
     class UWrapBox* AccessoryWrapBox;
+
+    UPROPERTY(meta=(BindWidget))
+    class UImage* AccessoryIconImage;
+    UPROPERTY(meta=(BindWidget))
+    class UTextBlock* AccessoryNameText;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* AccessoryEffectText;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* AccessoryDescriptionText;
 };
