@@ -619,10 +619,32 @@ void AEnemy1AIController::Died(int64 num)
     //월드 정보 불러오기 및 난수 생성
     UWorld* World = GetWorld();
     int DropNum = FMath::RandRange(1, 100);
+
+    //엘리트 몬스터 드랍 아이템 설정
+    if (Enemy->IsElite)
+    {
+        //킬 카운트
+        UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
+        if (World)
+        {
+            KillCountCall(World);
+        }
+        //드랍설정
+        if (Enemy->EXball)
+        {
+            for (int i = 0; i < FMath::RandRange(10, 20); i++)
+            {
+                World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation() + FVector(FMath::FRandRange(-100.0f, 100.0f), FMath::FRandRange(-100.0f, 100.0f), 0.0f), FRotator::ZeroRotator);
+            }
+        }
+        Enemy->IsDead = true;
+        return;
+    }
+
 	//드랍 아이템 설정
 	switch (num)
 	{
-    case 1: //일반 몬스터(공격타입 1, 3번) : [무기 : 1%] [경험치 : 80%] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
+    case 1: //일반 몬스터(공격타입 1, 3, 5번) : [무기 : 1%] [경험치 : 80%] [HP회복 : 절반(6%), 전부(3%)] [자석 : 5%] [폭탄 5%]
 	case 3: 
     case 5:
         //킬 카운트

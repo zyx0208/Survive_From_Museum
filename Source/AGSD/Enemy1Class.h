@@ -63,6 +63,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsBoss = false;
     //특정 보스를 위한 변수이며, 해당 변수가 참일 경우 해당 캐릭터는 죽지 않음
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDontDie = false;
+    //해당 몬스터가 엘리트 몬스터인지를 나타내는 변수(보상 관련)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsElite = false;
 
 protected:
 	// Called when the game starts or when spawned
