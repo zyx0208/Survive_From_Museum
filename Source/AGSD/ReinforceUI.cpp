@@ -129,8 +129,10 @@ void UReinforceUI::ShowReinforce(FWeaponDataTableBetaStruct WeaponData)
     UTexture2D* WeaponIcon1 = OriginalWeapon->WeaponIcon;
     ImageSlot1->SetBrushFromTexture(WeaponIcon1);
     WeaponDescription1->SetText(FText::FromString(OriginalWeapon->WeaponDescription));
+    WeaponNameTextBlock1->SetText(FText::FromString(OriginalWeapon->Sname));
 
     UTexture2D* WeaponIcon2 = TargetWeapon->WeaponIcon;
     ImageSlot2->SetBrushFromTexture(WeaponIcon1);
     WeaponDescription2->SetText(FText::FromString(TargetWeapon->WeaponDescription));
+    WeaponNameTextBlock2->SetText(FText::FromString(TargetWeapon->Sname));
 }

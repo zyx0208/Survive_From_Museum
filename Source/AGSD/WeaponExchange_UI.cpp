@@ -47,8 +47,9 @@ void UWeaponExchange_UI::NativeConstruct()
             WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
             UTexture2D* WeaponIconNewWeapon = WeaponData->WeaponIcon;
             FString NewWeaponDescription = WeaponData->WeaponDescription;
+            FString NewWeaponName = WeaponData->Sname;
 
-            DisplayWeaponImage(WeaponIcon1, WeaponIcon2, WeaponIconNewWeapon, NewWeaponDescription);
+            DisplayWeaponImage(WeaponIcon1, WeaponIcon2, WeaponIconNewWeapon, NewWeaponDescription,NewWeaponName);
         }
     }
 
@@ -58,7 +59,7 @@ void UWeaponExchange_UI::NativeConstruct()
     EffectImage[1]->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription)
+void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription, FString WeaponName)
 {
     if (ImageSlot1) {
         ImageSlot1->SetBrushFromTexture(WeaponIcon1);
@@ -80,6 +81,10 @@ void UWeaponExchange_UI::DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D*
     }
     else {
         UE_LOG(LogTemp, Warning, TEXT("not fountslot1"));
+    }
+
+    if (WeaponNameTextBlock) {
+        WeaponNameTextBlock->SetText(FText::FromString(WeaponName));
     }
 }
 

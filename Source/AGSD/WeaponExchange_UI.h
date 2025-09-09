@@ -24,7 +24,7 @@ public:
     virtual void NativeConstruct() override;
 
     /** 무기 아이콘을 UI에 표시 */
-    void DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription);
+    void DisplayWeaponImage(UTexture2D* WeaponIcon1, UTexture2D* WeaponIcon2, UTexture2D* WeaponIconNewWeapon, FString WeaponDescription, FString WeaponName);
 
     /** UI를 닫는 함수 */
     UFUNCTION(BlueprintCallable, Category = "UI")
@@ -65,6 +65,8 @@ public:
     class UImage* EffectImage1;
     UPROPERTY(meta = (BindWidget))
     class UImage* EffectImage2;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponNameTextBlock;
 
 private:
     /** 버튼 클릭 이벤트 핸들러 */

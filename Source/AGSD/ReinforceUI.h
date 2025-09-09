@@ -56,6 +56,12 @@ public:
     UPROPERTY(meta = (BindWidget))
     class UTextBlock* Question;
 
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponNameTextBlock1;
+
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* WeaponNameTextBlock2;
+
 
     UFUNCTION()
     void OnAgreeButtonClicked();
