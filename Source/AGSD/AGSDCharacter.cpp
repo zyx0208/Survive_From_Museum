@@ -1162,6 +1162,13 @@ void AAGSDCharacter::WeaponTake()
     CurrentSkeletalMesh = WeaponData->WeaponSkeletalMesh;
     RepeatFire = WeaponData->RepeatFire;
     WeaponMeshComponent->SetStaticMesh(CurrentWeaponMesh);
+    if (CurrentSkeletalMesh) {
+        WeaponMeshComponent->SetVisibility(false);
+    }
+    else
+    {
+        WeaponMeshComponent->SetVisibility(true);
+    }
     WeaponSkeletalMeshComponent->SetSkeletalMesh(CurrentSkeletalMesh);
     WeaponFireSequence = WeaponData->WeaponSkeletalAnimSequence;
 	WeaponType = WeaponData->WeaponType;

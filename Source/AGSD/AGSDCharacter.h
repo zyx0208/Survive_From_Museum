@@ -514,7 +514,6 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     TSubclassOf<UAnimInstance> WeaponAnimType;
 
-
     //무기 소켓
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     USceneComponent* SubWeaponAttachPoint;
