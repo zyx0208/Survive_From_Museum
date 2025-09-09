@@ -59,7 +59,7 @@ protected:
     UPROPERTY()
     UTrapTimerWidget* TimerWidgetInstance = nullptr;
 
-    
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> TrapMonster = NULL;
 
 private:
     // 문 보이기/숨기기 + 충돌 토글

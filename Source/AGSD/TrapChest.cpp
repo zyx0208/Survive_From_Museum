@@ -221,5 +221,10 @@ void ATrapChest::UpdateDoorCountdown()
 }
 void ATrapChest::TrapSpawnMonster()
 {
-    //몬스터 소환용 블루프린트 전용 함수
+    if (TrapMonster)
+    {
+        GetWorld()->SpawnActor<AActor>(TrapMonster,
+            GetActorLocation(),
+            FRotator::ZeroRotator);
+    }
 }
