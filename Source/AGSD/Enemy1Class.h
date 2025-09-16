@@ -41,6 +41,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> AttackedEffect = NULL;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EnemyProjectile = NULL;
+    //만약 튜토리얼 몹인 경우, 확정 드랍 아이템으로 설정
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> EXball = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> WeaponDrop = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> Bomb = NULL;
@@ -65,6 +66,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsDontDie = false;
     //해당 몬스터가 엘리트 몬스터인지를 나타내는 변수(보상 관련)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsElite = false;
+    //해당 변수가 참일 경우, 특정 조건을 만들기 위함(ex. 확정 드랍 시스템 등)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsTutorialEnemy = false;
 
 protected:
 	// Called when the game starts or when spawned
