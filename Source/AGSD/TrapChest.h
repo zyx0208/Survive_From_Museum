@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Sound/SoundBase.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "TrapTimerWidget.h" 
 #include "TrapChest.generated.h"
@@ -61,6 +63,11 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<AActor> TrapMonster = NULL;
 
+    /** 함정 발동 중 재생할 비상 경보 사운드(사이렌 등) */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Trap|Audio")
+    USoundBase* EmergencySound = nullptr;
+
+
 private:
     // 문 보이기/숨기기 + 충돌 토글
     void SetActorActiveWithCollision(AActor* Target, bool bActive);
@@ -76,5 +83,8 @@ private:
     void UpdateDoorCountdown();
 
     TWeakObjectPtr<AActor> PendingDoor;
+
+    UPROPERTY()
+    UAudioComponent* EmergencyAudioComp = nullptr;
 
 };
