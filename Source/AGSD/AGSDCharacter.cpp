@@ -755,6 +755,7 @@ bool AAGSDCharacter::CheckReinforce()
         if (WeaponData1->ReinforceStage == ReinforceStageName || WeaponData2->ReinforceStage == ReinforceStageName) {
             return true;
         }
+        else if (ReinforceStageName == "TutorialStage4_BossMonster") return true; // 튜토리얼용 찬란한 강화
     }
     return false;
 }

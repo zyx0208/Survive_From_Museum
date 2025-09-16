@@ -111,9 +111,10 @@ bool UReinforceUI::UpgradeCheck(FWeaponDataTableBetaStruct WeaponData)
     if (WeaponData.ReinforceStage == ReinforceStageName) {
         return true;
     }
-    else if ((WeaponData.IID == 4 || WeaponData.IID == 5) && ReinforceStageName == "TutorialStage4_BossMosnter") {
+    else if ((WeaponData.IID == 4 || WeaponData.IID == 5) && ReinforceStageName == "TutorialStage4_BossMonster") {
         return true; //튜토용 찬란한 업그레이드
     }
+    UE_LOG(LogTemp, Warning, TEXT("%d // %s"), WeaponData.IID, *ReinforceStageName);
     return false;
 }
 
