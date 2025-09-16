@@ -5,6 +5,9 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"   
+#include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundBase.h"
 
 // Sets default values
 ATrapChest::ATrapChest()
@@ -105,6 +108,38 @@ void ATrapChest::Interact(AAGSDCharacter* Character)
         PendingDoor = DoorActor;
         DoorEndTimeSeconds = GetWorld()->GetTimeSeconds() + TrapDuration;
 
+        if (EmergencySound)
+        {
+            // 이전 재생분이 남아있다면 정리
+            if (EmergencyAudioComp && EmergencyAudioComp->IsPlaying())
+            {
+                EmergencyAudioComp->Stop();
+            }
+
+            // 루트에 붙여 3D로 재생
+            EmergencyAudioComp = UGameplayStatics::SpawnSoundAttached(
+                EmergencySound,
+                GetRootComponent(),          // AttachComponent
+                NAME_None,                   // AttachPointName
+                FVector::ZeroVector,         // Location
+                EAttachLocation::KeepRelativeOffset,
+                false,                       // bStopWhenAttachedToDestroyed (수동으로 stop)
+                1.f,                         // VolumeMultiplier
+                1.f                          // PitchMultiplier
+            );
+
+            if (EmergencyAudioComp)
+            {
+                EmergencyAudioComp->bAutoDestroy = false; // Trap 끝에서 수동 정리
+                // 필요하면 부드럽게 시작
+                EmergencyAudioComp->FadeIn(0.15f);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("[TrapChest] Failed to spawn EmergencyAudioComp."));
+            }
+        }
+
         if (!TimerWidgetInstance && TimerWidgetClass)
         {
             if (Character)
@@ -159,7 +194,12 @@ void ATrapChest::Interact(AAGSDCharacter* Character)
                         TimerWidgetInstance->RemoveFromParent();
                         TimerWidgetInstance = nullptr;
                     }
-
+                    if (EmergencyAudioComp)
+                    {
+                        // 부드럽게 페이드아웃 후 파괴
+                        EmergencyAudioComp->FadeOut(0.2f, 0.f);
+                        EmergencyAudioComp = nullptr;
+                    }
                     if (PendingDoor.IsValid())
                     {
                         UE_LOG(LogTemp, Log, TEXT("[TrapChest] DoorActor DESTROY: %s"), *PendingDoor->GetName());
