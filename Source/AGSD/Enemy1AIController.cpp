@@ -641,6 +641,19 @@ void AEnemy1AIController::Died(int64 num)
         return;
     }
 
+    //튜토리얼 몬스터 드랍 아이템 설정
+    if (Enemy->IsTutorialEnemy)
+    {
+        UE_LOG(LogTemp, Display, TEXT("Enemy is dead!"));
+        //드랍설정
+        if (Enemy->EXball)
+        {
+            World->SpawnActor<AActor>(Enemy->EXball, GetCharacter()->GetActorLocation() + FVector(FMath::FRandRange(-100.0f, 100.0f), FMath::FRandRange(-100.0f, 100.0f), 0.0f), FRotator::ZeroRotator);
+        }
+        Enemy->IsDead = true;
+        return;
+    }
+    
 	//드랍 아이템 설정
 	switch (num)
 	{
