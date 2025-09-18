@@ -114,6 +114,9 @@ public:
 
     void UpdateCameraObstruction();
 
+    UFUNCTION(BlueprintCallable)
+    void Talking(bool dialogueInput);
+
 protected:
 
 	/** Called for movement input */

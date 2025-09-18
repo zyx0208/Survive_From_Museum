@@ -543,6 +543,15 @@ void AAGSDCharacter::UpdateCameraObstruction()
         FollowCamera->SetWorldLocation(NewCameraLocation);
     }
 }
+void AAGSDCharacter::Talking(bool dialogueInput)
+{
+    if (dialogueInput) {
+        bIsInvincible = true;
+    }
+    else if (!dialogueInput) {
+        bIsInvincible = false;
+    }
+}
 //일시정시 관리 함수
 void AAGSDCharacter::HandleEscape()
 {
