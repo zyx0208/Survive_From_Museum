@@ -51,7 +51,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 20.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {
