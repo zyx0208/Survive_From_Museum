@@ -1125,14 +1125,14 @@ void AAGSDCharacter::UpdateSwapWeaponIcon()
 }
 
 
-void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation)
+void AAGSDCharacter::SpawnParticle(FVector Location, FRotator Rotation, FVector Scale)
 {
     //FVector AddVector = FVector(100.0f, 0, 0);
     //AddVector = Rotation.RotateVector(AddVector);
     Location = Location;
     UE_LOG(LogTemp, Log, TEXT("%.2f %.2f %.2f"), Location.X, Location.Y,Location.Z);
     UNiagaraComponent* WeaponParticleComponent;
-    WeaponParticleComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponParticle, Location, Rotation);
+    WeaponParticleComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), WeaponParticle, Location, Rotation, Scale);
     if(IsValid(WeaponParticleComponent)) {
         WeaponParticleComponent->Activate();
     }
@@ -1524,9 +1524,12 @@ void AAGSDCharacter::CreateProjectile(float AdjustedYaw, bool ChargeFire)
                 }
 
             }
+
            //파티클 생성
             if (WeaponParticle) {
-                SpawnParticle(MuzzleLocation, AdjustedRotation);
+                FVector ParticleScale = FVector(AttackRangeLevel);
+
+                SpawnParticle(MuzzleLocation, AdjustedRotation, ParticleScale);
             }
         }
     }
