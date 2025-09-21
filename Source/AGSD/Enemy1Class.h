@@ -68,7 +68,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsElite = false;
     //해당 변수가 참일 경우, 특정 조건을 만들기 위함(ex. 확정 드랍 시스템 등)
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")bool IsTutorialEnemy = false;
-
+    //대화 UI 출력을 위한 정지 함수
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI") bool IsTexting = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

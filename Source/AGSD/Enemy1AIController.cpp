@@ -775,6 +775,14 @@ void AEnemy1AIController::Tick(float DeltaTime)
         Enemy->IsAttacked = false;
         IsRage = false;
         IsLaunchAttacking = false;
+        if (Enemy->IsBoss)
+        {
+            Enemy->IsTexting = true;
+        }
+        else
+        {
+            Enemy->IsTexting = false;
+        }
         if (PlayerCharacter)
         {
             MoveToActor(PlayerCharacter, 999999999.0f, true, true, true, 0, true);
@@ -809,7 +817,11 @@ void AEnemy1AIController::Tick(float DeltaTime)
 	//캐릭터 움직임 관련
 	if (PlayerCharacter)//플레이어 탐색이 됐을 경우
 	{
-        if (IsGroggy)
+        if (Enemy->IsTexting)
+        {
+            StopMovement();
+        }
+        else if (IsGroggy)
         {
             StopMovement();
         }
