@@ -59,6 +59,15 @@ void UReinforceUI::CloseUI()
 
 void UReinforceUI::OnAgreeButtonClicked()
 {
+    // 튜토리얼 보스 맵에서는 강화 스킵 후 UI만 닫기
+    const FString CurrentLevel = UGameplayStatics::GetCurrentLevelName(this, true);
+    if (CurrentLevel == TEXT("TutorialStage4_BossMonster"))
+    {
+        UE_LOG(LogTemp, Log, TEXT("[ReinforceUI] Tutorial boss stage - skip reinforce and close UI."));
+        CloseUI();
+        return;
+    }
+
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
     AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
     if (GI) {
@@ -136,7 +145,7 @@ void UReinforceUI::ShowReinforce(FWeaponDataTableBetaStruct WeaponData)
     WeaponNameTextBlock1->SetText(FText::FromString(OriginalWeapon->Sname));
 
     UTexture2D* WeaponIcon2 = TargetWeapon->WeaponIcon;
-    ImageSlot2->SetBrushFromTexture(WeaponIcon1);
+    ImageSlot2->SetBrushFromTexture(WeaponIcon2);
     WeaponDescription2->SetText(FText::FromString(TargetWeapon->WeaponDescription));
     WeaponNameTextBlock2->SetText(FText::FromString(TargetWeapon->Sname));
 }
