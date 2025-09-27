@@ -84,4 +84,10 @@ public:
     bool Recheck=false;
 
     bool WeaponArraySlot=false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> TutorialTextWidgetClass;
+
+    UPROPERTY(EditAnywhere,BlueprintReadWrite)
+    UUserWidget* TutorialTextWidget;
 };

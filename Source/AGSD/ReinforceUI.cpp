@@ -64,6 +64,10 @@ void UReinforceUI::OnAgreeButtonClicked()
     if (CurrentLevel == TEXT("TutorialStage4_BossMonster"))
     {
         UE_LOG(LogTemp, Log, TEXT("[ReinforceUI] Tutorial boss stage - skip reinforce and close UI."));
+        TutorialTextWidget = CreateWidget<UUserWidget>(GetWorld(), TutorialTextWidgetClass);
+        if (TutorialTextWidget) {
+            TutorialTextWidget->AddToViewport();
+        }
         CloseUI();
         return;
     }
@@ -109,6 +113,9 @@ void UReinforceUI::OnAgreeButtonClicked()
     }
     else
     {
+        if (GI->NowStage == -1) {
+            
+        }
         CloseUI();
     }
 }

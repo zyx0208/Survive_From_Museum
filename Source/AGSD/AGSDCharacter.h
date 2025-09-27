@@ -248,6 +248,12 @@ protected:
     UPROPERTY()
     class AMouseIndicatorActor* MouseIndicator;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> TutorialTextWidgetClass;
+
+    UPROPERTY()
+    UUserWidget* TutorialTextWidget;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

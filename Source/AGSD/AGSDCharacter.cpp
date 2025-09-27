@@ -1761,6 +1761,8 @@ void AAGSDCharacter::Clear()
         {
             ClearWidget->AddToViewport();
         }
+        UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+
         if (CheckReinforce()) {
             ReinforceUIWidget = CreateWidget<UUserWidget>(GetWorld(), ReinforceUIWidgetClass);
             if (ReinforceUIWidget)
