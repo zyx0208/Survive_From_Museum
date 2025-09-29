@@ -77,7 +77,7 @@ AAGSDCharacter::AAGSDCharacter()
 
 	CharacterLevel = 1;        // 캐릭터 초기 레벨
 	CurrentXP = 0;             // 초기 경험치
-	XPToNextLevel = 8;       // 첫 번째 레벨 업까지 필요한 경험치
+	XPToNextLevel = 10;       // 첫 번째 레벨 업까지 필요한 경험치
 	BounsXPLevel = 1.0f;		//획득 경험치 증가
     XPRangeLevel = 200.0f;        //획득 자석 범위
 
@@ -857,7 +857,7 @@ void AAGSDCharacter::AddXP(int32 XPAmount)
 	float XPPercentage = static_cast<float>(CurrentXP) / static_cast<float>(XPToNextLevel);
 	//UE_LOG(LogTemp, Log, TEXT("Increases XP: %d / %d"), CurrentXP, XPToNextLevel);
 	// 캐릭터가 충분한 XP를 모았는지 확인하여 레벨 업 처리
-	if (CurrentXP >= XPToNextLevel)
+    while (CurrentXP >= XPToNextLevel)
 	{
 		ShowLevelUpUI();
 		LevelUp();
@@ -872,7 +872,7 @@ void AAGSDCharacter::LevelUp()
 
 	// 현재 XP를 리셋하고, 다음 레벨로 가기 위한 XP 임계값 증가
 	CurrentXP -= XPToNextLevel;
-	XPToNextLevel = XPToNextLevel * 1.5; // 예: 다음 레벨로 가기 위한 경험치 50% 증가
+	XPToNextLevel = XPToNextLevel * 1.15; // 다음 레벨로 가기 위한 경험치 15% 증가
 
 	// 선택 사항: 레벨 업을 알리거나 특별한 이벤트를 트리거할 수 있음
 	//UE_LOG(LogTemp, Log, TEXT("레벨 업! 새로운 레벨: %d"), CharacterLevel);

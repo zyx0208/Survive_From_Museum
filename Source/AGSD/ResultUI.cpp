@@ -13,6 +13,7 @@ void UResultUI::NativeConstruct()
     if (CloseResultButton)
     {
         CloseResultButton->OnClicked.AddDynamic(this, &UResultUI::CloseResult);
+        CloseResultButton->SetIsEnabled(false);
     }
     if (WeaponDataTable) {
         static const FString ContextString(TEXT("Weapon Data Context"));
@@ -29,6 +30,11 @@ void UResultUI::NativeConstruct()
             DisplayWeaponImage(Icon1, Icon2);
         }
     }
+    FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateLambda([this](float DeltaTime)
+        {
+            CloseResultButton->SetIsEnabled(true); // 1초 뒤에 호출될 함수
+            return false;    // 한 번만 실행
+        }), 1.0f); // 실시간 기준 1초
     PopulateAccessoryIcons();
 }
 
