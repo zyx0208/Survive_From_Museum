@@ -96,14 +96,12 @@ void ANPC1Class::ShowTextUI()
             if (Text0_1)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text0_1)->AddToViewport();
-                GameInstance->Temp_TalkingProgress = 1;
                 break;
             }
         case 1:
             if (Text0_2)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text0_2)->AddToViewport();
-                GameInstance->Temp_TalkingProgress++;
                 break;
             }
         case 2:
@@ -135,14 +133,12 @@ void ANPC1Class::ShowTextUI()
             if (Text1_1)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text1_1)->AddToViewport();
-                GameInstance->Temp_TalkingProgress = 1;
                 break;
             }
         case 1:
             if (Text1_2)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text1_2)->AddToViewport();
-                GameInstance->Temp_TalkingProgress++;
                 break;
             }
         case 2:
@@ -173,14 +169,12 @@ void ANPC1Class::ShowTextUI()
             if (Text2_1)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text2_1)->AddToViewport();
-                GameInstance->Temp_TalkingProgress = 1;
                 break;
             }
         case 1:
             if (Text2_2)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text2_2)->AddToViewport();
-                GameInstance->Temp_TalkingProgress++;
                 break;
             }
         case 2:
@@ -211,14 +205,12 @@ void ANPC1Class::ShowTextUI()
             if (Text3_1)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text3_1)->AddToViewport();
-                GameInstance->Temp_TalkingProgress = 1;
                 break;
             }
         case 1:
             if (Text3_2)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text3_2)->AddToViewport();
-                GameInstance->Temp_TalkingProgress++;
                 break;
             }
         case 2:
@@ -231,6 +223,60 @@ void ANPC1Class::ShowTextUI()
             if (Text3_3)
             {
                 CreateWidget<UUserWidget>(GetWorld(), Text3_4)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
+            break;
+        }
+        break;
+    case 4:
+        switch (TalkProgress)
+        {
+        case -1:
+        case 0:
+            if (Text4_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text4_1)->AddToViewport();
+                break;
+            }
+        case 1:
+            if (Text4_2)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text4_2)->AddToViewport();
+                break;
+            }
+        case 2:
+            if (Text4_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text4_3)->AddToViewport();
+                break;
+            }
+        case 3:
+            if (Text4_3)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text4_4)->AddToViewport();
+                break;
+            }
+        default:
+            if (TextError)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), TextError)->AddToViewport();
+            }
+            break;
+        }
+        break;
+    case 5:
+        switch (TalkProgress)
+        {
+        case -1:
+        case 0:
+            if (Text5_1)
+            {
+                CreateWidget<UUserWidget>(GetWorld(), Text5_1)->AddToViewport();
                 break;
             }
         default:

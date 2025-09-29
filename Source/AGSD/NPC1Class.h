@@ -48,10 +48,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text4_2 = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text4_3 = NULL;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text4_4 = NULL;//반복 대화문
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text5_1 = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text5_2 = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text5_3 = NULL;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text5_4 = NULL;//반복 대화문
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")TSubclassOf<UUserWidget> Text5_1 = NULL;//엔딩 대사
+
     int64 StageProgress;//스태이지 진행도
     int64 TalkProgress;//대화 진행도
 	// Called to bind functionality to input
