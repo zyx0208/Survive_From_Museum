@@ -716,6 +716,10 @@ void AAGSDCharacter::UpdateDashCooldownUI()
 
 void AAGSDCharacter::Interaction()
 {
+    if (WeaponSwapCheck()) {
+        return;
+    }
+
     if (OverlapDropWeapon) 
     {
         ShowWeaponExchangeUI();

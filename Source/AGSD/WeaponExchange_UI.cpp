@@ -180,8 +180,6 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
         PlayerCharacter->WeaponSwap();
         PlayerCharacter->WeaponSwap();
         CloseWeaponExchange();
-        PlayerCharacter->WeaponSwap();
-        PlayerCharacter->WeaponSwap();
     }
     UE_LOG(LogTemp, Display, TEXT("AgreeButtonClicked"));
 }
