@@ -420,7 +420,7 @@ public:
 	UFUNCTION()
 	void StartFiring();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StopFiring();
 
     UFUNCTION()

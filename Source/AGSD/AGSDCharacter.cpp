@@ -918,6 +918,7 @@ void AAGSDCharacter::PauseGameForLevelUp()
 //레벨업 선택 이후 게임 이어하기
 void AAGSDCharacter::ResumeGameAfterLevelUp()
 {
+    StopFiring();
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController)
 	{
@@ -989,7 +990,6 @@ void AAGSDCharacter::RemoveFromMagnetField(AXPOrb* XPOrb)
 
 void AAGSDCharacter::Fire()
 {
-    
 	//공격속도 제한
 	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
 		return;
@@ -1343,6 +1343,7 @@ void AAGSDCharacter::StartFiring()
 
 void AAGSDCharacter::StopFiring()
 {
+    UE_LOG(LogTemp, Log, TEXT("StopFiring"));
 	GetWorldTimerManager().ClearTimer(FireTimerHandle);
     if (RangeType == ERangeType::ChargeBeam) {
         StopCharging();
@@ -1771,7 +1772,7 @@ void AAGSDCharacter::Clear()
             }
         }
     }
-
+    
     // 로그 출력
     UE_LOG(LogTemp, Warning, TEXT("Level Clear"));
 }
