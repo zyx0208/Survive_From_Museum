@@ -186,6 +186,8 @@ void UAGSDGameInstance::SaveGameData()
     SaveGameInstance->SWeapon_Reinforced = Temp_Reinforced;
     SaveGameInstance->SWeapon_Ascension = Temp_Ascension;
 
+    SaveGameInstance->SWeapon_Array = WeaponArray;
+
     //악세서리 획득여부 저장
     SaveGameInstance->SaveKnowAccessory = TempAccessory;
 
@@ -229,6 +231,8 @@ void UAGSDGameInstance::LoadGameData()
         UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %d"), Temp_TalkingProgress);
         UE_LOG(LogTemp, Warning, TEXT("Loaded StageProgress: %f"), Temp_BGMVolume);
         UE_LOG(LogTemp, Warning, TEXT("Loaded TalkingProgress: %f"), Temp_SFXVolume);
+
+        WeaponArray = LoadedGame->SWeapon_Array;
 
         if (Temp_Ascension.IsEmpty()) {
             UE_LOG(LogTemp, Warning, TEXT("NO Loaded WeaponData SetWeaponData"));
