@@ -202,17 +202,18 @@ void AAGSDCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		// 마우스 입력 모드 설정: 게임 모드에서 마우스 입력을 활성화하고 커서 표시
-		//PlayerController->SetInputMode(FInputModeGameAndUI());  // FInputModeGameOnly()로 변경하여 순수 게임 모드로 설정 가능
-		PlayerController->bShowMouseCursor = true;  // 마우스 커서 표시
+    if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+    {
+        PlayerController->bShowMouseCursor = true;
+        
+        ApplyGameAndUICursorMode();
 
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
+        if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
+            ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+        {
+            Subsystem->AddMappingContext(DefaultMappingContext, 0);
+        }
+    }
 	check(GEngine != nullptr);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
 
@@ -910,14 +911,11 @@ void AAGSDCharacter::ApplyLevelUpOption(AAGSDCharacter* Character, const FAccess
 //레벨업시 게임정지
 void AAGSDCharacter::PauseGameForLevelUp()
 {
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	if (PlayerController)
-	{
-		PlayerController->SetPause(true);
-		//FInputModeUIOnly InputMode;
-		//PlayerController->SetInputMode(InputMode);
-		//PlayerController->bShowMouseCursor = true;
-	}
+    if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
+    {
+        PlayerController->SetPause(true);
+        ApplyGameAndUICursorMode(); // 추가
+    }
 }
 //레벨업 선택 이후 게임 이어하기
 void AAGSDCharacter::ResumeGameAfterLevelUp()
@@ -926,10 +924,8 @@ void AAGSDCharacter::ResumeGameAfterLevelUp()
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	if (PlayerController)
 	{
-		PlayerController->SetPause(false);
-		//FInputModeGameOnly InputMode;
-		//PlayerController->SetInputMode(InputMode);
-		//PlayerController->bShowMouseCursor = true;
+        PlayerController->SetPause(false);
+        ApplyGameAndUICursorMode();
 	}
 
 	// UI 제거
@@ -1335,6 +1331,7 @@ void AAGSDCharacter::GetWeapon()
 }
 void AAGSDCharacter::StartFiring()
 {
+    ApplyGameAndUICursorMode();
 	if (GetWorldTimerManager().IsTimerActive(FireRateTimerHandle)) {
 
 	}
@@ -2333,4 +2330,19 @@ void AAGSDCharacter::TestCameraMove(AActor* MoveToCamera)
     }
 }
 
+void AAGSDCharacter::ApplyGameAndUICursorMode()
+{
+    if (APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr)
+    {
+        // 커서를 캡처 중에도 숨기지 않음 + 뷰포트 잠금 해제
+        FInputModeGameAndUI Mode;
+        Mode.SetHideCursorDuringCapture(false);
+        Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+        // 포커스 줄 위젯이 있으면 여기서 지정 가능: Mode.SetWidgetToFocus(SomeWidget->TakeWidget());
 
+        PC->SetInputMode(Mode);
+        PC->bShowMouseCursor = true;
+        PC->bEnableClickEvents = true;
+        PC->bEnableMouseOverEvents = true;
+    }
+}

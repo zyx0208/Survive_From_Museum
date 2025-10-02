@@ -813,5 +813,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Camera")
     void TestCameraMove(AActor* MoveToCamera);
     
+ private:
+    void ApplyGameAndUICursorMode();
+
 };
 
