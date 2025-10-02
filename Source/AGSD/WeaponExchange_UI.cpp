@@ -10,6 +10,7 @@
 #include "WeaponDrop.h"
 #include "AGSDGameInstance.h"
 #include "AGSDCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 void UWeaponExchange_UI::NativeConstruct()
 {
@@ -156,19 +157,31 @@ void UWeaponExchange_UI::OnAgreeButtonClicked()
         static const FString ContextString(TEXT("OnAgreeButtonClicked"));
         if (!PlayerCharacter->WeaponDataTableRef) return;
 
+        // 현재 맵 이름 (PIE 접두어 제거됨)
+        const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this, /*bRemovePrefixString=*/true);
+        const bool bIsTutorialMap = CurrentLevelName.Equals(TEXT("TutorialStage1_NM_Weapon"), ESearchCase::CaseSensitive);  //튜토리얼 맵용 획득저장 방지
+
         TArray<FName> RowNames = PlayerCharacter->WeaponDataTableRef->GetRowNames();
         for (FName RowName : RowNames)
         {
             // 무기 데이터 가져오기
             FWeaponDataTableBetaStruct* WeaponData = PlayerCharacter->WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
 
-            if (WeaponData && WeaponData->IID == OverlapID) // IID 값 비교
+            if (WeaponData && WeaponData->IID == OverlapID)
             {
-                UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
-                if (GI) {
-                    GI->Temp_Acquired.Add(FName(FString::FromInt(WeaponData->IID)), true);
-                    UE_LOG(LogTemp, Warning, TEXT("WeaponGet"));
-
+                if (UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance()))
+                {
+                    // 튜토리얼 맵이 아닐 때만 true로 획득 기록
+                    if (!bIsTutorialMap)
+                    {
+                        GI->Temp_Acquired.Add(FName(FString::FromInt(WeaponData->IID)), true);
+                        UE_LOG(LogTemp, Warning, TEXT("WeaponGet (Temp_Acquired=true)"));
+                    }
+                    else
+                    {
+                        UE_LOG(LogTemp, Verbose, TEXT("Tutorial map detected (%s): skip Temp_Acquired Add(true)"),
+                            *CurrentLevelName);
+                    }
                 }
                 break;
             }
