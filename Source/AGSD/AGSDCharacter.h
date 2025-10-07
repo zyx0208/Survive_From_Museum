@@ -623,6 +623,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     AWeaponDrop* OverlapWeaponDrop;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    TArray<AWeaponDrop*> OverlapWeaponDropArray;
+
+    UFUNCTION()
+    void SortOverlapWeaponDropArray();
+
     //현재 오버랩된 드랍된 무기 ID
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FString OverlapID = "0";

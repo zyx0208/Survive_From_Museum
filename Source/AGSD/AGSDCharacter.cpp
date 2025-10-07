@@ -1235,10 +1235,10 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
             OverlapWeaponDrop = Cast<AWeaponDrop>(OtherActor);
             if (OverlapWeaponDrop)
             {
-                GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Overlap Weapon: %s"), *OverlapWeaponDrop->WeaponID));
-                //if(OverlapWeaponDrop->InteractionWidget) OverlapWeaponDrop->InteractionWidget->SetVisibility(true);
+                OverlapWeaponDropArray.Add(OverlapWeaponDrop);
                 OverlapID = *OverlapWeaponDrop->WeaponID;
             }
+            SortOverlapWeaponDropArray();
         }
         // 충돌한 오브젝트가 Box임을 확인
         if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
@@ -1276,7 +1276,16 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
         if (OtherActor && OtherActor->IsA<AWeaponDrop>())
         {
             AWeaponDrop* WeaponDrop = Cast<AWeaponDrop>(OtherActor);
-            if (WeaponDrop->InteractionWidget) WeaponDrop->InteractionWidget->SetVisibility(false);
+            
+
+            // null 체크 및 배열에 존재 여부 확인 후 RemoveSingle 호출
+            if (IsValid(WeaponDrop))
+            {
+                if (WeaponDrop->InteractionWidget) WeaponDrop->InteractionWidget->SetVisibility(false);
+                OverlapWeaponDropArray.RemoveSingle(WeaponDrop);
+                SortOverlapWeaponDropArray();
+            }
+
             OverlapDropWeapon = false;
         }
         // 충돌한 오브젝트가 Box임을 확인
@@ -1328,6 +1337,20 @@ void AAGSDCharacter::GetWeapon()
     else {
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("Not Ovelap WeaponDrop")));
     }
+}
+void AAGSDCharacter::SortOverlapWeaponDropArray()
+{
+    const FVector MyLocation = GetActorLocation();
+
+        OverlapWeaponDropArray.Sort([MyLocation](const AActor& A, const AActor& B)
+        {
+            return FVector::DistSquared(A.GetActorLocation(), MyLocation) < FVector::DistSquared(B.GetActorLocation(), MyLocation);
+        });
+
+        if (OverlapWeaponDropArray.Num() > 0) {
+            OverlapWeaponDrop = OverlapWeaponDropArray[0];
+            OverlapID = OverlapWeaponDropArray[0]->WeaponID;
+        }
 }
 void AAGSDCharacter::StartFiring()
 {
