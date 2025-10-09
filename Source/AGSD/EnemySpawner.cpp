@@ -20,6 +20,18 @@ AEnemySpawner::AEnemySpawner()
     
 }
 
+void AEnemySpawner::SwitchingSpawn()
+{
+    if (isSpawning) {
+        this->SetActorTickEnabled(false);
+        isSpawning = false;
+    }
+    else {
+        this->SetActorTickEnabled(true);
+        isSpawning = true;
+    }
+}
+
 // Called when the game starts or when spawned
 void AEnemySpawner::BeginPlay()
 {

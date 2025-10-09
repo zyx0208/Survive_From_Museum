@@ -17,6 +17,12 @@ public:
 	// Sets default values for this actor's properties
 	AEnemySpawner();
 
+    UFUNCTION(BlueprintCallable)
+    void SwitchingSpawn();
+
+    bool isSpawning = true;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
