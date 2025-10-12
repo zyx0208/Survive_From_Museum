@@ -17,8 +17,8 @@ void UStorageBox_UI::NativeConstruct()
                                           ImageSlot5Button, ImageSlot6Button, ImageSlot7Button, ImageSlot8Button };
 
     // #무기업그레이드
-    WeaponIndexSetArray = { 4, 5, 6, 7, 8, 9, 10, 14 }; //무기 기초 배열(IID값)
-    UpgradeWeaponIndexSetArray = { 15, 16, 19, 12, 18, 11, 13, 17};   //무기 업그레이드시 IID값 변경 설정
+    WeaponIndexSetArray = { 4, 5, 6, 7, 8, 9, 10, 11 }; //무기 기초 배열(IID값)
+    UpgradeWeaponIndexSetArray = { 15, 16, 19, 13, 18, 12, 14, 17};   //무기 업그레이드시 IID값 변경 설정
 
     UpdateWeaponIndexSetArray();
 
