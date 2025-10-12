@@ -70,7 +70,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float RangeIncrease = FCString::Atof(*ValueString.Replace(TEXT("+"), TEXT("")).TrimStartAndEnd());
-            Character->AttackRangeLevel += RangeIncrease;
+            Character->AttackRangeLevel >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += RangeIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Range %.1f"), RangeIncrease, Character->AttackRangeLevel);
         }
         else if (Effect.Contains(TEXT("최대체력")))
@@ -121,7 +121,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
             (Character->Defense + DefenseIncrease <= 0) ? Character->Defense = 0.0f : Character->Defense += DefenseIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Defense %.1f"), DefenseIncrease, Character->Defense);
         }
-        else if (Effect.Contains(TEXT("대쉬 쿨타임")))
+        else if (Effect.Contains(TEXT("대쉬쿨타임")))
         {
             (Character->DashCooldown <= 2.0f) ? Character->DashCooldown = 2.0f : Character->DashCooldown -= 1.0f;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: 1sec DashCooldown %.1f"), Character->DashCooldown);
