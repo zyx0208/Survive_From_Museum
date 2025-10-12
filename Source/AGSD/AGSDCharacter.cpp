@@ -218,7 +218,7 @@ void AAGSDCharacter::BeginPlay()
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("We are using Playable_Character."));
 
     UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
-    
+
     if (GI && GI->WeaponArray[1] && GI->WeaponArray[0]) {
         WeaponArray[0] = GI->WeaponArray[0];
         WeaponArray[1] = GI->WeaponArray[1];

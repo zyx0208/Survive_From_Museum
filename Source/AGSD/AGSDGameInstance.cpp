@@ -121,6 +121,8 @@ void UAGSDGameInstance::LevelLoadingEnd()
 void UAGSDGameInstance::Shutdown()
 {
     Super::Shutdown();
+    WeaponArray[0] = 4;
+    WeaponArray[1] = 5;
     SaveGameData(); // 자동 저장
 }
 
@@ -324,6 +326,16 @@ void UAGSDGameInstance::ResetGameData()
             }
         }
     }
+
+    SaveGameInstance->SWeapon_Array.Empty();
+
+    SaveGameInstance->SWeapon_Array.Add(4);
+    SaveGameInstance->SWeapon_Array.Add(5);
+
+    WeaponArray[0] = 4;
+    WeaponArray[1] = 5;
+
+    UE_LOG(LogTemp, Log, TEXT("%d %d"), SaveGameInstance->SWeapon_Array[0], SaveGameInstance->SWeapon_Array[1]);
 
     //획득한 악세서리 정보 초기화
     TempAccessory.Empty();
