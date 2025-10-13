@@ -25,7 +25,7 @@ void AEnemyStatusEffect_Ice::TimePerEffect()
         if (ParentActor->IsA(AEnemy1AIController::StaticClass())) {
             AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
             if (IsValid(Enemy)) {
-                Enemy->Attacked(IceDamage);
+                Enemy->Attacked(IceDamage/Duration);
                 Enemy->Stun(1.0);
                 if (EffectSoundCue) {
                     UGameplayStatics::PlaySound2D(GetWorld(), EffectSoundCue);

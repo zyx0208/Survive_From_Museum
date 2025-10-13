@@ -26,8 +26,9 @@ void AProjectile_FireBall_Upgrade::WeaponHitEffect(AActor* OtherActor)
             AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
             if (HitEnemyController)
             {
-                AEnemyStatusEffect* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Ice>(IceEffect);
+                AEnemyStatusEffect_Ice* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Ice>(IceEffect);
                 if (TestEffect) {
+                    TestEffect->IceDamage = ((ProjectileDamage + PlayerAttack) * ProjectileCoefficient) + PlayerAscension;
                     TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepRelativeTransform);
                     TestEffect->TimePerEffect();
                     //TestEffect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);

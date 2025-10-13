@@ -29,7 +29,7 @@ void AEnemyStatusEffect_Fire::TimePerEffect()
         if (ParentActor->IsA(AEnemy1AIController::StaticClass())) {
             AEnemy1AIController* Enemy = Cast<AEnemy1AIController>(ParentActor);
             if (IsValid(Enemy)) {
-                Enemy->Attacked(FireDamage);
+                Enemy->Attacked(FireDamage/Duration);
                 if (EffectSoundCue) {
                     UGameplayStatics::PlaySound2D(GetWorld(), EffectSoundCue);
                 }

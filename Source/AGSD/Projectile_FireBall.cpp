@@ -27,7 +27,8 @@ void AProjectile_FireBall::WeaponHitEffect(AActor* OtherActor)
             AEnemy1AIController* HitEnemyController = Cast<AEnemy1AIController>(HitEnemy->GetController());
             if (HitEnemyController)
             {
-                AEnemyStatusEffect* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Fire>(FireEffect);
+                AEnemyStatusEffect_Fire* TestEffect = GetWorld()->SpawnActor<AEnemyStatusEffect_Fire>(FireEffect);
+                TestEffect->FireDamage = ((ProjectileDamage + PlayerAttack) * ProjectileCoefficient) + PlayerAscension;
                 if (TestEffect) {
                     TestEffect->AttachToActor(HitEnemyController, FAttachmentTransformRules::KeepRelativeTransform);
                     //TestEffect->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
