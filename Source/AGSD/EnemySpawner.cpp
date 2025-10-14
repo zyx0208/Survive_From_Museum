@@ -95,22 +95,79 @@ void AEnemySpawner::Tick(float DeltaTime)
             //60초 마다 패턴 변화
             else if (TotalTime >= 240.0f)
             {
+                if (!Patton4Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton4 Spawn."));
+                    Patton4Spawn = true;
+                    if (Patton4)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton4,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
                 SpawnTime = (310.0f - TotalTime) / 50.0f;
-                SpawnNum = 3;
+                SpawnNum = 1;
                 WaveLevel = 3;
                 NumOfSpawn = 0;
             }
-            else if (TotalTime >= 120.0f)
+            else if (TotalTime >= 180.0f)
             {
-                SpawnTime = (250.0f - TotalTime) / 30.0f;
+                if (!Patton3Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton3 Spawn."));
+                    Patton3Spawn = true;
+                    if (Patton3)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton3,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
                 WaveLevel = 2;
                 NumOfSpawn = 0;
             }
+            else if (TotalTime >= 120.0f)
+            {
+                if (!Patton2Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton2 Spawn."));
+                    Patton2Spawn = true;
+                    if (Patton2)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton2,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 1;
+                WaveLevel = 2;
+                NumOfSpawn = 0;
+            }
+            else if (TotalTime >= 60.0f)
+            {
+                if (!Patton1Spawn)
+                {
+                    UE_LOG(LogTemp, Display, TEXT("Patton1 Spawn."));
+                    Patton1Spawn = true;
+                    if (Patton1)
+                    {
+                        GetWorld()->SpawnActor<AActor>(Patton1,
+                            PlayerCharacter->GetActorLocation(),
+                            FRotator::ZeroRotator);
+                    }
+                }
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
+                SpawnNum = 1;
+                WaveLevel = 1;
+                NumOfSpawn = 0;
+            }
             else if (TotalTime >= 0.0f)
             {
-                //SpawnTime = 5.0 * std::exp(-0.05 * TotalTime) + 1.0;
-                SpawnTime = (130.0f - TotalTime) / 20.0f;
+                SpawnTime = (310.0f - TotalTime) / 50.0f;
                 SpawnNum = 1;
                 WaveLevel = 1;
                 NumOfSpawn = 0;

@@ -674,7 +674,7 @@ void AEnemy1AIController::Died(int64 num)
                 World->SpawnActor<AActor>(Enemy->WeaponDrop, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
             }
         }
-        else if (DropNum <= 81) //80% 확률로 경험치 드랍
+        else if (DropNum <= 92) //91% 확률로 경험치 드랍
         {
             if (Enemy->EXball)
             {
@@ -684,28 +684,28 @@ void AEnemy1AIController::Died(int64 num)
                 }
             }
         }
-        else if (DropNum <= 87) //6% 확률로 HP 절반 회복 드랍
+        else if (DropNum <= 95) //3% 확률로 HP 절반 회복 드랍
         {
             if (Enemy->Heal_half)
             {
                 World->SpawnActor<AActor>(Enemy->Heal_half, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
             }
         }
-        else if (DropNum <= 90) //3% 확률로 HP 전부 회복 드랍
+        else if (DropNum <= 96) //1% 확률로 HP 전부 회복 드랍
         {
             if (Enemy->Heal_full)
             {
                 World->SpawnActor<AActor>(Enemy->Heal_full, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
             }
         }
-        else if (DropNum <= 95) //5% 확률로 자석 드랍
+        else if (DropNum <= 98) //2% 확률로 자석 드랍
         {
             if (Enemy->Magnetic)
             {
                 World->SpawnActor<AActor>(Enemy->Magnetic, GetCharacter()->GetActorLocation(), FRotator::ZeroRotator);
             }
         }
-        else//5% 확률로 폭탄 드랍
+        else//2% 확률로 폭탄 드랍
         {
             if (Enemy->Bomb)
             {
