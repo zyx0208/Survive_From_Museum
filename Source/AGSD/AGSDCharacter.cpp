@@ -525,7 +525,7 @@ void AAGSDCharacter::UpdateCameraObstruction()
         TraceParams
     );
     //디버그 라인트레이스
-    DrawDebugLine(GetWorld(), TempCharacterLocation, DesiredCameraLocation, FColor::Blue, false, 0.1f, 0, 1.0f);
+    //DrawDebugLine(GetWorld(), TempCharacterLocation, DesiredCameraLocation, FColor::Blue, false, 0.1f, 0, 1.0f);
 
     if (bBlocked)
     {
