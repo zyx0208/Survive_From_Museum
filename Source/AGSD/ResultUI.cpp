@@ -9,6 +9,7 @@
 void UResultUI::NativeConstruct()
 {
     Super::NativeConstruct();
+    PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     if (CloseResultButton)
     {
@@ -17,7 +18,7 @@ void UResultUI::NativeConstruct()
     }
     if (WeaponDataTable) {
         static const FString ContextString(TEXT("Weapon Data Context"));
-        if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
+        if (PlayerCharacter)
         {
             FName RowName = FName(FString::FromInt(PlayerCharacter->WeaponArray[0]));
             FWeaponDataTableBetaStruct* WeaponData = WeaponDataTable->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
@@ -35,6 +36,7 @@ void UResultUI::NativeConstruct()
             CloseResultButton->SetIsEnabled(true); // 1초 뒤에 호출될 함수
             return false;    // 한 번만 실행
         }), 1.0f); // 실시간 기준 1초
+    
     PopulateAccessoryIcons();
 }
 
@@ -70,36 +72,31 @@ void UResultUI::DisplayWeaponImage(UTexture2D* Icon1, UTexture2D* Icon2)
 
 void UResultUI::PopulateAccessoryIcons()
 {
-    if (!AccessoryWrapBox && !AccessoryDataTable) return;
     AccessoryWrapBox->ClearChildren();
+    
 
-    static const FString ContextString(TEXT("PopulateAccessotyIcons"));
-    TArray<FName> RowNames = AccessoryDataTable->GetRowNames();
-
-    AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-    if (!PlayerCharacter) return;
-
-    for (FName RowName : RowNames)
+    for (const FName& RowName : PlayerCharacter->GetAccessory)
     {
-        FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, ContextString, true);
+        const FAccessoryData* Accessory = AccessoryDataTable->FindRow<FAccessoryData>(RowName, TEXT("ResultUI"));
 
-        if (Accessory && PlayerCharacter->AcquiredAccessories.Contains(RowName) && Accessory->AccessoryIcon)
+        if (Accessory && Accessory->AccessoryIcon)
         {
-            // 새로운 UImage 위젯 생성
-            UImage* NewAccessoryImage = NewObject<UImage>(this);
-            if (NewAccessoryImage)
+            UUserWidget* IconWidget = CreateWidget<UUserWidget>(GetWorld(), AccessoryImageClass);
+            if (IconWidget)
             {
-                NewAccessoryImage->SetBrushFromTexture(Accessory->AccessoryIcon);
-                // 브러쉬의 이미지 사이즈를 수정하여 아이콘 크기를 변경합니다.
-                FSlateBrush Brush = NewAccessoryImage->Brush;
-                Brush.ImageSize = FVector2D(120.0f, 120.0f);
-                NewAccessoryImage->SetBrush(Brush);
+                UFunction* InitFunc = IconWidget->FindFunction(FName("InitializeAccessoryIcon"));
+                if (InitFunc)
+                {
+                    struct FDynamicAccessoryParam
+                    {
+                        FAccessoryData AccessoryData;
+                    };
 
-                NewAccessoryImage->SetVisibility(ESlateVisibility::Visible);
-
-                // WrapBox에 추가
-                AccessoryWrapBox->AddChildToWrapBox(NewAccessoryImage);
-                //UE_LOG(LogTemp, Log, TEXT("액세서리 추가: %s"), *RowName.ToString());
+                    FDynamicAccessoryParam Param;
+                    Param.AccessoryData = *Accessory;
+                    IconWidget->ProcessEvent(InitFunc, &Param);
+                }
+                AccessoryWrapBox->AddChildToWrapBox(IconWidget);
             }
         }
     }

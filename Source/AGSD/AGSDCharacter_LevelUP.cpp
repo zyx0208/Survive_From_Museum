@@ -70,7 +70,7 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float RangeIncrease = FCString::Atof(*ValueString.Replace(TEXT("+"), TEXT("")).TrimStartAndEnd());
-            Character->AttackRangeLevel >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += RangeIncrease;
+            (Character->AttackRangeLevel + RangeIncrease) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += RangeIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Range %.1f"), RangeIncrease, Character->AttackRangeLevel);
         }
         else if (Effect.Contains(TEXT("최대체력")))

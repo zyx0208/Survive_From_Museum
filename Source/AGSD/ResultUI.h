@@ -42,6 +42,8 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
     UDataTable* AccessoryDataTable;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Accessory")
+    TSubclassOf<UUserWidget> AccessoryImageClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
     UDataTable* WeaponDataTable;
@@ -49,5 +51,8 @@ protected:
     void PopulateAccessoryIcons();
 
     void DisplayWeaponImage(UTexture2D* Icon1, UTexture2D* Icon2);
+
+    UPROPERTY()
+    class AAGSDCharacter* PlayerCharacter;
 
 };
