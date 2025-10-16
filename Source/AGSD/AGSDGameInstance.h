@@ -8,6 +8,7 @@
 #include "Damage_UI.h"
 #include "Engine/StreamableManager.h"
 #include "WeaponStruct.h"
+#include "GameTimer.h"
 #include "AGSDGameInstance.generated.h"
 
 /**
@@ -114,6 +115,9 @@ public:
     //레벨 로딩이 끝났는지 확인하는 변수
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
     bool IsLevelLoading;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    UGameTimer* LevelGameTimer;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")

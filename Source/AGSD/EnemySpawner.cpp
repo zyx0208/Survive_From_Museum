@@ -9,6 +9,7 @@
 #include "Enemy1AIController.h"
 #include "Blueprint/UserWidget.h"
 #include "NavigationSystem.h"
+#include "AGSDGameInstance.h"
 #include "NavigationPath.h"
 #include <cmath>
 
@@ -22,15 +23,30 @@ AEnemySpawner::AEnemySpawner()
 
 void AEnemySpawner::SwitchingSpawn()
 {
+    UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
     if (isSpawning) {
         this->SetActorTickEnabled(false);
         isSpawning = false;
+        if (GI) {
+            if (GI->LevelGameTimer) {
+                FTimerHandle LevelTimerHandle = GI->LevelGameTimer->GameTimer;
+                GetWorldTimerManager().PauseTimer(LevelTimerHandle);
+            }
+        }
     }
     else {
         this->SetActorTickEnabled(true);
         isSpawning = true;
+        if (GI) {
+            if (GI->LevelGameTimer) {
+                FTimerHandle LevelTimerHandle = GI->LevelGameTimer->GameTimer;
+                GetWorldTimerManager().UnPauseTimer(LevelTimerHandle);
+            }
+        }
     }
 }
+
+
 
 // Called when the game starts or when spawned
 void AEnemySpawner::BeginPlay()
@@ -63,7 +79,7 @@ void AEnemySpawner::Tick(float DeltaTime)
             TotalTime += DeltaTime;
 
             //보스라운드
-            if (TotalTime >= 300.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
+            if (TotalTime >= 5.0f)//이 시간을 바꾸면 보스전 진입 시간이 바뀜(기본 300초)
             {
                 if (!BossRound)
                 {

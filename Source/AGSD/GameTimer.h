@@ -17,6 +17,8 @@ class AGSD_API UGameTimer : public UObject
     UGameTimer();
 
 public:
+    const FTimerHandle& GetTimerHandle() const { return GameTimer; }
+
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     float InitTime;
     //구버전용 시간 설정 제거 고려중

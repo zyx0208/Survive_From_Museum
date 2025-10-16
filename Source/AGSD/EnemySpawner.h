@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "NavigationSystem.h"
 #include "NavigationPath.h"
+#include "GameTimer.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
@@ -21,7 +22,6 @@ public:
     void SwitchingSpawn();
 
     bool isSpawning = true;
-
 
 protected:
 	// Called when the game starts or when spawned
