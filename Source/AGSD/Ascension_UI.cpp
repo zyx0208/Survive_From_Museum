@@ -45,6 +45,8 @@ void UAscension_UI::CloseUI()
     if (AAGSDCharacter* PlayerCharacter = Cast<AAGSDCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter()))
     {
         PlayerCharacter->ResumeGameAfterLevelUp();
+        PlayerCharacter->WeaponSwap();
+        PlayerCharacter->WeaponSwap();
     }
 }
 
@@ -71,6 +73,8 @@ void UAscension_UI::OnAgreeButtonClicked()
             if (GI) {
                 if (GI->Temp_Ascension.Contains(FName(FString::FromInt(WeaponRow->IID)))) {
                     int& WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID))];
+                    WeaponAscension += 1;
+                    WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->UpgradeID))];
                     WeaponAscension += 1;
                 }
                 

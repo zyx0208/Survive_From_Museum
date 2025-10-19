@@ -338,8 +338,13 @@ void UStorageBox_UI::OnImageSlotClicked(int32 ButtonIndex)
                 if (WeaponNameText)
                 {
                     FString tempname = FString::Printf(TEXT("%s(+%d)"), *WeaponName, AscensionArray[WeaponData->IID-1]);
-                    if (ReinforcedArray[WeaponData->IID-1])
-                        tempname = FString::Printf(TEXT("강화된 %s"), *tempname);
+                    if (ReinforcedArray[WeaponData->IID - 1]) {
+                        FWeaponDataTableBetaStruct* UpgradeWeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(FName(FString::FromInt(WeaponData->UpgradeID)), ContextString, true);
+                        if (UpgradeWeaponData) {
+                            tempname=UpgradeWeaponData->Sname;
+                        }
+                    }
+                        
                     WeaponNameText->SetText(FText::FromString(tempname));
                     WeaponNameText->SetVisibility(ESlateVisibility::Visible);
                 }
