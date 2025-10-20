@@ -410,7 +410,7 @@ void AEnemy1AIController::Attacked(float damage)
     FVector2D ScreenLocation;
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     if (Enemy.IsValid()) {
-        Enemy->CurrentHP -= damage;
+        Enemy->CurrentHP -= (int64)damage;
         UE_LOG(LogTemp, Display, TEXT("Damamge : %f CurrentHP : %d Actor : %s"), damage, Enemy->CurrentHP, *Enemy->GetName());
         GetWorld()->SpawnActor<AActor>(Enemy->AttackedEffect, GetCharacter()->GetActorLocation(), GetCharacter()->GetActorRotation());
         if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
@@ -463,7 +463,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         if (!GetWorldTimerManager().IsTimerActive(Chanel1TimerHandle))
         {
             GetWorldTimerManager().SetTimer(Chanel1TimerHandle, this, &AEnemy1AIController::Chanel1TimerEnd, 0.1f, false);
-            Enemy->CurrentHP -= damage;
+            Enemy->CurrentHP -= (int64)damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
             }
@@ -473,7 +473,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         if (!GetWorldTimerManager().IsTimerActive(Chanel2TimerHandle))
         {
             GetWorldTimerManager().SetTimer(Chanel2TimerHandle, this, &AEnemy1AIController::Chanel2TimerEnd, 0.1f, false);
-            Enemy->CurrentHP -= damage;
+            Enemy->CurrentHP -= (int64)damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
             }
@@ -483,7 +483,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         if (!GetWorldTimerManager().IsTimerActive(Chanel3TimerHandle))
         {
             GetWorldTimerManager().SetTimer(Chanel3TimerHandle, this, &AEnemy1AIController::Chanel3TimerEnd, 0.1f, false);
-            Enemy->CurrentHP -= damage;
+            Enemy->CurrentHP -= (int64)damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
             }
@@ -493,7 +493,7 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         if (!GetWorldTimerManager().IsTimerActive(Chanel4TimerHandle))
         {
             GetWorldTimerManager().SetTimer(Chanel4TimerHandle, this, &AEnemy1AIController::Chanel4TimerEnd, 0.1f, false);
-            Enemy->CurrentHP -= damage;
+            Enemy->CurrentHP -= (int64)damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
             }
@@ -503,14 +503,14 @@ void AEnemy1AIController::Attacked(float damage, int chanel)
         if (!GetWorldTimerManager().IsTimerActive(Chanel5TimerHandle))
         {
             GetWorldTimerManager().SetTimer(Chanel5TimerHandle, this, &AEnemy1AIController::Chanel5TimerEnd, 0.1f, false);
-            Enemy->CurrentHP -= damage;
+            Enemy->CurrentHP -= (int64)damage;
             if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
                 ShowDamage(damage, ScreenLocation);
             }
         }
         break;
     default:
-        Enemy->CurrentHP -= damage;
+        Enemy->CurrentHP -= (int64)damage;
         if (PC && PC->ProjectWorldLocationToScreen(PawnLocation, ScreenLocation)) {
             ShowDamage(damage, ScreenLocation);
         }
