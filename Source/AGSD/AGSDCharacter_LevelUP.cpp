@@ -392,7 +392,8 @@ bool AAGSDCharacter_LevelUP::NameSetCheck(AAGSDCharacter* Character, FString Nam
     else if (Name == TEXT("마법공학 핵"))
     {
         Character->nuclear = true;
-        Character->AttackRangeLevel += 2.0f;
+        (Character->AttackRangeLevel + 2.0f) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += 2.0f;
+        //Character->AttackRangeLevel += 2.0f;
         Character->NuclearSet();
         return true;
     }

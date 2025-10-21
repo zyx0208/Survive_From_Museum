@@ -55,29 +55,15 @@ protected:
     UPROPERTY(meta = (BindWidget))
     UButton* DrawingBoxButton;
 
+    // ESC 잡기 (Preview 단계에서 먼저 가로채는 걸 권장)
+    virtual FReply NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+    // 만약 Preview 대신 KeyDown을 쓰고 싶다면 아래도 가능
+    // virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
+    UFUNCTION()
+    void ClosePause();
     
-
-    
-
-    // 퍼즈 UI TEXT
-    /*UPROPERTY(meta = (BindWidget))
-    UTextBlock* HPText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* DefenseText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* AttackText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* AttackSpeedText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* AttackRangeText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* SpeedText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* DashText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* BounsXPText;
-    UPROPERTY(meta = (BindWidget))
-    UTextBlock* XPRangeText;*/
-
+private:
+    void AcquireFocusForKeyboard(); // 포커스/입력모드 세팅 헬퍼
 
 };

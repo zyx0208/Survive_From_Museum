@@ -8,11 +8,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 #include "DrawingBook_UI.h"
+#include "InputCoreTypes.h"  
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 void UPause_UI::NativeConstruct()
 {
     Super::NativeConstruct();
+
+    // 위젯이 키보드 포커스를 받을 수 있도록 설정 (매우 중요)
+    SetIsFocusable(true);
+    // 이 위젯이 열릴 때 키 입력을 받을 수 있도록 포커스/입력 모드 확보
+    AcquireFocusForKeyboard();
 
     PlayerCharacter = Cast<AAGSDCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -26,51 +32,6 @@ void UPause_UI::NativeConstruct()
         DrawingBoxButton->OnClicked.AddDynamic(this, &UPause_UI::OpenDrawingBook);
     }
 
-    /*if (HPText)
-    {
-        FString HPString = FString::Printf(TEXT("체력 : %d / %d"), PlayerCharacter->CurrentHealth, PlayerCharacter->MaxHealth);
-        HPText->SetText(FText::FromString(HPString));
-    }
-    if (DefenseText)
-    {
-        FString DefenseString = FString::Printf(TEXT("방어력 : %.0f%%"), PlayerCharacter->Defense);
-        DefenseText->SetText(FText::FromString(DefenseString));
-    }
-    if (AttackText)
-    {
-        FString AttackString = FString::Printf(TEXT("공격력 : %.0f"), PlayerCharacter->Attack);
-        AttackText->SetText(FText::FromString(AttackString));
-    }
-    if (AttackSpeedText)
-    {
-        FString ASString = FString::Printf(TEXT("공격속도 : %.1f"), PlayerCharacter->AttackSpeedLevel);
-        AttackSpeedText->SetText(FText::FromString(ASString));
-    }
-    if (AttackRangeText)
-    {
-        FString ARString = FString::Printf(TEXT("공격범위 : %.0f"), PlayerCharacter->AttackRangeLevel);
-        AttackRangeText->SetText(FText::FromString(ARString));
-    }
-    if (SpeedText)
-    {
-        FString SpeedString = FString::Printf(TEXT("이동속도 : %.1f"), PlayerCharacter->SpeedLevel);
-        SpeedText->SetText(FText::FromString(SpeedString));
-    }
-    if (DashText)
-    {
-        FString DashString = FString::Printf(TEXT("대쉬 쿨타임 : %.0f초"), PlayerCharacter->DashCooldown);
-        DashText->SetText(FText::FromString(DashString));
-    }
-    if (BounsXPText)
-    {
-        FString BounsXPString = FString::Printf(TEXT("경험치 획득 보너스 : %.1f배"), PlayerCharacter->BounsXPLevel);
-        BounsXPText->SetText(FText::FromString(BounsXPString));
-    }
-    if (XPRangeText)
-    {
-        FString XPRString = FString::Printf(TEXT("경험치 획득 범위 : %.1f"), PlayerCharacter->XPRangeLevel);
-        XPRangeText->SetText(FText::FromString(XPRString));
-    }*/
 }
 
 void UPause_UI::PopulateAccessoryIcons()
@@ -126,4 +87,51 @@ void UPause_UI::OpenDrawingBook()
     }
 }
 
+void UPause_UI::AcquireFocusForKeyboard()
+{
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        // Game & UI 모드로 전환하고, 이 위젯에 키보드 포커스 주기
+        FInputModeGameAndUI InputMode;
+        // UE5에서는 SetWidgetToFocus / SetLockMouseToViewportBehavior 사용
+        InputMode.SetWidgetToFocus(TakeWidget());
+        InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+        InputMode.SetHideCursorDuringCapture(false);
 
+        PC->SetInputMode(InputMode);
+        PC->SetShowMouseCursor(true);
+
+        // 추가로 확실하게 포커스 부여 (위젯에 키보드 포커스)
+        UWidgetBlueprintLibrary::SetFocusToGameViewport(); // (선택) 뷰포트 포커스 초기화
+        FSlateApplication::Get().SetKeyboardFocus(TakeWidget(), EFocusCause::SetDirectly);
+    }
+}
+
+FReply UPause_UI::NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
+{
+    // 이 위젯이 화면에 떠 있고, ESC가 눌렸다면 닫기
+    if (IsInViewport() && InKeyEvent.GetKey() == EKeys::Escape)
+    {
+        ClosePause();
+        return FReply::Handled();
+    }
+
+    return Super::NativeOnPreviewKeyDown(InGeometry, InKeyEvent);
+}
+
+void UPause_UI::ClosePause()
+{
+    // 위젯 닫기
+    RemoveFromParent();
+
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        // 게임 재개
+        UGameplayStatics::SetGamePaused(this, false);
+
+        // 입력 모드 복귀 (게임 전용)
+        FInputModeGameOnly GameOnlyMode;
+        PC->SetInputMode(GameOnlyMode);
+        PC->SetShowMouseCursor(false);
+    }
+}
