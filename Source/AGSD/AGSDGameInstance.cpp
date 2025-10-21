@@ -25,13 +25,25 @@ void UAGSDGameInstance::Init()
         ));
     }
 
-    UGameUserSettings* UserSettings = GEngine->GetGameUserSettings();
-    if (UserSettings)
+    // 창모드로 고정 (첫 시작부터 창모드)
+    if (GEngine)
     {
-        UserSettings->SetScreenResolution(FIntPoint(1920, 1080));  // 원하는 해상도
-        UserSettings->SetFullscreenMode(EWindowMode::Fullscreen);
-        UserSettings->ApplySettings(false);
+        if (UGameUserSettings* UserSettings = GEngine->GetGameUserSettings())
+        {
+            // 원하는 윈도우 해상도 (원하면 1600x900 등으로 변경 가능)
+            UserSettings->SetScreenResolution(FIntPoint(1920, 1080));
+
+            // 창모드로 설정
+            UserSettings->SetFullscreenMode(EWindowMode::Windowed);
+
+            // 설정 적용 (첫 번째 인자: 즉시 적용 시 가끔 깜빡임 줄일 땐 false로 두는 편)
+            UserSettings->ApplySettings(false);
+
+            // 설정 저장 (다음 실행에도 창모드 유지)
+            UserSettings->SaveSettings();
+        }
     }
+
     WeaponArray.Add(4);
     WeaponArray.Add(5);
 
