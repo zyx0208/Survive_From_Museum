@@ -1210,16 +1210,6 @@ void AAGSDCharacter::WeaponTake()
 }
 void AAGSDCharacter::Debug()
 {
-    UE_LOG(LogTemp, Warning, TEXT("FunctionStart"));
-    TArray<AActor*> FoundCameras;
-    UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("TargetCamera"), FoundCameras);
-    if (FoundCameras.Num() > 0)
-    {
-        TestCameraMove(FoundCameras[0]);
-    }
-    else {
-        UE_LOG(LogTemp, Warning, TEXT("Can't Find Camera"));
-    }
     
 }
 void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -2336,21 +2326,7 @@ ATrapChest* AAGSDCharacter::FindNearbyTrapChest() const
 
 void AAGSDCharacter::TestCameraMove(AActor* MoveToCamera)
 {
-    UE_LOG(LogTemp, Warning, TEXT("TestCameraMoveStart"));
-    APlayerController* PlayerController = Cast<APlayerController>(Controller);
-    TWeakObjectPtr<APlayerController> WeakPlayerController;
-    WeakPlayerController = PlayerController;
-    if (WeakPlayerController.IsValid()) {
-        UE_LOG(LogTemp, Warning, TEXT("IsValid"));
-        UGameplayStatics::SetGamePaused(GetWorld(), false);
-        UE_LOG(LogTemp, Warning, TEXT("GetPaused"));
-        WeakPlayerController->SetViewTargetWithBlend(MoveToCamera, 0.0f);
-        FTimerHandle CameraTimer;
-        GetWorld()->GetTimerManager().SetTimer(CameraTimer, [WeakPlayerController]()
-            {
-                //WeakPlayerController->SetPause(true);
-            }, 0.5f, false);
-    }
+
 }
 
 void AAGSDCharacter::ApplyGameAndUICursorMode()
