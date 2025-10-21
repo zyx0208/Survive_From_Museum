@@ -721,7 +721,7 @@ void AAGSDCharacter::Interaction()
         return;
     }
 
-    if (OverlapDropWeapon) 
+    if (OverlapWeaponDropArray.Num()>0)
     {
         ShowWeaponExchangeUI();
     }
@@ -1220,8 +1220,6 @@ void AAGSDCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
         // 충돌한 오브젝트가 WeaponDrop임을 확인
         if (OtherActor && OtherActor->IsA<AWeaponDrop>())
         {
-            OverlapDropWeapon = true;
-            // ACharacter로 캐스팅
             OverlapWeaponDrop = Cast<AWeaponDrop>(OtherActor);
             if (OverlapWeaponDrop)
             {
@@ -1275,8 +1273,6 @@ void AAGSDCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
                 OverlapWeaponDropArray.RemoveSingle(WeaponDrop);
                 SortOverlapWeaponDropArray();
             }
-
-            OverlapDropWeapon = false;
         }
         // 충돌한 오브젝트가 Box임을 확인
         if (AStorageBox* Box = Cast<AStorageBox>(OtherActor))
@@ -1308,7 +1304,7 @@ bool AAGSDCharacter::IsOverlappingActor(const AActor* Other) const
 
 void AAGSDCharacter::GetWeapon()
 {
-    if (OverlapDropWeapon) {
+    if (OverlapWeaponDropArray.Num()>0) {
         if (CurrentWeaponSlot) {
             int32 MyInt = FCString::Atoi(*OverlapID);
             GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Blue, FString::Printf(TEXT("MyInt: %d"),MyInt));
