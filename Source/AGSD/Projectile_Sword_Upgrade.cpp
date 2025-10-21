@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Projectile_Jelda_Upgrade.h"
+#include "Projectile_Sword_Upgrade.h"
 
-AProjectile_Jelda_Upgrade::AProjectile_Jelda_Upgrade()
+AProjectile_Sword_Upgrade::AProjectile_Sword_Upgrade()
 {
     // 투사체 속도, 데미지, 사거리
     ProjectileSpeed = 1.0f;
@@ -11,12 +11,12 @@ AProjectile_Jelda_Upgrade::AProjectile_Jelda_Upgrade()
     ProjectileRange = 100.0f;
 }
 
-void AProjectile_Jelda_Upgrade::Tick(float deltaTime)
+void AProjectile_Sword_Upgrade::Tick(float deltaTime)
 {
     Super::Tick(deltaTime);
 }
 
-void AProjectile_Jelda_Upgrade::WeaponHitEffect(AActor* OtherActor)
+void AProjectile_Sword_Upgrade::WeaponHitEffect(AActor* OtherActor)
 {
 
 }

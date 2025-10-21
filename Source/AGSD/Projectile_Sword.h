@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Projectile_Beta.h"
-#include "Projectile_Jelda_Upgrade.generated.h"
+#include "Projectile_Sword.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class AGSD_API AProjectile_Jelda_Upgrade : public AProjectile_Beta
+class AGSD_API AProjectile_Sword : public AProjectile_Beta
 {
 	GENERATED_BODY()
-    AProjectile_Jelda_Upgrade();
-    virtual void Tick(float deltaTime) override;
+    AProjectile_Sword();
     virtual void WeaponHitEffect(AActor* OtherActor) override;
+    virtual void Tick(float DeltaTime) override;
 };
