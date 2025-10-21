@@ -12,21 +12,34 @@ void UPauseUI_AccessoryDetail::NativeConstruct()
     // 커서 기준 중앙 정렬(원하면 0,0으로 바꿔 좌상단 기준)
     SetAlignmentInViewport(ViewportAlignment);
 
+    //SetAnchorsInViewport(PreSetAnchors);
+
     // 생성 시점에 한 번 위치 동기화
     if (APlayerController* PC = GetOwningPlayer())
     {
         float MX, MY;
         if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(PC, MX, MY))
         {
-            SetAlignmentInViewport(ViewportAlignment);
-            SetPositionInViewport(FVector2D(MX, MY) + FollowOffset, true);
+            // 위젯 크기 확보 (첫 프레임 보정)
+            FVector2D WidgetSize = GetDesiredSize();
+            if (WidgetSize.X <= KINDA_SMALL_NUMBER || WidgetSize.Y <= KINDA_SMALL_NUMBER)
+            {
+                // Construct 직후엔 DesiredSize가 0일 수 있음 → 대략값 보정 (필요 없다면 생략)
+                WidgetSize = FVector2D(300.f, 160.f);
+            }
+
+            
+            FVector2D Pos(MX, MY);
+            Pos -= (WidgetSize * ViewportAlignment);
+            Pos += FollowOffset;
+
+            SetPositionInViewport(Pos, /*bRemoveDPIScale=*/true);
         }
     }
 }
 void UPauseUI_AccessoryDetail::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
     Super::NativeTick(MyGeometry, InDeltaTime);
-
     if (!bFollowMouse) return;
 
     if (APlayerController* PC = GetOwningPlayer())
@@ -34,31 +47,33 @@ void UPauseUI_AccessoryDetail::NativeTick(const FGeometry& MyGeometry, float InD
         float MX, MY;
         if (UWidgetLayoutLibrary::GetMousePositionScaledByDPI(PC, MX, MY))
         {
-            // 기본 위치(마우스 + 오프셋)
-            FVector2D Pos(MX, MY);
-            Pos += FollowOffset;
-
-            // 화면 가장자리 밖으로 나가지 않게 클램프
             const FVector2D ViewSize = UWidgetLayoutLibrary::GetViewportSize(this);
 
-            // 현재 위젯의 실제 크기(첫 틱엔 0일 수 있어 보정)
             FVector2D WidgetSize = MyGeometry.GetLocalSize();
             if (WidgetSize.X <= KINDA_SMALL_NUMBER || WidgetSize.Y <= KINDA_SMALL_NUMBER)
             {
                 WidgetSize = GetDesiredSize();
+                if (WidgetSize.X <= KINDA_SMALL_NUMBER || WidgetSize.Y <= KINDA_SMALL_NUMBER)
+                {
+                    // 여전히 0이면 임시 보정값
+                    WidgetSize = FVector2D(300.f, 160.f);
+                }
             }
 
-            // Alignment를 고려한 중앙(또는 지정 정렬) 기준 클램프 범위 계산
-            const FVector2D MinPos = FVector2D(EdgePadding + WidgetSize.X * ViewportAlignment.X,
-                EdgePadding + WidgetSize.Y * ViewportAlignment.Y);
-            const FVector2D MaxPos = FVector2D(ViewSize.X - EdgePadding - WidgetSize.X * (1.f - ViewportAlignment.X),
-                ViewSize.Y - EdgePadding - WidgetSize.Y * (1.f - ViewportAlignment.Y));
+            FVector2D Pos(MX, MY);
+            Pos -= (WidgetSize * ViewportAlignment);  // 정렬 보정
+            Pos += FollowOffset;
+
+            const FVector2D MinPos = FVector2D(EdgePadding, EdgePadding);
+            const FVector2D MaxPos = FVector2D(
+                ViewSize.X - EdgePadding - WidgetSize.X,
+                ViewSize.Y - EdgePadding - WidgetSize.Y
+            );
 
             Pos.X = FMath::Clamp(Pos.X, MinPos.X, MaxPos.X);
             Pos.Y = FMath::Clamp(Pos.Y, MinPos.Y, MaxPos.Y);
 
-            // DPI 보정된 좌표를 넣으므로 true 사용
-            SetPositionInViewport(FVector2D(MX, MY) + FollowOffset, true);
+            SetPositionInViewport(Pos, /*bRemoveDPIScale=*/true);
         }
     }
 }
