@@ -13,9 +13,6 @@
 void UAGSDGameInstance::Init()
 {
     Super::Init();
-
-    LoadGameData();
-
     if (WeaponDataTable == nullptr) {
         UE_LOG(LogTemp, Error, TEXT("ResetWeaponData: WeaponDataTable is NULL Set DataTable"));
         WeaponDataTable = Cast<UDataTable>(StaticLoadObject(
@@ -24,6 +21,8 @@ void UAGSDGameInstance::Init()
             TEXT("/Script/Engine.DataTable'/Game/AGSD/AGSD_Character/Weapon/WeaponDataTableBeta.WeaponDataTableBeta'")
         ));
     }
+
+    LoadGameData();
 
     // 창모드로 고정 (첫 시작부터 창모드)
     if (GEngine)
@@ -44,8 +43,8 @@ void UAGSDGameInstance::Init()
         }
     }
 
-    WeaponArray.Add(4);
-    WeaponArray.Add(5);
+    if (!WeaponArray.Contains(4)) WeaponArray.Add(4);
+    if (!WeaponArray.Contains(5)) WeaponArray.Add(5);
 
     FirstLoading();
 }
@@ -133,8 +132,12 @@ void UAGSDGameInstance::LevelLoadingEnd()
 void UAGSDGameInstance::Shutdown()
 {
     Super::Shutdown();
-    WeaponArray[0] = 4;
-    WeaponArray[1] = 5;
+    if (WeaponArray.Num() < 2) {
+        WeaponArray.SetNum(2);
+    }
+    WeaponArray.Reset();
+    WeaponArray.Add(4);
+    WeaponArray.Add(5);
     SaveGameData(); // 자동 저장
 }
 
@@ -155,11 +158,9 @@ void UAGSDGameInstance::CreateGameData()
             SaveGameInstance->SWeapon_Ascension.Add(WeaponID, 0);
             SaveGameInstance->SWeapon_Acquired.Add(WeaponID, false);
             SaveGameInstance->SWeapon_Reinforced.Add(WeaponID, false);
-            if (WeaponID == FName("4") || WeaponID == FName("5")) {
-                SaveGameInstance->SWeapon_Acquired.Add(WeaponID, true);
-            }
-
         }
+        SaveGameInstance->SWeapon_Acquired.FindOrAdd(FName("4")) = true;
+        SaveGameInstance->SWeapon_Acquired.FindOrAdd(FName("5")) = true;
     }
 
     SaveGameInstance->SaveKnowAccessory.Empty();
@@ -345,8 +346,9 @@ void UAGSDGameInstance::ResetGameData()
     SaveGameInstance->SWeapon_Array.Add(4);
     SaveGameInstance->SWeapon_Array.Add(5);
 
-    WeaponArray[0] = 4;
-    WeaponArray[1] = 5;
+    WeaponArray.Reset();
+    WeaponArray.Add(4);
+    WeaponArray.Add(5);
 
     UE_LOG(LogTemp, Log, TEXT("%d %d"), SaveGameInstance->SWeapon_Array[0], SaveGameInstance->SWeapon_Array[1]);
 
