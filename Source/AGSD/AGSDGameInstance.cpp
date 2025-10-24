@@ -173,6 +173,7 @@ void UAGSDGameInstance::CreateGameData()
 
     // 게임 데이터를 저장
     UGameplayStatics::SaveGameToSlot(SaveGameInstance, SaveSlotName, UserIndex);
+    ResetGameData();
 }
 
 void UAGSDGameInstance::SaveGameData()
