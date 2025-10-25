@@ -16,6 +16,9 @@ void UPauseUI_AccessoryDetail::NativeConstruct()
 {
     Super::NativeConstruct();
 
+    // 디테일창이 마우스 히트테스트를 가로채지 않도록
+    SetVisibility(ESlateVisibility::HitTestInvisible);
+
     SetAnchorsInViewport(FAnchors(0.f, 0.f, 0.f, 0.f));
     SetAlignmentInViewport(FVector2D::ZeroVector);
 
