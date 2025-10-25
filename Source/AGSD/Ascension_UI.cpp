@@ -74,8 +74,11 @@ void UAscension_UI::OnAgreeButtonClicked()
                 if (GI->Temp_Ascension.Contains(FName(FString::FromInt(WeaponRow->IID)))) {
                     int& WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->IID))];
                     WeaponAscension += 1;
-                    WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->UpgradeID))];
-                    WeaponAscension += 1;
+                    if (WeaponRow->UpgradeID != 0) {
+                        WeaponAscension = GI->Temp_Ascension[FName(FString::FromInt(WeaponRow->UpgradeID))];
+                        WeaponAscension += 1;
+                    }
+                    
                 }
                 
             }
