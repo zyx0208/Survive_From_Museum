@@ -1620,54 +1620,41 @@ void AAGSDCharacter::Attacked(float Damage)
         }
         if (AttackedWidgetClass)
         {
-            // 위젯이 아직 생성되지 않았거나 Viewport에 없다면 새로 추가
-            if (!AttackedWidgetInstance || !AttackedWidgetInstance->IsInViewport())
+            GetWorldTimerManager().ClearTimer(AttackedWidgetRemoveHandle);
+
+            if (!IsValid(AttackedWidgetInstance))
             {
                 AttackedWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), AttackedWidgetClass);
-                if (AttackedWidgetInstance)
+                if (IsValid(AttackedWidgetInstance))
                 {
                     AttackedWidgetInstance->AddToViewport();
-
-                    // 일정 시간 후 제거 (예: 0.4초 뒤에 Viewport에서 제거)
-                    FTimerHandle RemoveWidgetHandle;
-                    GetWorldTimerManager().SetTimer(RemoveWidgetHandle, FTimerDelegate::CreateLambda([this]()
-                        {
-                            if (AttackedWidgetInstance && AttackedWidgetInstance->IsInViewport())
-                            {
-                                AttackedWidgetInstance->RemoveFromParent();
-                                AttackedWidgetInstance = nullptr; // 다음 피격 시 다시 생성되도록 초기화
-                            }
-                        }), 0.4f, false);
                 }
             }
+            else if (!AttackedWidgetInstance->IsInViewport())
+            {
+                AttackedWidgetInstance->AddToViewport();
+            }
+
+            TWeakObjectPtr<AAGSDCharacter> Self = this;
+            TWeakObjectPtr<UUserWidget> WeakW = AttackedWidgetInstance;
+
+            GetWorldTimerManager().SetTimer(
+                AttackedWidgetRemoveHandle,
+                FTimerDelegate::CreateLambda([Self, WeakW]()
+                    {
+                        if (!Self.IsValid()) return;
+                        UUserWidget* W = WeakW.Get();
+                        if (!IsValid(W)) { Self->AttackedWidgetInstance = nullptr; return; }
+
+                        if (W->IsInViewport()) { W->RemoveFromParent(); }
+                        Self->AttackedWidgetInstance = nullptr;
+                    }),
+                0.4f, false);
         }
     }
     else
     {
         CurrentHealth -= 0;
-        if (AttackedWidgetClass)
-        {
-            // 위젯이 아직 생성되지 않았거나 Viewport에 없다면 새로 추가
-            if (!AttackedWidgetInstance || !AttackedWidgetInstance->IsInViewport())
-            {
-                AttackedWidgetInstance = CreateWidget<UUserWidget>(GetWorld(), AttackedWidgetClass);
-                if (AttackedWidgetInstance)
-                {
-                    AttackedWidgetInstance->AddToViewport();
-
-                    // 일정 시간 후 제거 (예: 0.4초 뒤에 Viewport에서 제거)
-                    FTimerHandle RemoveWidgetHandle;
-                    GetWorldTimerManager().SetTimer(RemoveWidgetHandle, FTimerDelegate::CreateLambda([this]()
-                        {
-                            if (AttackedWidgetInstance && AttackedWidgetInstance->IsInViewport())
-                            {
-                                AttackedWidgetInstance->RemoveFromParent();
-                                AttackedWidgetInstance = nullptr; // 다음 피격 시 다시 생성되도록 초기화
-                            }
-                        }), 0.4f, false);
-                }
-            }
-        }
     }
 	UE_LOG(LogTemp, Display, TEXT("HP : %d"), CurrentHealth);
     //피격시 무적(데미지는 받고 이후 5초간 무적 / 60초 쿨타임)

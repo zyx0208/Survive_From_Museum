@@ -217,7 +217,8 @@ protected:
     TSubclassOf<UUserWidget> AttackedWidgetClass;
 
     // 생성된 피격 UI 위젯 인스턴스
-    UUserWidget* AttackedWidgetInstance;
+    UPROPERTY() UUserWidget* AttackedWidgetInstance = nullptr;
+    FTimerHandle AttackedWidgetRemoveHandle;
 
     UPROPERTY()
     UUserWidget* StorageBoxWidget;
