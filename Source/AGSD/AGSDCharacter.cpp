@@ -1921,11 +1921,34 @@ void AAGSDCharacter::SlowApply(float Duration)
     }
 
     GetWorldTimerManager().ClearTimer(SlowTimerHandle);
-    GetWorldTimerManager().SetTimer(SlowTimerHandle, FTimerDelegate::CreateLambda([this]()
+    FTimerDelegate ResetDelegate = FTimerDelegate::CreateWeakLambda(this, [this]()
         {
-            CharacterMovementComponent->MaxWalkSpeed = OriginalWalkSpeed;
-            bIsSlowed = false;
-        }), Duration, false);
+            ResetSlow();
+        });
+
+    GetWorldTimerManager().SetTimer(SlowTimerHandle, ResetDelegate, Duration, false);
+}
+// 슬로우 복구(어디서든 호출 가능)
+void AAGSDCharacter::ResetSlow()
+{
+    // 이미 풀렸거나 컴포넌트가 없으면 플래그만 정리
+    if (!bIsSlowed)
+    {
+        return;
+    }
+
+    if (CharacterMovementComponent)
+    {
+        CharacterMovementComponent->MaxWalkSpeed = OriginalWalkSpeed;
+    }
+
+    bIsSlowed = false;
+
+    // 혹시 남아있을 타이머도 정리
+    if (GetWorld())
+    {
+        GetWorldTimerManager().ClearTimer(SlowTimerHandle);
+    }
 }
 
 // 스턴 적용

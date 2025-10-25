@@ -718,6 +718,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Debuff")
     void SlowApply(float Duration);
 
+    UFUNCTION()
+    void ResetSlow();
+
     UFUNCTION(BlueprintCallable, Category = "Debuff")
     void StunApply(float Duration);
 
