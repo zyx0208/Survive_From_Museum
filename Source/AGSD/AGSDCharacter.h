@@ -459,7 +459,7 @@ public:
     UFUNCTION()
     void CancelCharge();
 
-    float Charge = 0.1;
+    float Charge = 0.1f;
 
     float ChargePerTime = 0.1f;
 

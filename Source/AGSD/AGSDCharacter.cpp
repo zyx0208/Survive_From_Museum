@@ -1074,6 +1074,23 @@ void AAGSDCharacter::PlayFireMontage(UAnimMontage* Montage)
 void AAGSDCharacter::ShowWeaponExchangeUI()
 {
     int Overlap = FCString::Atoi(*OverlapID);
+
+    FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableRef->FindRow<FWeaponDataTableBetaStruct>(FName(FString::FromInt(Overlap)), TEXT("Weapon Lookup"));
+    if (!WeaponData) {
+        return;
+    }
+    if ((WeaponArray[0] == WeaponData->IID) || (WeaponArray[1] == WeaponData->IID) || (WeaponArray[0] == WeaponData->UpgradeID) || (WeaponArray[1] == WeaponData->UpgradeID)) {
+        if (WeaponAscensionClass) {
+            WeaponAscensionWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponAscensionClass);
+        }
+        if (WeaponAscensionWidget) {
+            WeaponAscensionWidget->AddToViewport();
+            PauseGameForLevelUp();
+
+        }
+        return;
+    }
+    /*
     if ((WeaponArray[0] == Overlap) || (WeaponArray[1] == Overlap)) {
         if (WeaponAscensionClass) {
             WeaponAscensionWidget = CreateWidget<UUserWidget>(GetWorld(), WeaponAscensionClass);
@@ -1084,7 +1101,7 @@ void AAGSDCharacter::ShowWeaponExchangeUI()
             
         }
         return;
-    }
+    }*/
     
     if (WeaponExchangeWidgetClass) {
         UE_LOG(LogTemp, Display, TEXT("ShowWeaponExchange"));

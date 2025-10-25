@@ -23,8 +23,18 @@ void UAscension_UI::NativeConstruct()
 
     if (WeaponDataTableBeta) {
         static const FString ContextString(TEXT("Weapon Data Context"));
+
         FName RowName = FName(PlayerCharacter->OverlapID);
         FWeaponDataTableBetaStruct* WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(RowName, ContextString, true);
+        UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
+        if (GI) {
+            if (GI->Temp_Reinforced[RowName] == true) {
+                FName UpgradeName = FName(*FString::FromInt(WeaponData->UpgradeID));
+                WeaponData = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(UpgradeName, ContextString, true);
+            }
+        }
+
+        
         UTexture2D* WeaponIcon1 = WeaponData->WeaponIcon;
 
         DisplayWeaponImage(WeaponIcon1);
@@ -110,7 +120,10 @@ void UAscension_UI::DisplayTextBlock(UTextBlock* textBlock)
         {
             UAGSDGameInstance* GI = Cast<UAGSDGameInstance>(GetGameInstance());
             if (GI) {
-
+                if (GI->Temp_Reinforced[RowName] == true) {
+                    FName UpgradeName = FName(*FString::FromInt(WeaponRow->UpgradeID));
+                    WeaponRow = WeaponDataTableBeta->FindRow<FWeaponDataTableBetaStruct>(UpgradeName, ContextString, true);
+                }
                 FFormatNamedArguments Args;
                 Args.Add(TEXT("Name"), FText::FromString(WeaponRow->Sname));
 
