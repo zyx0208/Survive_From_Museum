@@ -25,6 +25,7 @@ void UAGSDGameInstance::Init()
     LoadGameData();
 
     // 창모드로 고정 (첫 시작부터 창모드)
+    /*
     if (GEngine)
     {
         if (UGameUserSettings* UserSettings = GEngine->GetGameUserSettings())
@@ -42,7 +43,7 @@ void UAGSDGameInstance::Init()
             UserSettings->SaveSettings();
         }
     }
-
+    */
     if (!WeaponArray.Contains(4)) WeaponArray.Add(4);
     if (!WeaponArray.Contains(5)) WeaponArray.Add(5);
 
