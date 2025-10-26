@@ -151,7 +151,9 @@ void UAGSDGameInstance::CreateGameData()
     SaveGameInstance->StageProgress = -1;
     SaveGameInstance->TalkingProgress = 0;
     SaveGameInstance->BGMVolume = 1.0f;
+    Temp_BGMVolume = 1.0f;
     SaveGameInstance->SFXVolume = 1.0f;
+    Temp_SFXVolume = 1.0f;
     if (WeaponDataTable) {
         for (auto& Row : WeaponDataTable->GetRowMap())
         {
