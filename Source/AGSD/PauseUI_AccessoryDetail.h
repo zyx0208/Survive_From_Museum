@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "AccessoryData.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "PauseUI_AccessoryDetail.generated.h"
 
 class UTextBlock;
@@ -30,6 +31,10 @@ public:
 
     void UpdatePositionToMouse(bool bClampToViewport, const FGeometry* GeometryPtr=nullptr);
     FVector2D ComputeWidgetSize(const FGeometry* GeometryPtr) const;
+
+    // Pause UI가 닫힐 때 일괄 정리용
+    UFUNCTION(BlueprintCallable)
+    static void CloseAllInWorld(UWorld* World);
 
 protected:
     /** 바인딩된 텍스트 */

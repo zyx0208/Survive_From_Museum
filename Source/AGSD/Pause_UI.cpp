@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "DrawingBook_UI.h"
 #include "InputCoreTypes.h"  
+#include "PauseUI_AccessoryDetail.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 void UPause_UI::NativeConstruct()
@@ -122,8 +123,9 @@ FReply UPause_UI::NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKey
 void UPause_UI::ClosePause()
 {
     // 위젯 닫기
+    UPauseUI_AccessoryDetail::CloseAllInWorld(GetWorld());
     RemoveFromParent();
-
+    
     if (APlayerController* PC = GetOwningPlayer())
     {
         // 게임 재개

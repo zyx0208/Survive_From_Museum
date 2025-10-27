@@ -173,3 +173,17 @@ bool UPauseUI_AccessoryDetail::GetMouseViewportPositionPx(FVector2D& OutPosPx) c
         OutPosPx.X <= ViewSizePx.X && OutPosPx.Y <= ViewSizePx.Y);
 }
 
+void UPauseUI_AccessoryDetail::CloseAllInWorld(UWorld* World)
+{
+    if (!World) return;
+
+    TArray<UUserWidget*> Found;
+    UWidgetBlueprintLibrary::GetAllWidgetsOfClass(World, Found, UPauseUI_AccessoryDetail::StaticClass(), /*TopLevelOnly=*/false);
+    for (UUserWidget* W : Found)
+    {
+        if (W && W->IsInViewport())
+        {
+            W->RemoveFromParent();
+        }
+    }
+}
