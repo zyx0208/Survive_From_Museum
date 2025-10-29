@@ -2067,8 +2067,8 @@ void AAGSDCharacter::NuclearSet()
             if (!GameInstance->TempAccessory.Contains(RowName))
                 GameInstance->TempAccessory.Add(RowName);
         }
-        AttackRangeLevel += 3.0f;
-        Attack += 2.0f;
+        AttackRangeLevel += 2.0f;
+        Attack += 3.0f;
         SpeedLevel += 50.0f;
     }
     else

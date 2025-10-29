@@ -70,7 +70,10 @@ void AAGSDCharacter_LevelUP::ApplyAccessoryEffect(AAGSDCharacter* Character, con
         {
             FString ValueString = Effect.Mid(5).TrimStartAndEnd();
             float RangeIncrease = FCString::Atof(*ValueString.Replace(TEXT("+"), TEXT("")).TrimStartAndEnd());
-            (Character->AttackRangeLevel + RangeIncrease) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += RangeIncrease;
+            if (Character->dna && Character->nuclear)
+                Character->AttackRangeLevel = 6.0f; // 특수효과 발동 후 공격범위 옵션 획득시 안전장치
+            else 
+                (Character->AttackRangeLevel + RangeIncrease) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += RangeIncrease;
             UE_LOG(LogTemp, Log, TEXT("Increase Effect: %.1f Range %.1f"), RangeIncrease, Character->AttackRangeLevel);
         }
         else if (Effect.Contains(TEXT("최대체력")))
@@ -392,8 +395,8 @@ bool AAGSDCharacter_LevelUP::NameSetCheck(AAGSDCharacter* Character, FString Nam
     else if (Name == TEXT("마법공학 핵"))
     {
         Character->nuclear = true;
-        (Character->AttackRangeLevel + 2.0f) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += 2.0f;
-        //Character->AttackRangeLevel += 2.0f;
+        (Character->AttackRangeLevel + 3.0f) >= 4.0f ? Character->AttackRangeLevel = 4.0f : Character->AttackRangeLevel += 3.0f;
+       
         Character->NuclearSet();
         return true;
     }
