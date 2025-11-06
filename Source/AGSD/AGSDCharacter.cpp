@@ -510,39 +510,56 @@ void AAGSDCharacter::UpdateCameraObstruction()
 {
     if (!CameraBoom || !FollowCamera) return;
 
-    FVector DesiredCameraLocation = FollowCamera->GetComponentLocation();
-    FVector TempCharacterLocation = GetActorLocation() + FVector(0.0f, 0.0f, 900.0f);
-    FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(CameraObstruction), true, this);
+    const float DeltaTime = GetWorld()->GetDeltaSeconds();
+    const float BlendTime = 1.0f;      // 목표까지 약 0.5초
+    const float OffsetDist = 10.0f;     // 벽에서 살짝 띄우기
+    const float TraceRadius = 8.0f;      // 작은 구 반경으로 안정화
+    const ECollisionChannel TraceChannel = ECC_Visibility;
 
-    FHitResult HitResult;
-    float DeltaTime = GetWorld()->GetDeltaSeconds();
-    float InterpSpeed = 10.0f; // 보간 속도
-    bool bBlocked = GetWorld()->LineTraceSingleByChannel(
-        HitResult,
-        TempCharacterLocation,
-        DesiredCameraLocation,
-        ECC_Visibility,
-        TraceParams
+    const FVector CurrentCam = FollowCamera->GetComponentLocation();
+    const FVector TraceStart = GetActorLocation() + FVector(0.f, 0.f, 1000.f);
+    const FVector TraceEnd = CurrentCam;
+
+    FHitResult Hit;
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(CameraObstruction), true, this);
+
+    // 라인 대신 스피어 트레이스(미세한 끊김 완화)
+    bool bBlocked = GetWorld()->SweepSingleByChannel(
+        Hit,
+        TraceStart,
+        TraceEnd,
+        FQuat::Identity,
+        TraceChannel,
+        FCollisionShape::MakeSphere(TraceRadius),
+        Params
     );
-    //디버그 라인트레이스
-    //DrawDebugLine(GetWorld(), TempCharacterLocation, DesiredCameraLocation, FColor::Blue, false, 0.1f, 0, 1.0f);
 
+    // 이번 프레임의 "목표 카메라 위치"
+    FVector DesiredTarget;
     if (bBlocked)
     {
-        float OffsetDistance = 10.0f;
-        FVector AdjustedLocation = HitResult.ImpactPoint + HitResult.ImpactNormal * OffsetDistance;
-
-        // 선택사항: 기존 카메라 위치와 새 위치를 부드럽게 보간
-        FVector NewCameraLocation = FMath::VInterpTo(FollowCamera->GetComponentLocation(), AdjustedLocation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
-
-        FollowCamera->SetWorldLocation(NewCameraLocation);
+        DesiredTarget = Hit.ImpactPoint + Hit.ImpactNormal * OffsetDist;
     }
     else
     {
-        FVector UnobstructedLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
-        FVector NewCameraLocation = FMath::VInterpTo(FollowCamera->GetComponentLocation(), UnobstructedLocation, DeltaTime, InterpSpeed);
-        FollowCamera->SetWorldLocation(NewCameraLocation);
+        DesiredTarget = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
     }
+
+    // 항상 같은 시간(0.5초) 안에 도달하도록 "거리/시간" 속도 계산
+    const float Dist = FVector::Distance(CurrentCam, DesiredTarget);
+    const float Speed = (BlendTime > KINDA_SMALL_NUMBER) ? (Dist / BlendTime) : BIG_NUMBER;
+
+    // 한 프레임에 너무 큰 점프 방지(선택): 최대 이동속도 캡
+    const float MaxSpeedCap = 3500.f; // uu/sec 정도로 제한(프로젝트에 맞게 조정)
+    const float UseSpeed = FMath::Min(Speed, MaxSpeedCap);
+
+    // 상태 리셋 없이, 일정 속도로 목표를 향해 이동
+    const FVector NewCam = FMath::VInterpConstantTo(CurrentCam, DesiredTarget, DeltaTime, UseSpeed);
+    FollowCamera->SetWorldLocation(NewCam);
+
+    // 디버그 
+    // DrawDebugSphere(GetWorld(), TraceStart, TraceRadius, 12, FColor::Cyan, false, 0.05f);
+    // DrawDebugLine(GetWorld(), TraceStart, TraceEnd, bBlocked ? FColor::Red : FColor::Green, false, 0.05f, 0, 1.f);
 }
 void AAGSDCharacter::Talking(bool dialogueInput)
 {
